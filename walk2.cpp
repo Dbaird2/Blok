@@ -931,12 +931,9 @@ void render(void)
 	}
     if (credit == 1) {
         dasonEndCredit();
-<<<<<<< HEAD
         carlosEndCredit();
-=======
 		carolineEndCredit();
         rjEndCredit();
->>>>>>> dc21e9a5f07dea3dc1efaff5ff1cbec4a5b54d24
     }
 	unsigned int c = 0x00ffff44;
 	r.bot = gl.yres - 20;
