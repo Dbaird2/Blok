@@ -931,6 +931,7 @@ void render(void)
 	}
     if (credit == 1) {
         dasonEndCredit();
+        carlosEndCredit();
     }
 	unsigned int c = 0x00ffff44;
 	r.bot = gl.yres - 20;

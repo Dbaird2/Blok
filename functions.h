@@ -2,5 +2,6 @@
 #define MYFUNCTIONS_H
 
 void dasonEndCredit();
+void carlosEndCredit();
 
 #endif
