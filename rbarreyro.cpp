@@ -13,5 +13,5 @@ void rjEndCredit (void)
     title.bot = 82;
     title.left = 10;
     title.center = 0;
-    ggprint8b(&title, 16, 0x00ff0000, "Author 4: Russell Barreyro");
+    ggprint8b(&title, 16, 0x00ff0000, "Author 2: Russell Barreyro");
 }
