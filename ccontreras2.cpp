@@ -12,5 +12,5 @@ void carolineEndCredit (void)
     title.bot = 34;
     title.left = 10;
     title.center = 0;
-    ggprint8b(&title, 16, 0x00ff0000, "Author 1: Caroline Contreras");
+    ggprint8b(&title, 16, 0x00ff0000, "Author 4: Caroline Contreras");
 }
