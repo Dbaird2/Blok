@@ -13,5 +13,5 @@ void dasonEndCredit (void)
     title.bot = 50;
     title.left = 10;
     title.center = 0;
-    ggprint8b(&title, 16, 0x00ff0000, "Author 2: Dason Baird");
+    ggprint8b(&title, 16, 0x00ff0000, "Author 3: Dason Baird");
 }
