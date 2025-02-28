@@ -934,6 +934,7 @@ void render(void)
         carlosEndCredit();
         carolineEndCredit();
         rjEndCredit();
+        seanEndCredt();
     }
     unsigned int c = 0x00ffff44;
     r.bot = gl.yres - 20;
