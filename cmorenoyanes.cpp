@@ -12,5 +12,5 @@ void carlosEndCredit (void)
     credit.bot = 66;
     credit.left = 10;
     credit.center = 0;
-    ggprint8b(&credit, 16, 0x00ff0000, "Author 3: Carlos Moreno");
+    ggprint8b(&credit, 16, 0x00ff0000, "Author 2: Carlos Moreno");
 }
