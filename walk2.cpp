@@ -24,6 +24,8 @@
 #include "log.h"
 //#include "ppm.h"
 #include "fonts.h"
+#include "functions.h"
+
 
 //defined types
 typedef double Flt;
@@ -336,6 +338,7 @@ Image img[3] = {
 "./images/exp.png",
 "./images/exp44.png" };
 
+int credit = 0;
 
 int main(void)
 {
@@ -562,6 +565,9 @@ int checkKeys(XEvent *e)
 			break;
 		case XK_m:
 			gl.movie ^= 1;
+			break;
+		case XK_c:
+			credit = !credit;
 			break;
 		case XK_w:
 			timers.recordTime(&timers.walkTime);
@@ -923,6 +929,9 @@ void render(void)
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_ALPHA_TEST);
 	}
+    if (credit == 1) {
+        dasonEndCredit();
+    }
 	unsigned int c = 0x00ffff44;
 	r.bot = gl.yres - 20;
 	r.left = 10;
