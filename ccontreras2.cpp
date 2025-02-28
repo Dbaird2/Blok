@@ -1,14 +1,16 @@
 //Caroline Contreras
 //Spring 2025
-//
-// 2.28.25 adding this to github
-// I added this line on Github, lets see if it shows up in terminal
-// pee pee poo poo
-//
-//
-//
-//
-//
-//
-//
 
+#include <iostream>
+#include "functions.h"
+#include "fonts.h"
+using namespace std;
+
+void carolineEndCredit (void)
+{
+    Rect title;
+    title.bot = 34;
+    title.left = 10;
+    title.center = 0;
+    ggprint8b(&title, 16, 0x00ff0000, "Author 1: Caroline Contreras");
+}
