@@ -3,4 +3,5 @@
 
 void dasonEndCredit();
 void carolineEndCredit();
+void rjEndCredit();
 #endif
