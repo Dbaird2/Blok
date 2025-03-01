@@ -2,9 +2,9 @@
 //Date : Spring 2025
 //Blok
 //
-#include<iostream>
-#include"fonts.h"
-#include"function.h"
+#include <iostream>
+#include "fonts.h"
+#include "functions.h"
 using namespace std;
 
 void seanEndCredit (void)
