@@ -8,21 +8,14 @@
 #include <iostream>
 
 void dasonEndCredit();
-
-namespace dasonImageClass {
-    class Image {
+/*class Image {
     public:
         int width, height;
         unsigned char *data;
 
-        ~Image() { delete[] data; }
-
-        Image(const char *fname);
-
-        void printInfo() {
-            std::cout << "Image Width: " << width << ", Height: " << height << std::endl;
-        }
-    };
-}
+        ~Image();                       
+        Image(const char *fname);       
+        void render();
+};*/
 
 #endif
