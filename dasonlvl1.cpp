@@ -11,7 +11,7 @@
 //
 // 1/31/2025 add some text
 //
-#include <iostream>
+/*#include <iostream>
 using namespace std;
 #include <stdio.h>
 #include <random>
@@ -26,14 +26,20 @@ using namespace std;
 #include "fonts.h"
 #include <pthread.h>
 #include "functions.h"
+#include "dbairdheader.h"
 
 // macro
 #define rnd() (float)rand() / (float)RAND_MAX
-#define MAX_PARTICLES 3000
-#define MAX_BOXES 5
+#define MAX_PARTICLES 1000
+#define STATE_1 2
+#define STATE_2 4
+#define STATE_3 2
+#define STATE_4 2
 //some structures
 //
-/*
+
+int GAMECHANGE[3] = {1, 2, 3};
+
 class Image {   
     public: 
         int width, height;
@@ -116,6 +122,7 @@ unsigned char *buildAlphaData(Image *img)
 
 class Box {
     public:
+        int id;
         int width;
         int height;
         float pos[2];
@@ -140,7 +147,7 @@ class Box {
             height = h;
         }
 } box, particle(4,4);
-Box boxes[MAX_BOXES];
+Box boxes[STATE_2];
 Box particles[MAX_PARTICLES];
 int n = 0;
 int b = 0;
@@ -179,6 +186,8 @@ void deleteParticle(int a)
 
 class Global {
     public:
+        int game_state;
+        int credit;
         //        float w;
         float save_w;
         //        float dir;
@@ -215,16 +224,15 @@ void init_opengl(void);
 void* physics(void *arg);
 void render(void);
 void init_box(void);
-void makeBox();
+void definBox();
 
-*/
+
 int main()
 {
-    /*pthread_t p_thread[2];
+    pthread_t p_thread[2];
     init_opengl();
     init_box();
     int value = 0;
-    int thread = 0;
     int done = 0;
     //main game loop
     while (!done) {
@@ -238,13 +246,12 @@ int main()
         pthread_create(&p_thread[0], nullptr, physics, (void *)&value);
         render();
         x11.swapBuffers();
-    pthread_join(p_thread[0], nullptr);
+        pthread_join(p_thread[0], nullptr);
     }
-    cleanup_fonts();*/
-    dasonLevel1Start();
+    cleanup_fonts();
     return 0;
 }
-/*
+
 void init_box()
 {
     box.pos[0] = g.xres / 2;
@@ -254,6 +261,8 @@ void init_box()
 
 Global::Global()
 {
+    credit = 0;
+    game_state = 1;
     xres = 900;
     yres = 500;
     //    w = 20.0f;
@@ -269,13 +278,18 @@ Global::Global()
 }
 
 
-void makeBox() 
+void defineBox() 
 {
-    if (b >= MAX_BOXES)
-        return;
+    if (g.game_state == 1) {
+        if (b >= STATE_1)
+            return;
+    } else if (g.game_state == 2) {
+        if (b >= STATE_2)
+            return;
+    }
     boxes[b].width = 55;
     boxes[b].height = 15;
-    boxes[b].pos[0] = -(b * 55) + g.xres/2;
+    boxes[b].pos[0] = g.xres /2.5;
     boxes[b].pos[1] = 3*b * 15 +80;
     ++b;
 }
@@ -388,17 +402,42 @@ void X11_wrapper::check_mouse(XEvent *e)
         if (e->xbutton.button==1) {
             //Left button was pressed.
             //int y = g.yres - e->xbutton.y;
-            int y = g.yres - e->xbutton.y;
             //particle.pos[0] = e->xbutton.x;
             //particle.pos[1] = y;
-            for (int i = 0; i < 10; i++) {
-                spd = 0;
-                makeParticle(e->xbutton.x, y);
+            int y = g.yres - e->xbutton.y;
+            int x = e->xbutton.x;
+            if (g.game_state == 1) {
+                for (int j = 0; j < STATE_1; j++) {
+                    Box *c = &boxes[j];
+                    // Colision detection
+                    float cx = c->pos[0];
+                    float cy = c->pos[1];
+                    float ch = c->height;
+                    float cw = c->width;
+                    if (y <= (cy + ch) &&
+                            (x >= (cx - cw)) &&
+                            (x <= (cx + cw)) &&
+                            (y >= (cy - ch))) {
+                        if (j == 1) {
+                            g.game_state = 2;
+                        } else {
+                            g.credit = !g.credit;
+                        }
+                    }
+                }
+
+            } else if (g.game_state == 2) {
+
             }
             return;
         }
         if (e->xbutton.button==3) {
             //Right button was pressed.
+            int y = g.yres - e->xbutton.y;
+            for (int i = 0; i < 10; i++) {
+                spd = 0;
+                makeParticle(e->xbutton.x, y);
+            }
             return;
         }
     }
@@ -414,7 +453,7 @@ void X11_wrapper::check_mouse(XEvent *e)
             savey = e->xbutton.y;
 
 
-            makeParticle(savex, g.yres-savey);
+            //makeParticle(savex, g.yres-savey);
             //Code placed here will execute whenever the mouse moves.
 
 
@@ -489,45 +528,49 @@ void* physics(void *arg)
         p->prev[0] = p->pos[0];
         p->prev[1] = p->pos[1];
         // Move the particle;
-        p->force[1] += GRAVITY;
-          p->vel[1] += p->force[1];
-          p->pos[1] += p->vel[1];
-
-          p->vel[0] += p->force[0];
-          p->pos[0] += p->vel[0];
         vy += GRAVITY;
         py += vy;
         vx += p->force[0];
         px += vx;
         p->force[1] = 0.0f;
         // Get Box dimensions for detections
-        for (int j = 0; j < MAX_BOXES; j++) {
-            Box *c = &boxes[j];
-            //p->force[0] = 0.0f;
-            // Colision detection
-            float cx = c->pos[0];
-            float cy = c->pos[1];
-            float ch = c->height;
-            float cw = c->width;
-            if (p->pos[1] <= (c->pos[1] + c->height) &&
-              (p->pos[0] >= (c->pos[0] - c->width)) &&
-              (p->pos[0] <= (c->pos[0] + c->width)) &&
-              (p->pos[1] >= (c->pos[1] - c->height))) {
+        if (g.game_state == 1) {
+            for (int j = 0; j < STATE_1; j++) {
+                Box *c = &boxes[j];
+                // Colision detection
+                float cx = c->pos[0];
+                float cy = c->pos[1];
+                float ch = c->height;
+                float cw = c->width;
+                if (py <= (cy + ch) &&
+                        (px >= (cx - cw)) &&
+                        (px <= (cx + cw)) &&
+                        (py >= (cy - ch))) {
 
-            //p->pos[0] = p->prev[0];
-            p->pos[1] = p->prev[1];
-            p->vel[1] = -p->vel[1] * 0.5;
-            //printf("p->vel[1]: %f\n", p->vel[1]);
-            if (py <= (cy + ch) &&
-                    (px >= (cx - cw)) &&
-                    (px <= (cx + cw)) &&
-                    (py >= (cy - ch))) {
+                    py = p->prev[1];
+                    vy = -vy * 0.5;
+                    p->force[0] += 0.00001;
 
-                //p->pos[0] = p->prev[0];
-                py = p->prev[1];
-                vy = -vy * 0.5;
-                p->force[0] += 0.00001;
+                }
+            }
+        } else if (g.game_state == 2) {
+            for (int j = 0; j < STATE_2; j++) {
+                Box *c = &boxes[j];
+                // Colision detection
+                float cx = c->pos[0];
+                float cy = c->pos[1];
+                float ch = c->height;
+                float cw = c->width;
+                if (py <= (cy + ch) &&
+                        (px >= (cx - cw)) &&
+                        (px <= (cx + cw)) &&
+                        (py >= (cy - ch))) {
 
+                    py = p->prev[1];
+                    vy = -vy * 0.5;
+                    p->force[0] += 0.00001;
+
+                }
             }
         }
         p->pos[0] = px;
@@ -541,7 +584,7 @@ void* physics(void *arg)
         return 0;
 }
 
-void makeBackground() 
+void makeStartScreen() 
 {
 
     glBindTexture(GL_TEXTURE_2D, backgroundTexture);
@@ -560,46 +603,73 @@ void drawBoxes()
     //draw the boxes
     Rect rect;
     int box_text = 1;
-    makeBox(); 
-    for (int i = 0; i <= MAX_BOXES-1; i++) {
-        Box *b = &boxes[i];
-        glPushMatrix();
-        glColor3fv(boxes->color);
-        glTranslatef(b->pos[0], b->pos[1], 0.0f);
-        glBegin(GL_QUADS);
-        glVertex2f(-b->width, -b->height);
-        glVertex2f(-b->width,  b->height);
-        glVertex2f( b->width, b->height);
-        glVertex2f( b->width, -b->height);
-        glEnd();
-        glPopMatrix();
-        rect.bot = b->pos[1]-7;
-        rect.center = 0;
-        switch (box_text)
-        {
-            case 5:
-                rect.left = b->pos[0] - 33;
-                ggprint8b(&rect, 0, 0x00D30000, "Requirements");
-                break;
-            case 4:
-                rect.left = b->pos[0] -20;
-                ggprint8b(&rect, 0, 0x00CC8899, "Design");
-                break;
-            case 3:
-                rect.left = b->pos[0] -40;
-                ggprint8b(&rect, 0, 0x007db043, "Implementation");
-                break;
-            case 2:
-                rect.left = b->pos[0] -30;
-                ggprint8b(&rect, 0, 0x00fff200, "Verification");
-                break;
-            case 1:
-                rect.left = b->pos[0] -30;
-                ggprint8b(&rect, 0, 0x00037c6e, "Maintenance");
-                break;
+    if (g.game_state == 1) {
+        defineBox(); 
+        for (int i = 0; i <= STATE_1-1; i++) {
+            Box *b = &boxes[i];
+            glPushMatrix();
+            glColor3fv(boxes->color);
+            glTranslatef(b->pos[0], b->pos[1], 0.0f);
+            glBegin(GL_QUADS);
+            glVertex2f(-b->width, -b->height);
+            glVertex2f(-b->width,  b->height);
+            glVertex2f( b->width, b->height);
+            glVertex2f( b->width, -b->height);
+            glEnd();
+            glPopMatrix();
+            rect.bot = b->pos[1]-7;
+            rect.center = 0;
+            switch (box_text)
+            {
+                case 2:
+                    rect.left = b->pos[0] - 17;
+                    ggprint8b(&rect, 0, 0x00D30000, "Start");
+                    break;
+                case 1:
+                    rect.left = b->pos[0] -20;
+                    ggprint8b(&rect, 0, 0x00CC8899, "Credit");
+                    break;
+            }
+            ++box_text;
         }
-        ++box_text;
-    }
+    } else if (g.game_state == 2) {
+        defineBox(); 
+        for (int i = 0; i <= STATE_2-1; i++) {
+            Box *b = &boxes[i];
+            glPushMatrix();
+            glColor3fv(boxes->color);
+            glTranslatef(b->pos[0], b->pos[1], 0.0f);
+            glBegin(GL_QUADS);
+            glVertex2f(-b->width, -b->height);
+            glVertex2f(-b->width,  b->height);
+            glVertex2f( b->width, b->height);
+            glVertex2f( b->width, -b->height);
+            glEnd();
+            glPopMatrix();
+            rect.bot = b->pos[1]-7;
+            rect.center = 0;
+            switch (box_text)
+            {
+                case 4:
+                    rect.left = b->pos[0] -20;
+                    ggprint8b(&rect, 0, 0x00CC8899, "Difficulty");
+                    break;
+                case 3:
+                    rect.left = b->pos[0] -20;
+                    ggprint8b(&rect, 0, 0x000000ff, "Easy");
+                    break;
+                case 2:
+                    rect.left = b->pos[0] -23;
+                    ggprint8b(&rect, 0, 0x00ffffff, "Normal");
+                    break;
+                case 1:
+                    rect.left = b->pos[0] -20;
+                    ggprint8b(&rect, 0, 0x00FF0000, "Hard");
+                    break;
+            }
+            ++box_text;
+        }
+    } 
 }
 
 void render()
@@ -607,10 +677,10 @@ void render()
 
     //clear the window
     glClear(GL_COLOR_BUFFER_BIT);
-    makeBackground();
+    makeStartScreen();
 
     // DRAW ALL BOXES
-    drawBoxes();
+        drawBoxes();
 
     // DRAW ALL PARTICLES
     for (int i = 0; i < n; i++ ) {
@@ -638,12 +708,18 @@ void render()
     ggprint8b(&r, 16, 0x00ffff00, "The Waterfall Model");
     //ggprint8b(&r, 16, 0x00ffff00, "f speed up");
     //ggprint8b(&r, 16, 0x00ffff00, "s slow down");
-
+    if (g.credit == 1) {
+        dasonEndCredit();
+        carlosEndCredit();
+        carolineEndCredit();
+        rjEndCredit();
+        seanEndCredit();
+    }
 
 }
 
 
 
 
-*/
 
+*/

@@ -6,4 +6,7 @@ void carlosEndCredit();
 void carolineEndCredit();
 void rjEndCredit();
 void seanEndCredit();
+
+int dasonLevel1Start();
+
 #endif
