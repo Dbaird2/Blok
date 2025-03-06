@@ -1,8 +1,6 @@
 
-all: blok lab6 #dlvl1
+all: blok #dlvl1
 
-lab6: waterlab6.cpp
-	g++ waterlab6.cpp -Wall -lX11 -lGL libggfonts.a -o lab6
 
 blok: blok.cpp log.cpp dbaird.cpp cmorenoyanes.cpp ccontreras2.cpp stoledo.cpp rbarreyro.cpp
 	g++ blok.cpp dbaird.cpp cmorenoyanes.cpp ccontreras2.cpp stoledo.cpp rbarreyro.cpp log.cpp libggfonts.a -Wall -lX11 -lGL -pthread -oblok
