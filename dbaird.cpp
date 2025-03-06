@@ -334,7 +334,7 @@ void X11_wrapper::set_title()
 {
     //Set the window title bar.
     XMapWindow(dpy, win);
-    XStoreName(dpy, win, "3350 Lab-6 - Esc to exit");
+    XStoreName(dpy, win, "World's Easiest Game");
 }
 
 bool X11_wrapper::getXPending()
@@ -699,13 +699,6 @@ void render()
         glPopMatrix();
     }
 
-    Rect r;
-    // 
-    r.bot = g.yres - 20;
-    r.left = 10;
-    r.center = 0;
-    ggprint8b(&r, 16, 0x00ff0000, "Dason 3350 lab6");
-    ggprint8b(&r, 16, 0x00ffff00, "The Waterfall Model");
     //ggprint8b(&r, 16, 0x00ffff00, "f speed up");
     //ggprint8b(&r, 16, 0x00ffff00, "s slow down");
     if (g.credit == 1) {
@@ -717,9 +710,3 @@ void render()
     }
 
 }
-
-
-
-
-
-
