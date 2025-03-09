@@ -1,0 +1,67 @@
+#ifndef GLOBAL_H
+#define GLOBAL_H
+
+
+class Box {
+    public:
+        int id;
+        int width;
+        int height;
+        float pos[2];
+        float prev[2];
+        float vel[2];
+        float force[2];
+        float color[3];
+        char text[100];
+        Box () 
+        {
+            width = 100;
+            height = 50;
+            vel[0] = vel[1] = 0.0f;
+            color[0] = 0.5f;
+            color[1] = 0.0f;
+            color[2] = 0.5f;
+        }
+        Box(int w, int h) 
+        {
+            Box();
+            width = w;
+            height = h;
+        }
+};
+extern Box boxes[5];
+
+
+class Global {
+    public:
+        int game_state;
+        int credit;
+        //        float w;
+        float save_w;
+        //        float dir;
+        float ydir;
+        //        float pos[2];
+        float ypos[2];
+        int red, blue, green;
+        int xres, yres;
+        float gravity;
+        Global() {
+            gravity = -0.5f;
+            credit = 0;
+            game_state = 1;
+            xres = 900;
+            yres = 500;
+            //    w = 20.0f;
+            //    save_w = w;
+            //    dir = 30.0f;
+            ydir = 30.0f;
+            //    pos[0] = 0.0f+w;
+            //    pos[1] = g.yres/2.0f;
+            red = 100;
+            green = 120;
+            blue = 220;
+        }
+} ;
+
+extern Global g;
+#endif // GLOBAL_h

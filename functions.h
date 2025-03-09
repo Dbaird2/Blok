@@ -8,5 +8,6 @@ void rjEndCredit();
 void seanEndCredit();
 
 int dasonLevel1Start();
+//void makeStartScreen(int xres, int yres, GLuint backgroundTexture);
 
 #endif

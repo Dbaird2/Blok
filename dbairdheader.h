@@ -6,8 +6,13 @@
 #include <cstring>
 #include <unistd.h> 
 #include <iostream>
+#include "Global.h"
 
+void makeStartScreen(GLuint backgroundTexture);
 void dasonEndCredit();
+void drawBoxes(Box* boxes);
+void dasonPhysics(Box* particles, Box* boxes, int n);
+void dasonMenuButtonPress(Box* boxes, int x, int y);
 /*class Image {
     public:
         int width, height;
