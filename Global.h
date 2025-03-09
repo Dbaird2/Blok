@@ -1,6 +1,7 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
+#include "Image.h"
 
 class Box {
     public:
@@ -34,6 +35,10 @@ extern Box boxes[5];
 
 class Global {
     public:
+        // Background Start Screen
+        GLuint backgroundTexture;
+        Image *backgroundImage;
+
         int game_state;
         int credit;
         //        float w;

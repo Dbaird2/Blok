@@ -187,6 +187,35 @@ void dasonPhysics(Box* particles, Box* boxes, int n)
     }
 
 }
+void makeStartScreen() 
+{
+    float imageAspect = static_cast<float>(g.backgroundImage->width) / g.backgroundImage->height;
+    float screenAspect = static_cast<float>(g.xres) / g.yres;
+    float quadWidth = g.xres;
+    float quadHeight = g.yres;
+
+    // Adjust width/height based on aspect ratio
+    if (screenAspect > imageAspect) {
+        quadWidth = g.yres * imageAspect;
+    } else {
+        quadHeight = g.xres / imageAspect;
+    }
+
+    // Center the image in the viewport
+    float xOffset = (g.xres - quadWidth) / 2.0;
+    float yOffset = (g.yres - quadHeight) / 2.0;
+
+    glBindTexture(GL_TEXTURE_2D, g.backgroundTexture);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset-30);
+    glTexCoord2f(0.0, 0.0); glVertex2f(xOffset, yOffset + quadHeight+30); 
+    glTexCoord2f(1.0, 0.0); glVertex2f(xOffset + quadWidth, yOffset + quadHeight+30); 
+    glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset-30);
+
+    glEnd();
+}
+/*
 void makeStartScreen(GLuint backgroundTexture) 
 {
 
@@ -200,6 +229,7 @@ void makeStartScreen(GLuint backgroundTexture)
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
 }
+*/
 
 void drawBoxes(Box* boxes) 
 {

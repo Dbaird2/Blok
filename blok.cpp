@@ -40,8 +40,10 @@ Global g;
 Image img[1] = {
     "./something.png" 
 };
+/*
 GLuint backgroundTexture;
 Image *backgroundImage = NULL;
+*/
 
 /*
 class Box {
@@ -311,29 +313,30 @@ void init_opengl(void)
     //OpenGL initialization
     int w,h;
     glViewport(0, 0, g.xres, g.yres);
-    glShadeModel(GL_SMOOTH);                                                                     
-    glDisable(GL_LIGHTING);    
-    glBindTexture(GL_TEXTURE_2D, 0);  
-    glEnable(GL_TEXTURE_2D);
-    backgroundImage = &img[0];
-    glGenTextures(1, &backgroundTexture);
-    w = backgroundImage->width; 
-    h = backgroundImage->height; 
-    glBindTexture(GL_TEXTURE_2D, backgroundTexture);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
-            GL_RGB, GL_UNSIGNED_BYTE, backgroundImage->data);
     //Initialize matrices
     glMatrixMode(GL_PROJECTION); glLoadIdentity();
     glMatrixMode(GL_MODELVIEW); glLoadIdentity();
-    //Set 2D mode (no perspective)
+    //This sets 2D mode (no perspective)
     glOrtho(0, g.xres, 0, g.yres, -1, 1);
-    //Set the screen background color
-    glClearColor(0.1, 0.1, 0.1, 1.0);
-    // Enables fonts
+    //Clear the screen
+    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT);
+    //Do this to allow texture maps
+
+    // allow fonts
     glEnable(GL_TEXTURE_2D);
     initialize_fonts();
+
+    g.backgroundImage = &img[0];
+    glGenTextures(1, &g.backgroundTexture);
+    w = g.backgroundImage->width; 
+    h = g.backgroundImage->height; 
+    glBindTexture(GL_TEXTURE_2D, g.backgroundTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
+            GL_RGB, GL_UNSIGNED_BYTE, g.backgroundImage->data);
+
 }
 
 
@@ -408,7 +411,7 @@ void render()
 
     //clear the window
     glClear(GL_COLOR_BUFFER_BIT);
-    makeStartScreen(backgroundTexture);
+    makeStartScreen();
 
     // DRAW ALL BOXES
     drawBoxes(boxes);

@@ -8,7 +8,7 @@
 #include <iostream>
 #include "Global.h"
 
-void makeStartScreen(GLuint backgroundTexture);
+void makeStartScreen();
 void dasonEndCredit();
 void drawBoxes(Box* boxes);
 void dasonPhysics(Box* particles, Box* boxes, int n);
