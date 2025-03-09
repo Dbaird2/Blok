@@ -96,19 +96,23 @@ void dasonMenuButtonPress(int x, int y)
                 if (j == 2) {
                     // HARD
                     g.game_state = 3;
+                    glDeleteTextures(1, &ren.backgroundTexture);
 
                 } else if (j == 1) {
                     // NORMAL
                     g.game_state = 3;
-                    cout << " CLICKED " << endl;
+                    glDeleteTextures(1, &ren.backgroundTexture);
                 } else if (j == 0){
                     // EASY
                     g.game_state = 3;
+                    glDeleteTextures(1, &ren.backgroundTexture);
 
                 }
             }
         }
 
+    } else if (g.game_state == 3) {
+        glDeleteTextures(1, &ren.backgroundTexture);
     }
 }
 
