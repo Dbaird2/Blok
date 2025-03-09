@@ -37,50 +37,16 @@ using namespace std;
 //some structures
 //
 Global g;
+ImageRenderer ren;
 Box boxes[MAX_BOXES];
 Box particles[MAX_PARTICLES];
 Image img[1] = {
     "./background.png" 
 };
-/*
-GLuint backgroundTexture;
-Image *backgroundImage = NULL;
-*/
-
-/*
-class Box {
-    public:
-        int width;
-        int height;
-        float pos[2];
-        float prev[2];
-        float vel[2];
-        float force[2];
-        float color[3];
-        char text[100];
-        Box () 
-        {
-            width = 100;
-            height = 50;
-            vel[0] = vel[1] = 0.0f;
-            color[0] = 0.5f;
-            color[1] = 0.0f;
-            color[2] = 0.5f;
-        }
-        Box(int w, int h) 
-        {
-            Box();
-            width = w;
-            height = h;
-        }
-} box, particle(4,4);
-*/
 //Box box;
 int n = 0;
 //int b = 0;
 float spd = 0;
-
-
 
 void makeParticle(int x, int y) 
 {
@@ -99,18 +65,7 @@ void makeParticle(int x, int y)
     particles[n].vel[1] = random_num * 0.1f - 1.0;
     ++n;
 }
-/*
-void deleteParticle(int a) 
-{
-    if (n == 0)
-        return;
-    // optimized 2 lines below
-    // particles[a] = particles[n-1];
-    // --n;
-    particles[a] = particles[--n];
 
-}
-*/
 class X11_wrapper {
     private:
         Display *dpy;
@@ -164,15 +119,18 @@ class X11_wrapper {
         void swapBuffers() {
             glXSwapBuffers(dpy, win);
         }
+        void setupScreenRes(const int w, const int h) {
+            g.xres = w;
+            g.yres = h;
+        }
         void reshape_window(int width, int height) {
             //Window has been resized.
-            g.xres = width;
-            g.yres = height;
-            //
+            setupScreenRes(width, height);
             glViewport(0, 0, (GLint)width, (GLint)height);
             glMatrixMode(GL_PROJECTION); glLoadIdentity();
             glMatrixMode(GL_MODELVIEW); glLoadIdentity();
             glOrtho(0, g.xres, 0, g.yres, -1, 1);
+            set_title();
         }
         void check_resize(XEvent *e) {
             //The ConfigureNotify is sent by the
@@ -187,17 +145,10 @@ class X11_wrapper {
         }
 } x11;
 
-/*void init_box()
-{
-    box.pos[0] = g.xres/2;
-    box.pos[1] = g.yres/2;
-}*/
 //Function prototypes
 void init_opengl(void);
 void* physics(void *arg);
 void render(void);
-//void init_box(void);
-//void makeBox();
 void check_mouse(XEvent *e);
 int check_keys(XEvent *e);
 
@@ -205,7 +156,6 @@ int main()
 {
     pthread_t p_thread[2];
     init_opengl();
-    //init_box();
     int value = 0;
     int done = 0;
     //main game loop
@@ -247,16 +197,13 @@ void check_mouse(XEvent *e)
     if (e->type == ButtonPress) {
         if (e->xbutton.button==1) {
             //Left button was pressed.
-            //int y = g.yres - e->xbutton.y;
             int y = g.yres - e->xbutton.y;
             int x = e->xbutton.x;
-            //particle.pos[0] = e->xbutton.x;
-            //particle.pos[1] = y;
             dasonMenuButtonPress(x, y);
-            for (int i = 0; i < 10; i++) {
+            /*for (int i = 0; i < 10; i++) {
                 spd = 0;
                 makeParticle(e->xbutton.x, y);
-            }
+            }*/
             return;
         }
         if (e->xbutton.button==3) {
@@ -311,7 +258,6 @@ int check_keys(XEvent *e)
 void init_opengl(void)
 {
     //OpenGL initialization
-    int w,h;
     glViewport(0, 0, g.xres, g.yres);
     //Initialize matrices
     glMatrixMode(GL_PROJECTION); glLoadIdentity();
@@ -327,16 +273,16 @@ void init_opengl(void)
     glEnable(GL_TEXTURE_2D);
     initialize_fonts();
 
-    g.backgroundImage = &img[0];
-    glGenTextures(1, &g.backgroundTexture);
+    dasonRenderBackground();
+    /*rend.backgroundImage = &img[0];
+    glGenTextures(1, &rend.backgroundTexture);
     w = g.backgroundImage->width; 
     h = g.backgroundImage->height; 
     glBindTexture(GL_TEXTURE_2D, g.backgroundTexture);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
             GL_RGB, GL_UNSIGNED_BYTE, g.backgroundImage->data);
-
+*/
 }
 
 

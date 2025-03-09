@@ -74,6 +74,7 @@ int width, height;
 		return newdata;
 	}
 };
+extern Image img[];
 
 #endif // IMAGE_H
 

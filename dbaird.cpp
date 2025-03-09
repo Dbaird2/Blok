@@ -19,6 +19,7 @@ using namespace std;
 #include "functions.h"
 #include "dbairdheader.h"
 #include "Global.h"
+#include "Image.h"
 
 using namespace std;
 void dasonEndCredit (void)
@@ -44,6 +45,18 @@ void deleteParticle(int a, int n)
         return;
     particles[a] = particles[--n];
 
+}
+
+void dasonRenderBackground() 
+{
+    ren.backgroundImage = &img[0];
+    glGenTextures(1, &ren.backgroundTexture);
+    int w = ren.backgroundImage->width;
+    int h = ren.backgroundImage->height;
+    glBindTexture(GL_TEXTURE_2D, ren.backgroundTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
+            GL_RGB, GL_UNSIGNED_BYTE, ren.backgroundImage->data);
 }
 
 void dasonMenuButtonPress(int x, int y) 
@@ -98,35 +111,6 @@ void dasonMenuButtonPress(int x, int y)
 
     }
 }
-
-// Kind of keep
-/*
-int dasonLevel1Start()
-{
-    pthread_t p_thread[2];
-    init_opengl();
-    init_box();
-    int value = 0;
-    int done = 0;
-    //main game loop
-    while (!done) {
-        //look for external events such as keyboard, mouse.
-        while (x11.getXPending()) {
-            XEvent e = x11.getXNextEvent();
-            x11.check_resize(&e);
-            x11.check_mouse(&e);
-            done = x11.check_keys(&e);
-        }
-        pthread_create(&p_thread[0], nullptr, physics, (void *)&value);
-        render();
-        x11.swapBuffers();
-        pthread_join(p_thread[0], nullptr);
-    }
-    cleanup_fonts();
-    return 0;
-}
-*/
-
 
 int b = 0;
 void defineBox() 
@@ -211,7 +195,9 @@ void dasonPhysics(int n)
 }
 void makeStartScreen() 
 {
-    float imageAspect = static_cast<float>(g.backgroundImage->width) / g.backgroundImage->height;
+    float imageAspect = 
+        static_cast<float>(ren.backgroundImage->width) 
+        / ren.backgroundImage->height;
     float screenAspect = static_cast<float>(g.xres) / g.yres;
     float quadWidth = g.xres;
     float quadHeight = g.yres;
@@ -227,7 +213,7 @@ void makeStartScreen()
     float xOffset = (g.xres - quadWidth) / 2.0;
     float yOffset = (g.yres - quadHeight) / 2.0;
 
-    glBindTexture(GL_TEXTURE_2D, g.backgroundTexture);
+    glBindTexture(GL_TEXTURE_2D, ren.backgroundTexture);
     glColor3f(1.0f, 1.0f, 1.0f);
     glBegin(GL_QUADS);
     glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset-30);

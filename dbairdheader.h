@@ -13,6 +13,7 @@ void dasonEndCredit();
 void drawBoxes();
 void dasonPhysics(int n);
 void dasonMenuButtonPress(int x, int y);
+void dasonRenderBackground();
 /*class Image {
     public:
         int width, height;

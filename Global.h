@@ -33,11 +33,17 @@ class Box {
 extern Box boxes[];
 extern Box particles[];
 
-class Global {
+class ImageRenderer {
     public:
         // Background Start Screen
         GLuint backgroundTexture;
         Image *backgroundImage;
+};
+extern ImageRenderer ren;
+
+
+class Global {
+    public:
 
         int game_state;
         int credit;
@@ -62,6 +68,8 @@ class Global {
             red = 100;
             green = 120;
             blue = 220;
+
+            ren.backgroundImage = nullptr;
         }
 } ;
 
