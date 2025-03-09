@@ -32,13 +32,15 @@ using namespace std;
 
 // macro
 #define rnd() (float)rand() / (float)RAND_MAX
-#define MAX_PARTICLES 3000
+#define MAX_PARTICLES 1000
 #define MAX_BOXES 5
 //some structures
 //
 Global g;
+Box boxes[MAX_BOXES];
+Box particles[MAX_PARTICLES];
 Image img[1] = {
-    "./something.png" 
+    "./background.png" 
 };
 /*
 GLuint backgroundTexture;
@@ -74,8 +76,6 @@ class Box {
 } box, particle(4,4);
 */
 //Box box;
-Box boxes[MAX_BOXES];
-Box particles[MAX_PARTICLES];
 int n = 0;
 //int b = 0;
 float spd = 0;
@@ -252,7 +252,7 @@ void check_mouse(XEvent *e)
             int x = e->xbutton.x;
             //particle.pos[0] = e->xbutton.x;
             //particle.pos[1] = y;
-            dasonMenuButtonPress(boxes, x, y);
+            dasonMenuButtonPress(x, y);
             for (int i = 0; i < 10; i++) {
                 spd = 0;
                 makeParticle(e->xbutton.x, y);
@@ -342,7 +342,7 @@ void init_opengl(void)
 
 void* physics(void *arg)
 {
-    dasonPhysics(particles, boxes, n);
+    dasonPhysics(n);
     /*for (int i = 0; i < n; i++) {
         Box *p = &particles[i];
         float px = p->pos[0];
@@ -414,7 +414,7 @@ void render()
     makeStartScreen();
 
     // DRAW ALL BOXES
-    drawBoxes(boxes);
+    drawBoxes();
 
     // DRAW ALL PARTICLES
     for (int i = 0; i < n; i++ ) {

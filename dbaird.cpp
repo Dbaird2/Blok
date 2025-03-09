@@ -31,7 +31,6 @@ void dasonEndCredit (void)
 }
 // macro
 #define rnd() (float)rand() / (float)RAND_MAX
-#define MAX_PARTICLES 1000
 #define STATE_1 2
 #define STATE_2 4
 #define STATE_3 2
@@ -39,9 +38,7 @@ void dasonEndCredit (void)
 //some structures
 //
 
-//int GAMECHANGE[3] = {1, 2, 3};
-
-void deleteParticle(int a, int n, Box* particles) 
+void deleteParticle(int a, int n) 
 {
     if (n == 0)
         return;
@@ -49,7 +46,7 @@ void deleteParticle(int a, int n, Box* particles)
 
 }
 
-void dasonMenuButtonPress(Box* boxes, int x, int y) 
+void dasonMenuButtonPress(int x, int y) 
 {
     if (g.game_state == 1) {
         for (int j = 0; j < STATE_1; j++) {
@@ -72,6 +69,32 @@ void dasonMenuButtonPress(Box* boxes, int x, int y)
         }
 
     } else if (g.game_state == 2) {
+        for (int j = 0; j < STATE_2 -1; j++) {
+            Box *c = &boxes[j];
+            // Colision detection
+            float cx = c->pos[0];
+            float cy = c->pos[1];
+            float ch = c->height;
+            float cw = c->width;
+            if (y <= (cy + ch) &&
+                    (x >= (cx - cw)) &&
+                    (x <= (cx + cw)) &&
+                    (y >= (cy - ch))) {
+                if (j == 2) {
+                    // HARD
+                    g.game_state = 3;
+
+                } else if (j == 1) {
+                    // NORMAL
+                    g.game_state = 3;
+                    cout << " CLICKED " << endl;
+                } else if (j == 0){
+                    // EASY
+                    g.game_state = 3;
+
+                }
+            }
+        }
 
     }
 }
@@ -104,10 +127,9 @@ int dasonLevel1Start()
 }
 */
 
-// Keep
 
 int b = 0;
-void defineBox(Box* boxes) 
+void defineBox() 
 {
     if (g.game_state == 1) {
         if (b >= STATE_1)
@@ -122,7 +144,7 @@ void defineBox(Box* boxes)
     boxes[b].pos[1] = 3*b * 15 +80;
     ++b;
 }
-void dasonPhysics(Box* particles, Box* boxes, int n)
+void dasonPhysics(int n)
 {
     for (int i = 0; i < n; i++) {
         Box *p = &particles[i];
@@ -183,7 +205,7 @@ void dasonPhysics(Box* particles, Box* boxes, int n)
         p->vel[0] = vx;
         p->vel[1] = vy;
         if (p->pos[1] < -4.0f) 
-            deleteParticle(i, n, particles);
+            deleteParticle(i, n);
     }
 
 }
@@ -215,29 +237,14 @@ void makeStartScreen()
 
     glEnd();
 }
-/*
-void makeStartScreen(GLuint backgroundTexture) 
-{
 
-    glBindTexture(GL_TEXTURE_2D, backgroundTexture);
-    glColor3f(0.2f, 0.2f, 0.6f);
-    glBegin(GL_QUADS);
-    glTexCoord2f(0.0f, 1.0f);  glVertex2i(0,    0);
-    glTexCoord2f(0.0f, 0.25f); glVertex2i(0,    g.yres);
-    glTexCoord2f(1.0f, 0.25f); glVertex2i(g.xres, g.yres);
-    glTexCoord2f(1.0f, 1.0f);  glVertex2i(g.xres, 0);
-    glEnd();
-    glBindTexture(GL_TEXTURE_2D, 0);
-}
-*/
-
-void drawBoxes(Box* boxes) 
+void drawBoxes() 
 {
     //draw the boxes
     Rect rect;
     int box_text = 1;
     if (g.game_state == 1) {
-        defineBox(boxes); 
+        defineBox(); 
         for (int i = 0; i <= STATE_1-1; i++) {
             Box *b = &boxes[i];
             glPushMatrix();
@@ -266,7 +273,7 @@ void drawBoxes(Box* boxes)
             ++box_text;
         }
     } else if (g.game_state == 2) {
-        defineBox(boxes); 
+        defineBox(); 
         for (int i = 0; i <= STATE_2-1; i++) {
             Box *b = &boxes[i];
             glPushMatrix();

@@ -10,9 +10,9 @@
 
 void makeStartScreen();
 void dasonEndCredit();
-void drawBoxes(Box* boxes);
-void dasonPhysics(Box* particles, Box* boxes, int n);
-void dasonMenuButtonPress(Box* boxes, int x, int y);
+void drawBoxes();
+void dasonPhysics(int n);
+void dasonMenuButtonPress(int x, int y);
 /*class Image {
     public:
         int width, height;

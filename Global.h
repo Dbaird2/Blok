@@ -30,8 +30,8 @@ class Box {
             height = h;
         }
 };
-extern Box boxes[5];
-
+extern Box boxes[];
+extern Box particles[];
 
 class Global {
     public:
@@ -41,11 +41,8 @@ class Global {
 
         int game_state;
         int credit;
-        //        float w;
         float save_w;
-        //        float dir;
         float ydir;
-        //        float pos[2];
         float ypos[2];
         int red, blue, green;
         int xres, yres;
