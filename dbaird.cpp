@@ -59,8 +59,8 @@ void dasonMenuButtonPress(int x, int y)
 {
     /* Start/Credits button Collision Detection */
     if (g.game_state == 1) {
-        for (int j = 0; j < STATE_1; j++) {
-            Box *c = &boxes[j];
+        for (int j = 0; j < g.menu_box_amt[g.game_state-1]; j++) {
+            MenuBox *c = &boxes[j];
             // Colision detection
             float cx = c->pos[0];
             float cy = c->pos[1];
@@ -79,8 +79,8 @@ void dasonMenuButtonPress(int x, int y)
         }
     /* Difficulty button Collision Detection */
     } else if (g.game_state == 2) {
-        for (int j = 0; j < STATE_2; j++) {
-            Box *c = &boxes[j];
+        for (int j = 0; j < g.menu_box_amt[g.game_state-1]; j++) {
+            MenuBox *c = &boxes[j];
             float cx = c->pos[0];
             float cy = c->pos[1];
             float ch = c->height;
@@ -122,10 +122,10 @@ int b = 0;
 void defineBox() 
 {
     if (g.game_state == 1) {
-        if (b >= STATE_1)
+        if (b >= g.menu_box_amt[g.game_state-1])
             return;
     } else if (g.game_state == 2) {
-        if (b >= STATE_2)
+        if (b >= g.menu_box_amt[g.game_state-1])
             return;
     }
     boxes[b].width = 55;
@@ -138,7 +138,7 @@ void defineBox()
 void dasonPhysics(int n)
 {
     for (int i = 0; i < n; i++) {
-        Box *p = &particles[i];
+        MenuBox *p = &particles[i];
         float px = p->pos[0];
         float py = p->pos[1];
         float vx = p->vel[0];
@@ -153,8 +153,8 @@ void dasonPhysics(int n)
         p->force[1] = 0.0f;
         // Get Box dimensions for detections
         if (g.game_state == 1) {
-            for (int j = 0; j < STATE_1; j++) {
-                Box *c = &boxes[j];
+            for (int j = 0; j < g.menu_box_amt[g.game_state-1]; j++) {
+                MenuBox *c = &boxes[j];
                 // Colision detection
                 float cx = c->pos[0];
                 float cy = c->pos[1];
@@ -172,8 +172,8 @@ void dasonPhysics(int n)
                 }
             }
         } else if (g.game_state == 2) {
-            for (int j = 0; j < STATE_2; j++) {
-                Box *c = &boxes[j];
+            for (int j = 0; j < g.menu_box_amt[g.game_state-1]; j++) {
+                MenuBox *c = &boxes[j];
                 // Colision detection
                 float cx = c->pos[0];
                 float cy = c->pos[1];
@@ -241,14 +241,15 @@ void drawBoxes()
     int box_text = 1;
     if (g.game_state == 1) {
         defineBox(); 
-        for (int i = 0; i <= STATE_1-1; i++) {
-            Box *b = &boxes[i];
+        for (int i = 0; i < g.menu_box_amt[g.game_state-1]; i++) {
+            MenuBox *b = &boxes[i];
 
             float bounceOffset = sin(animationTime) * bounceHeight;
             if (i == 0)
                 b->pos[1] += bounceOffset;
-            if (i == 1)
+            if (i == 1) {
                 b->pos[1] += bounceOffset+sin(animationTime);
+            }
 
 
             glPushMatrix();
@@ -270,7 +271,7 @@ void drawBoxes()
                     ggprint8b(&rect, 0, 0x00D30000, "Start");
                     break;
                 case 1:
-                    rect.left = b->pos[0] -20;
+                    rect.left = b->pos[0] - 20;
                     ggprint8b(&rect, 0, 0x00CC8899, "Credit");
                     break;
             }
@@ -279,16 +280,22 @@ void drawBoxes()
                 animationTime += 0.3f;
     } else if (g.game_state == 2) {
         defineBox(); 
-        for (int i = 0; i < STATE_2; i++) {
-            Box *b = &boxes[i];
+        for (int i = 0; i < g.menu_box_amt[g.game_state-1]; i++) {
+            MenuBox *b = &boxes[i];
             
             float bounceOffset = sin(animationTime) * bounceHeight;
-            if (i == 0)
+            if (i == 0) {
+                bounceHeight = 0.3f;
                 b->pos[1] += bounceOffset+sin(animationTime)*(-0.1);
-            if (i == 1)
+            }
+            if (i == 1) {
+                bounceHeight = 0.3f;
                 b->pos[1] += bounceOffset+sin(animationTime)*0.1;
-            if (i == 2)
+            }
+            if (i == 2) {
+                bounceHeight = 0.5f;
                 b->pos[1] += bounceOffset+sin(animationTime)*0.1;
+            }
             glPushMatrix();
             glColor3fv(boxes->color);
             glTranslatef(b->pos[0], b->pos[1], 0.0f);

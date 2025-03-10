@@ -38,8 +38,9 @@ using namespace std;
 //
 Global g;
 ImageRenderer ren;
-Box boxes[MAX_BOXES];
-Box particles[MAX_PARTICLES];
+MenuBox boxes[MAX_BOXES];
+Box box;
+MenuBox particles[MAX_PARTICLES];
 Image img[1] = {
     "./background.png" 
 };
@@ -97,6 +98,8 @@ class X11_wrapper {
             
             win = XCreateWindow(dpy, root, 0, 0, w, h, 0, vi->depth,
                     InputOutput, vi->visual, CWColormap | CWEventMask, &swa);
+            XSelectInput(dpy, win, KeyPressMask | KeyReleaseMask | 
+                    ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
             set_title();
             glc = glXCreateContext(dpy, vi, NULL, GL_TRUE);
             glXMakeCurrent(dpy, win, glc);
@@ -203,6 +206,7 @@ void check_mouse(XEvent *e)
                 dasonMenuButtonPress(x, y);
             } else {
                 // MAIN MENU OVER GAME START   
+
             }
 
 
@@ -236,30 +240,83 @@ void check_mouse(XEvent *e)
         }
     }
 }
+#define KEY_MAX 256  
 
+bool key_states[KEY_MAX] = {false};  
+
+void handle_key_press(XKeyEvent *event) {
+    KeySym keysym = XLookupKeysym(event, 0);
+    if (keysym < 256) 
+        key_states[keysym] = true;
+}
+
+void handle_key_release(XKeyEvent *event) {
+    KeySym keysym = XLookupKeysym(event, 0);
+    if (keysym < 256) 
+        key_states[keysym] = false;
+}
+
+
+/* Player Box Position 
+ * Will use box as an array for starting position of each level */
+int tempx = g.xres/6;
+int tempy = g.yres/2;
 int check_keys(XEvent *e)
 {
     if (e->type != KeyPress && e->type != KeyRelease)
         return 0;
-    int key = XLookupKeysym(&e->xkey, 0);
-    if (e->type == KeyPress) {
-        switch (key) {
-            case XK_a:
-                //the 'a' key was pressed
-                break;
-            case XK_f:
-                //the 'f' key was pressed
-                break;
-            case XK_s:
-                break;
-            case XK_c:
-                //the 'c' key was pressed
-                g.credit = !g.credit;
-                break;
-
+    if (e->type == KeyPress || e->type == KeyRelease) {
+        int key = XLookupKeysym(&e->xkey, 0);
+        switch (e->type) {
             case XK_Escape:
                 //Escape key was pressed
                 return 1;
+            case KeyPress:
+                //Any Key is Pressed
+                //Function to add pressed button into array keysym
+                //This allows multiple button presses at the sametime
+                handle_key_press(&e->xkey);
+                break;
+            case KeyRelease:
+                handle_key_release(&e->xkey);
+                break;
+        }
+        switch (key) {
+            case XK_Escape:
+                return 1;
+        }
+        //Movement key press checks
+        if (key_states[XK_w] && !key_states[XK_a] && !key_states[XK_d])
+            // W key
+            tempy += 7;
+        if (key_states[XK_a] && !key_states[XK_w] && !key_states[XK_s])
+            // A Key
+            tempx -= 7;
+        if (key_states[XK_s] && !key_states[XK_a] && !key_states[XK_d])
+            // S Key
+            tempy -= 7;
+        if (key_states[XK_d] && !key_states[XK_w] && !key_states[XK_s])
+            // D Key
+            tempx += 7;
+        if (key_states[XK_a] && key_states[XK_s]) {
+            // A & S Keys
+            tempx -= 5;
+            tempy -= 5;
+        }
+        if (key_states[XK_a] && key_states[XK_w]) {
+            // A & W Keys
+            tempx -= 5;
+            tempy += 5;
+        }
+        if (key_states[XK_d] && key_states[XK_s]) {
+            // D & S Keys
+            tempx += 5;
+            tempy -= 5;
+        }
+        if (key_states[XK_d] && key_states[XK_w]) {
+            // D & W Keys
+            tempx += 5;
+            tempy += 5;
         }
     }
     return 0;
@@ -299,66 +356,6 @@ void init_opengl(void)
 void* physics(void *arg)
 {
     dasonPhysics(n);
-    /*for (int i = 0; i < n; i++) {
-        Box *p = &particles[i];
-        float px = p->pos[0];
-        float py = p->pos[1];
-        float vx = p->vel[0];
-        float vy = p->vel[1];
-        p->prev[0] = p->pos[0];
-        p->prev[1] = p->pos[1];
-        // Move the particle;
-        p->force[1] += GRAVITY;
-        p->vel[1] += p->force[1];
-        p->pos[1] += p->vel[1];
-
-        p->vel[0] += p->force[0];
-        p->pos[0] += p->vel[0];
-        vy += GRAVITY;
-        py += vy;
-        vx += p->force[0];
-        px += vx;
-        p->force[1] = 0.0f;
-        // Get Box dimensions for detections
-        for (int j = 0; j < MAX_BOXES; j++) {
-            Box *c = &boxes[j];
-            //p->force[0] = 0.0f;
-            // Colision detection
-            float cx = c->pos[0];
-            float cy = c->pos[1];
-            float ch = c->height;
-            float cw = c->width;
-            if (p->pos[1] <= (c->pos[1] + c->height) &&
-                    (p->pos[0] >= (c->pos[0] - c->width)) &&
-                    (p->pos[0] <= (c->pos[0] + c->width)) &&
-                    (p->pos[1] >= (c->pos[1] - c->height))) {
-
-                //p->pos[0] = p->prev[0];
-                p->pos[1] = p->prev[1];
-                p->vel[1] = -p->vel[1] * 0.5;
-                //printf("p->vel[1]: %f\n", p->vel[1]);
-                if (py <= (cy + ch) &&
-                        (px >= (cx - cw)) &&
-                        (px <= (cx + cw)) &&
-                        (py >= (cy - ch))) {
-
-                    //p->pos[0] = p->prev[0];
-                    py = p->prev[1];
-                    vy = -vy * 0.5;
-                    p->force[0] += 0.00001;
-
-                }
-            }
-            p->pos[0] = px;
-            p->pos[1] = py;
-            p->vel[0] = vx;
-            p->vel[1] = vy;
-            if (p->pos[1] < -4.0f) 
-                deleteParticle(i);
-        }
-
-    }
-    */
     return 0;
 }
 //void startScreenTexture(Image *backgroundImage, 
@@ -371,12 +368,28 @@ void render()
 
     // DRAW ALL BOXES
     drawBoxes();
+    if (g.game_state == 3) {
+        box.pos[0] = tempx;
+        box.pos[1] = tempy;
+        Box *player_box = &box;
+        glPushMatrix();
+        glColor3fv(player_box->color);
+        glTranslatef(player_box->pos[0], player_box->pos[1], 0.0f);
+        glBegin(GL_QUADS);
+        glVertex2f(-player_box->width, -player_box->height);
+        glVertex2f(-player_box->width,  player_box->height);
+        glVertex2f( player_box->width, player_box->height);
+        glVertex2f( player_box->width, -player_box->height);
+        glEnd();
+        glPopMatrix();
+    }
+        
 
     // DRAW ALL PARTICLES
     for (int i = 0; i < n; i++ ) {
         glPushMatrix();
         glColor3ub(50, 120, 220);
-        Box *p = &particles[i];
+        MenuBox *p = &particles[i];
         // 
 
         glTranslatef(p->pos[0], p->pos[1], 0.0f);
