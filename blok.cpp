@@ -246,6 +246,10 @@ int check_keys(XEvent *e)
                 break;
             case XK_s:
                 break;
+            case XK_c:
+                //the 'c' key was pressed
+                g.credit = !g.credit;
+                break;
 
             case XK_Escape:
                 //Escape key was pressed

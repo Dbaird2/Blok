@@ -30,14 +30,10 @@ void dasonEndCredit (void)
     title.center = 0;
     ggprint8b(&title, 16, 0x00ff0000, "Author 3: Dason Baird");
 }
-// macro
-#define rnd() (float)rand() / (float)RAND_MAX
 #define STATE_1 2
-#define STATE_2 4
+#define STATE_2 5
 #define STATE_3 2
 #define STATE_4 2
-//some structures
-//
 
 void deleteParticle(int a, int n) 
 {
@@ -82,7 +78,7 @@ void dasonMenuButtonPress(int x, int y)
         }
 
     } else if (g.game_state == 2) {
-        for (int j = 0; j < STATE_2 -1; j++) {
+        for (int j = 0; j < STATE_2; j++) {
             Box *c = &boxes[j];
             // Colision detection
             float cx = c->pos[0];
@@ -93,6 +89,9 @@ void dasonMenuButtonPress(int x, int y)
                     (x >= (cx - cw)) &&
                     (x <= (cx + cw)) &&
                     (y >= (cy - ch))) {
+                if (j == 4) {
+                    g.game_state = 1;
+                }
                 if (j == 2) {
                     // HARD
                     g.game_state = 3;
@@ -227,16 +226,27 @@ void makeStartScreen()
 
     glEnd();
 }
+float animationTime = 0.0f; 
+float bounceHeight = 0.5f;
 
 void drawBoxes() 
 {
     //draw the boxes
     Rect rect;
+
     int box_text = 1;
     if (g.game_state == 1) {
         defineBox(); 
         for (int i = 0; i <= STATE_1-1; i++) {
             Box *b = &boxes[i];
+
+            float bounceOffset = sin(animationTime) * bounceHeight;
+            if (i == 0)
+                b->pos[1] += bounceOffset;
+            if (i == 1)
+                b->pos[1] += bounceOffset+sin(animationTime);
+
+
             glPushMatrix();
             glColor3fv(boxes->color);
             glTranslatef(b->pos[0], b->pos[1], 0.0f);
@@ -262,10 +272,19 @@ void drawBoxes()
             }
             ++box_text;
         }
+                animationTime += 0.3f;
     } else if (g.game_state == 2) {
         defineBox(); 
         for (int i = 0; i <= STATE_2-1; i++) {
             Box *b = &boxes[i];
+            
+            float bounceOffset = sin(animationTime) * bounceHeight;
+            if (i == 0)
+                b->pos[1] += bounceOffset+sin(animationTime)*0.2;
+            if (i == 1)
+                b->pos[1] += bounceOffset+sin(animationTime)*0.1;
+            if (i == 2)
+                b->pos[1] += bounceOffset+sin(animationTime)*0.1;
             glPushMatrix();
             glColor3fv(boxes->color);
             glTranslatef(b->pos[0], b->pos[1], 0.0f);
@@ -280,6 +299,10 @@ void drawBoxes()
             rect.center = 0;
             switch (box_text)
             {
+                case 5:
+                    rect.left = b->pos[0] -20;
+                    ggprint8b(&rect, 0, 0x00CC8899, "Back");
+                    break;
                 case 4:
                     rect.left = b->pos[0] -20;
                     ggprint8b(&rect, 0, 0x00CC8899, "Difficulty");
@@ -299,5 +322,6 @@ void drawBoxes()
             }
             ++box_text;
         }
+                animationTime += 0.6f;
     } 
 }
