@@ -199,7 +199,13 @@ void check_mouse(XEvent *e)
             //Left button was pressed.
             int y = g.yres - e->xbutton.y;
             int x = e->xbutton.x;
-            dasonMenuButtonPress(x, y);
+            if (g.game_state < 3) {
+                dasonMenuButtonPress(x, y);
+            } else {
+                // MAIN MENU OVER GAME START   
+            }
+
+
             /*for (int i = 0; i < 10; i++) {
                 spd = 0;
                 makeParticle(e->xbutton.x, y);
