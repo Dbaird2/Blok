@@ -338,6 +338,25 @@ void drawBoxes()
 /*----------------------------------------------------*/
 
 /*----------------------------------------------------*/
+/* DRAW PLAYER BOX */
+void drawPlayerBox () {
+    box.pos[0] = g.tempx;
+    box.pos[1] = g.tempy;
+    Box *player_box = &box;
+    glPushMatrix();
+    glColor3fv(player_box->color);
+    glTranslatef(player_box->pos[0], player_box->pos[1], 0.0f);
+    glBegin(GL_QUADS);
+    glVertex2f(-player_box->width, -player_box->height);
+    glVertex2f(-player_box->width,  player_box->height);
+    glVertex2f( player_box->width, player_box->height);
+    glVertex2f( player_box->width, -player_box->height);
+    glEnd();
+    glPopMatrix();
+}
+/*----------------------------------------------------*/
+
+/*----------------------------------------------------*/
 /* PLAYER MOVEMENT FUNCTIONS */
 void handleKeyPress(XKeyEvent *event) 
 {

@@ -317,7 +317,8 @@ void render()
     // DRAW ALL BOXES
     drawBoxes();
     if (g.game_state == 3) {
-        box.pos[0] = g.tempx;
+        drawPlayerBox();
+        /*box.pos[0] = g.tempx;
         box.pos[1] = g.tempy;
         Box *player_box = &box;
         glPushMatrix();
@@ -329,7 +330,7 @@ void render()
         glVertex2f( player_box->width, player_box->height);
         glVertex2f( player_box->width, -player_box->height);
         glEnd();
-        glPopMatrix();
+        glPopMatrix();*/
     }
         
 
