@@ -30,10 +30,6 @@ void dasonEndCredit (void)
     title.center = 0;
     ggprint8b(&title, 16, 0x00ff0000, "Author 3: Dason Baird");
 }
-#define STATE_1 2
-#define STATE_2 5
-#define STATE_3 2
-#define STATE_4 2
 
 void deleteParticle(int a, int n) 
 {
@@ -225,7 +221,8 @@ void makeStartScreen()
     glBegin(GL_QUADS);
     glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset-30);
     glTexCoord2f(0.0, 0.0); glVertex2f(xOffset, yOffset + quadHeight+30); 
-    glTexCoord2f(1.0, 0.0); glVertex2f(xOffset + quadWidth, yOffset + quadHeight+30); 
+    glTexCoord2f(1.0, 0.0); glVertex2f(xOffset + quadWidth, 
+            yOffset + quadHeight+30); 
     glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset-30);
 
     glEnd();
@@ -233,6 +230,8 @@ void makeStartScreen()
 float animationTime = 0.0f; 
 float bounceHeight = 0.5f;
 
+/*----------------------------------------------------*/
+/* START MENU BOXEES */
 void drawBoxes() 
 {
     //draw the boxes
@@ -336,8 +335,10 @@ void drawBoxes()
         animationTime += 0.6f;
     } 
 }
+/*----------------------------------------------------*/
 
-
+/*----------------------------------------------------*/
+/* PLAYER MOVEMENT FUNCTIONS */
 void handleKeyPress(XKeyEvent *event) 
 {
     KeySym keysym = XLookupKeysym(event, 0);
@@ -363,3 +364,4 @@ void processMovement()
     if (g.key_states[XK_d])
         g.tempx += 5;
 }
+/*----------------------------------------------------*/
