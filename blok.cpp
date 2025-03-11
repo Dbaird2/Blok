@@ -29,7 +29,6 @@ using namespace std;
 #include "dbairdheader.h"
 #include "Global.h"
 #include "Image.h"
-
 // macro
 #define rnd() (float)rand() / (float)RAND_MAX
 #define MAX_PARTICLES 1000
@@ -40,7 +39,7 @@ Global g;
 ImageRenderer ren;
 MenuBox boxes[MAX_BOXES];
 Box box;
-MenuBox particles[MAX_PARTICLES];
+Menu 879115Box particles[MAX_PARTICLES];
 Image img[1] = {
     "./background.png" 
 };
@@ -315,7 +314,7 @@ void render()
     makeStartScreen();
 
     // DRAW ALL BOXES
-    drawBoxes();
+	drawBoxes();
     if (g.game_state == 3) {
         box.pos[0] = g.tempx;
         box.pos[1] = g.tempy;
