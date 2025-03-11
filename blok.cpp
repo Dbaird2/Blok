@@ -1,5 +1,9 @@
 //
 //modified by: Dason B
+//Caroline C
+//Carlos M
+//Sean
+//RJ
 //date: Spring 2025
 //
 //original author: Gordon Griesel
@@ -29,11 +33,7 @@ using namespace std;
 #include "dbairdheader.h"
 #include "Global.h"
 #include "Image.h"
-<<<<<<< HEAD
 #include "stoledoheader.h"
-
-=======
->>>>>>> 84c11e483032ed6bbdfce3bbd47158c6c8eafa0e
 // macro
 #define rnd() (float)rand() / (float)RAND_MAX
 #define MAX_PARTICLES 1000
@@ -45,7 +45,6 @@ ImageRenderer ren;
 MenuBox boxes[MAX_BOXES];
 Player player;
 MenuBox particles[MAX_PARTICLES];
-Box box;
 Image img[1] = {
     "./background.png" 
 };
