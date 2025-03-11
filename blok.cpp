@@ -40,12 +40,11 @@ using namespace std;
 Global g;
 ImageRenderer ren;
 MenuBox boxes[MAX_BOXES];
-Box box;
+Player player;
 MenuBox particles[MAX_PARTICLES];
 Image img[1] = {
     "./background.png" 
 };
-//Box box;
 int n = 0;
 //int b = 0;
 float spd = 0;

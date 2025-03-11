@@ -32,7 +32,7 @@ class MenuBox {
 };
 extern MenuBox boxes[];
 extern MenuBox particles[];
-class Box {
+class Player {
     public:
         int id;
         int width;
@@ -43,7 +43,7 @@ class Box {
         float force[2];
         float color[3];
         char text[100];
-        Box () 
+        Player() 
         {
             width = 15;
             height = 15;
@@ -52,14 +52,17 @@ class Box {
             color[1] = 0.0f;
             color[2] = 0.5f;
         }
-        Box(int w, int h) 
+        Player(int w, int h) 
         {
-            Box();
+            Player();
             width = w;
             height = h;
         }
 };
-extern Box box;
+extern Player player;
+
+
+
 
 class ImageRenderer {
     public:
@@ -97,12 +100,7 @@ class Global {
             menu_box_amt[1] = {5};
             xres = 900;
             yres = 500;
-            //    w = 20.0f;
-            //    save_w = w;
-            //    dir = 30.0f;
             ydir = 30.0f;
-            //    pos[0] = 0.0f+w;
-            //    pos[1] = g.yres/2.0f;
             red = 100;
             green = 120;
             blue = 220;
