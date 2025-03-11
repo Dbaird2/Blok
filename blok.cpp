@@ -27,6 +27,7 @@ using namespace std;
 #include <pthread.h>
 #include "functions.h"
 #include "dbairdheader.h"
+#include "cmorenoyanesheader.h"
 #include "Global.h"
 #include "Image.h"
 
@@ -315,6 +316,7 @@ void render()
     makeStartScreen();
 
     // DRAW ALL BOXES
+    drawTriangles();
     drawBoxes();
     if (g.game_state == 3) {
         box.pos[0] = g.tempx;
