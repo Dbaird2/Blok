@@ -261,12 +261,21 @@ void handle_key_release(XKeyEvent *event) {
  * Will use box as an array for starting position of each level */
 int tempx = g.xres/6;
 int tempy = g.yres/2;
+int prev_tempx = 0;
+int release = 0;
 int check_keys(XEvent *e)
 {
+    /*cout << prev_tempx << " " << tempx << " " << release << endl;
+    
+    if (prev_tempx == tempx) 
+        release  = 1;
+
+    prev_tempx = tempx;*/
     if (e->type != KeyPress && e->type != KeyRelease)
         return 0;
     if (e->type == KeyPress || e->type == KeyRelease) {
         int key = XLookupKeysym(&e->xkey, 0);
+        //cout << "Type " << e->type << endl;
         switch (e->type) {
             case XK_Escape:
                 //Escape key was pressed
@@ -275,7 +284,8 @@ int check_keys(XEvent *e)
                 //Any Key is Pressed
                 //Function to add pressed button into array keysym
                 //This allows multiple button presses at the sametime
-                handle_key_press(&e->xkey);
+                //if (release)
+                    handle_key_press(&e->xkey);
                 break;
             case KeyRelease:
                 handle_key_release(&e->xkey);
@@ -287,37 +297,38 @@ int check_keys(XEvent *e)
         }
         //Movement key press checks
         if (key_states[XK_w] && !key_states[XK_a] && !key_states[XK_d])
-            // W key
-            tempy += 7;
+            tempy += 5;
         if (key_states[XK_a] && !key_states[XK_w] && !key_states[XK_s])
-            // A Key
-            tempx -= 7;
-        if (key_states[XK_s] && !key_states[XK_a] && !key_states[XK_d])
-            // S Key
-            tempy -= 7;
-        if (key_states[XK_d] && !key_states[XK_w] && !key_states[XK_s])
-            // D Key
-            tempx += 7;
-        if (key_states[XK_a] && key_states[XK_s]) {
-            // A & S Keys
             tempx -= 5;
+        if (key_states[XK_s] && !key_states[XK_a] && !key_states[XK_d])
+            tempy -= 5;
+        if (key_states[XK_d] && !key_states[XK_w] && !key_states[XK_s])
+            tempx += 5;
+        if (key_states[XK_a] && key_states[XK_s]) {
             tempy -= 5;
         }
         if (key_states[XK_a] && key_states[XK_w]) {
-            // A & W Keys
-            tempx -= 5;
             tempy += 5;
         }
         if (key_states[XK_d] && key_states[XK_s]) {
-            // D & S Keys
-            tempx += 5;
             tempy -= 5;
         }
         if (key_states[XK_d] && key_states[XK_w]) {
-            // D & W Keys
-            tempx += 5;
             tempy += 5;
         }
+        if (key_states[XK_s] && key_states[XK_d]) {
+            tempx += 5;
+        }
+        if (key_states[XK_w] && key_states[XK_d]) {
+            tempx += 5;
+        }
+        if (key_states[XK_s] && key_states[XK_a]) {
+            tempx -= 5;
+        }
+        if (key_states[XK_w] && key_states[XK_d]) {
+            tempx += 5;
+        }
+        release = 0;
     }
     return 0;
 }
