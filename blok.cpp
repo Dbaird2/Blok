@@ -170,6 +170,7 @@ int main()
             check_mouse(&e);
             done = check_keys(&e);
         }
+        processMovement();
         pthread_create(&p_thread[0], nullptr, physics, (void *)&value);
         render();
         x11.swapBuffers();
@@ -242,93 +243,29 @@ void check_mouse(XEvent *e)
 }
 #define KEY_MAX 256  
 
-bool key_states[KEY_MAX] = {false};  
-
-void handle_key_press(XKeyEvent *event) {
-    KeySym keysym = XLookupKeysym(event, 0);
-    if (keysym < 256) 
-        key_states[keysym] = true;
-}
-
-void handle_key_release(XKeyEvent *event) {
-    KeySym keysym = XLookupKeysym(event, 0);
-    if (keysym < 256) 
-        key_states[keysym] = false;
-}
-
-
-/* Player Box Position 
- * Will use box as an array for starting position of each level */
-int tempx = g.xres/6;
-int tempy = g.yres/2;
-int prev_tempx = 0;
-int release = 0;
 int check_keys(XEvent *e)
 {
-    /*cout << prev_tempx << " " << tempx << " " << release << endl;
-    
-    if (prev_tempx == tempx) 
-        release  = 1;
-
-    prev_tempx = tempx;*/
     if (e->type != KeyPress && e->type != KeyRelease)
         return 0;
     if (e->type == KeyPress || e->type == KeyRelease) {
         int key = XLookupKeysym(&e->xkey, 0);
         //cout << "Type " << e->type << endl;
         switch (e->type) {
-            case XK_Escape:
-                //Escape key was pressed
-                return 1;
             case KeyPress:
                 //Any Key is Pressed
                 //Function to add pressed button into array keysym
                 //This allows multiple button presses at the sametime
                 //if (release)
-                    handle_key_press(&e->xkey);
+                handleKeyPress(&e->xkey);
                 break;
             case KeyRelease:
-                handle_key_release(&e->xkey);
+                handleKeyRelease(&e->xkey);
                 break;
         }
         switch (key) {
             case XK_Escape:
                 return 1;
         }
-        //Movement key press checks
-        if (key_states[XK_w] && !key_states[XK_a] && !key_states[XK_d])
-            tempy += 5;
-        if (key_states[XK_a] && !key_states[XK_w] && !key_states[XK_s])
-            tempx -= 5;
-        if (key_states[XK_s] && !key_states[XK_a] && !key_states[XK_d])
-            tempy -= 5;
-        if (key_states[XK_d] && !key_states[XK_w] && !key_states[XK_s])
-            tempx += 5;
-        if (key_states[XK_a] && key_states[XK_s]) {
-            tempy -= 5;
-        }
-        if (key_states[XK_a] && key_states[XK_w]) {
-            tempy += 5;
-        }
-        if (key_states[XK_d] && key_states[XK_s]) {
-            tempy -= 5;
-        }
-        if (key_states[XK_d] && key_states[XK_w]) {
-            tempy += 5;
-        }
-        if (key_states[XK_s] && key_states[XK_d]) {
-            tempx += 5;
-        }
-        if (key_states[XK_w] && key_states[XK_d]) {
-            tempx += 5;
-        }
-        if (key_states[XK_s] && key_states[XK_a]) {
-            tempx -= 5;
-        }
-        if (key_states[XK_w] && key_states[XK_d]) {
-            tempx += 5;
-        }
-        release = 0;
     }
     return 0;
 }
@@ -380,8 +317,8 @@ void render()
     // DRAW ALL BOXES
     drawBoxes();
     if (g.game_state == 3) {
-        box.pos[0] = tempx;
-        box.pos[1] = tempy;
+        box.pos[0] = g.tempx;
+        box.pos[1] = g.tempy;
         Box *player_box = &box;
         glPushMatrix();
         glColor3fv(player_box->color);

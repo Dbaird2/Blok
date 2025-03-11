@@ -77,7 +77,7 @@ void dasonMenuButtonPress(int x, int y)
                 }
             }
         }
-    /* Difficulty button Collision Detection */
+        /* Difficulty button Collision Detection */
     } else if (g.game_state == 2) {
         for (int j = 0; j < g.menu_box_amt[g.game_state-1]; j++) {
             MenuBox *c = &boxes[j];
@@ -277,12 +277,12 @@ void drawBoxes()
             }
             ++box_text;
         }
-                animationTime += 0.3f;
+        animationTime += 0.3f;
     } else if (g.game_state == 2) {
         defineBox(); 
         for (int i = 0; i < g.menu_box_amt[g.game_state-1]; i++) {
             MenuBox *b = &boxes[i];
-            
+
             float bounceOffset = sin(animationTime) * bounceHeight;
             if (i == 0) {
                 bounceHeight = 0.3f;
@@ -333,6 +333,33 @@ void drawBoxes()
             }
             ++box_text;
         }
-                animationTime += 0.6f;
+        animationTime += 0.6f;
     } 
+}
+
+
+void handleKeyPress(XKeyEvent *event) 
+{
+    KeySym keysym = XLookupKeysym(event, 0);
+    if (keysym < 256)
+        g.key_states[keysym] = true;
+}
+
+void handleKeyRelease(XKeyEvent *event) 
+{
+    KeySym keysym = XLookupKeysym(event, 0);
+    if (keysym < 256)
+        g.key_states[keysym] = false;
+}
+
+void processMovement() 
+{
+    if (g.key_states[XK_w])
+        g.tempy += 5;
+    if (g.key_states[XK_a])
+        g.tempx -= 5;
+    if (g.key_states[XK_s])
+        g.tempy -= 5;
+    if (g.key_states[XK_d])
+        g.tempx += 5;
 }

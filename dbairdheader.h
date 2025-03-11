@@ -14,6 +14,9 @@ void drawBoxes();
 void dasonPhysics(int n);
 void dasonMenuButtonPress(int x, int y);
 void dasonRenderBackground();
+void handleKeyPress(XKeyEvent *event);
+void handleKeyRelease(XKeyEvent *event);
+void processMovement();
 /*class Image {
     public:
         int width, height;

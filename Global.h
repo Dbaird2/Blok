@@ -76,6 +76,9 @@ class Global {
         int menu_box_amt[4];
         int game_state;
         int credit;
+        int tempx;
+        int tempy;
+        bool key_states[256];
         float save_w;
         float ydir;
         float ypos[2];
@@ -83,6 +86,9 @@ class Global {
         int xres, yres;
         float gravity;
         Global() {
+            key_states[256] = {false};
+            tempx = 450;
+            tempy = 200;
             gravity = -0.5f;
             credit = 0;
             game_state = 1;
