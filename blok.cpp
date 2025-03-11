@@ -29,6 +29,7 @@ using namespace std;
 #include "dbairdheader.h"
 #include "Global.h"
 #include "Image.h"
+#include "stoledoheader.h"
 
 // macro
 #define rnd() (float)rand() / (float)RAND_MAX
@@ -319,7 +320,7 @@ void render()
     if (g.game_state == 3) {
         drawPlayerBox();
     }
-        
+    seanrungame();
 
     // DRAW ALL PARTICLES
     for (int i = 0; i < n; i++ ) {
