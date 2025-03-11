@@ -23,15 +23,10 @@ class MenuBox {
             color[1] = 0.0f;
             color[2] = 0.5f;
         }
-        MenuBox(int w, int h) 
-        {
-            MenuBox();
-            width = w;
-            height = h;
-        }
 };
 extern MenuBox boxes[];
 extern MenuBox particles[];
+
 class Player {
     public:
         int id;
