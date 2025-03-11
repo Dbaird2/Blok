@@ -14,6 +14,7 @@ void drawBoxes();
 void dasonPhysics(int n);
 void dasonMenuButtonPress(int x, int y);
 void dasonRenderBackground();
+void drawPlayerBox();
 void handleKeyPress(XKeyEvent *event);
 void handleKeyRelease(XKeyEvent *event);
 void processMovement();

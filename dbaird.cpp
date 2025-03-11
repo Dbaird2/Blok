@@ -92,12 +92,12 @@ void dasonMenuButtonPress(int x, int y)
                 }
                 if (j == 2) {
                     // HARD
-                    g.game_state = 3;
+                    g.game_state = 5;
                     glDeleteTextures(1, &ren.backgroundTexture);
 
                 } else if (j == 1) {
                     // NORMAL
-                    g.game_state = 3;
+                    g.game_state = 4;
                     glDeleteTextures(1, &ren.backgroundTexture);
                 } else if (j == 0){
                     // EASY
@@ -334,6 +334,25 @@ void drawBoxes()
         }
         animationTime += 0.6f;
     } 
+}
+/*----------------------------------------------------*/
+
+/*----------------------------------------------------*/
+/* DRAW PLAYER BOX */
+void drawPlayerBox () {
+    player.pos[0] = g.tempx;
+    player.pos[1] = g.tempy;
+    Player *player_box = &player;
+    glPushMatrix();
+    glColor3fv(player_box->color);
+    glTranslatef(player_box->pos[0], player_box->pos[1], 0.0f);
+    glBegin(GL_QUADS);
+    glVertex2f(-player_box->width, -player_box->height);
+    glVertex2f(-player_box->width,  player_box->height);
+    glVertex2f( player_box->width, player_box->height);
+    glVertex2f( player_box->width, -player_box->height);
+    glEnd();
+    glPopMatrix();
 }
 /*----------------------------------------------------*/
 

@@ -30,6 +30,7 @@ using namespace std;
 #include "cmorenoyanesheader.h"
 #include "Global.h"
 #include "Image.h"
+#include "stoledoheader.h"
 
 // macro
 #define rnd() (float)rand() / (float)RAND_MAX
@@ -40,12 +41,11 @@ using namespace std;
 Global g;
 ImageRenderer ren;
 MenuBox boxes[MAX_BOXES];
-Box box;
+Player player;
 MenuBox particles[MAX_PARTICLES];
 Image img[1] = {
     "./background.png" 
 };
-//Box box;
 int n = 0;
 //int b = 0;
 float spd = 0;
@@ -319,21 +319,9 @@ void render()
     drawTriangles();
     drawBoxes();
     if (g.game_state == 3) {
-        box.pos[0] = g.tempx;
-        box.pos[1] = g.tempy;
-        Box *player_box = &box;
-        glPushMatrix();
-        glColor3fv(player_box->color);
-        glTranslatef(player_box->pos[0], player_box->pos[1], 0.0f);
-        glBegin(GL_QUADS);
-        glVertex2f(-player_box->width, -player_box->height);
-        glVertex2f(-player_box->width,  player_box->height);
-        glVertex2f( player_box->width, player_box->height);
-        glVertex2f( player_box->width, -player_box->height);
-        glEnd();
-        glPopMatrix();
+        drawPlayerBox();
     }
-        
+    seanrungame();
 
     // DRAW ALL PARTICLES
     for (int i = 0; i < n; i++ ) {
