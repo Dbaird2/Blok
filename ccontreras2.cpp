@@ -1,7 +1,5 @@
 //Caroline Contreras
-//Level 4
 //Spring 2025
-//last upload to github: 3/4/25
 
 #include <iostream>
 #include "functions.h"
