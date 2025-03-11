@@ -39,7 +39,7 @@ Global g;
 ImageRenderer ren;
 MenuBox boxes[MAX_BOXES];
 Box box;
-Menu 879115Box particles[MAX_PARTICLES];
+MenuBox particles[MAX_PARTICLES];
 Image img[1] = {
     "./background.png" 
 };
