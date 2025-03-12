@@ -8,6 +8,9 @@
 #include <iostream>
 #include "Global.h"
 
+
 void seanrungame();
+void drawRect();
+void updateEnemies();
 
 #endif
