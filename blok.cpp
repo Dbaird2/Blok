@@ -316,8 +316,8 @@ void render()
     makeStartScreen();
 
     // DRAW ALL BOXES
-    drawTriangles();
     drawBoxes();
+    drawTriangles();
     if (g.game_state == 3) {
         drawPlayerBox();
     }

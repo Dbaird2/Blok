@@ -1,8 +1,8 @@
-/*****************************
- * Author: Carlos Moreno     *
- * Date:   Spring 2025       *
- * Assignment: Blok          *
- *****************************/
+/**********************************
+ * Author: Carlos Moreno          *
+ * Date:   Spring 2025            *
+ * Assignment: cmorenoyanes.cpp   *
+ **********************************/
 
 #include <iostream>
 #include <stdio.h>
@@ -45,12 +45,13 @@ void drawTriangles ()
         //defineTriangle();
         glPushMatrix();
         glColor3f(1.0, 0, 0);
+        glDisable(GL_DEPTH_TEST);
         // glTranslatef(t->pos[0], t->pos[1], t->post[2], 0.0f);
-        glTranslatef(200, 200, 0.0f);
+        glTranslatef(0.0f, 0.0f, 0.0f);
         glBegin(GL_TRIANGLES);
-        glVertex3f(0, 0, 0);
-        glVertex3f(0.5, 0, 0);
-        glVertex3f(0, 0.5, 0);
+        glVertex3f(100, 100, 0);
+        glVertex3f(150, 100, 0);
+        glVertex3f(100, 150, 0);
         glEnd();
         glPopMatrix();
     }
