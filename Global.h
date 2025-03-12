@@ -64,13 +64,18 @@ class ImageRenderer {
         // Background Start Screen
         GLuint backgroundTexture;
         Image *backgroundImage;
+        
+        // Maze level
+        GLuint dasonLevelBackgroundTexture;
+        Image *dasonLevelBackgroundImage;
+
 };
 extern ImageRenderer ren;
 
 
 class Global {
     public:
-
+        int stop_w; int stop_a; int stop_s; int stop_d;
         int menu_box_amt[4];
         int game_state;
         int credit;
@@ -84,6 +89,7 @@ class Global {
         int xres, yres;
         float gravity;
         Global() {
+            stop_w = stop_a = stop_s = stop_d = 0;
             key_states[256] = {false};
             tempx = 450;
             tempy = 200;

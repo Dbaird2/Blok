@@ -39,18 +39,6 @@ void deleteParticle(int a, int n)
 
 }
 
-void dasonRenderBackground() 
-{
-    ren.backgroundImage = &img[0];
-    glGenTextures(1, &ren.backgroundTexture);
-    int w = ren.backgroundImage->width;
-    int h = ren.backgroundImage->height;
-    glBindTexture(GL_TEXTURE_2D, ren.backgroundTexture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
-            GL_RGB, GL_UNSIGNED_BYTE, ren.backgroundImage->data);
-}
-
 void dasonMenuButtonPress(int x, int y) 
 {
     /* Start/Credits button Collision Detection */
@@ -102,7 +90,6 @@ void dasonMenuButtonPress(int x, int y)
                     // HARD
                     g.game_state = 5;
                     glDeleteTextures(1, &ren.backgroundTexture);
-
                 }
             }
         }
@@ -113,6 +100,14 @@ void dasonMenuButtonPress(int x, int y)
 }
 
 int b = 0;
+
+void init_dasonMazePlayer() 
+{
+    g.tempx = g.xres/2+75;
+    g.tempy = g.yres/2+5;
+    player.width = 7;
+    player.height = 7;
+}
 
 void defineBox() 
 {
@@ -193,39 +188,123 @@ void dasonPhysics(int n)
         if (p->pos[1] < -4.0f) 
             deleteParticle(i, n);
     }
+    if (g.game_state == 6) {
+        if (player.pos[0] >= 540 && player.pos[0] < 565 && player.pos[1] < 320 && player.pos[1] > 230) {
+            if (player.pos[0] > 545) {
+                g.stop_a = 1;
+            } else {
+                g.stop_d = 1;
+            }
+        } else {
+            g.stop_d = 0;
+            g.stop_a = 0;
+        }
 
-}
-void makeStartScreen() 
-{
-    float imageAspect = 
-        static_cast<float>(ren.backgroundImage->width) 
-        / ren.backgroundImage->height;
-    float screenAspect = static_cast<float>(g.xres) / g.yres;
-    float quadWidth = g.xres;
-    float quadHeight = g.yres;
-
-    // Adjust width/height based on aspect ratio
-    if (screenAspect > imageAspect) {
-        quadWidth = g.yres * imageAspect;
-    } else {
-        quadHeight = g.xres / imageAspect;
     }
 
-    // Center the image in the viewport
-    float xOffset = (g.xres - quadWidth) / 2.0;
-    float yOffset = (g.yres - quadHeight) / 2.0;
-
-    glBindTexture(GL_TEXTURE_2D, ren.backgroundTexture);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glBegin(GL_QUADS);
-    glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset-30);
-    glTexCoord2f(0.0, 0.0); glVertex2f(xOffset, yOffset + quadHeight+30); 
-    glTexCoord2f(1.0, 0.0); glVertex2f(xOffset + quadWidth, 
-            yOffset + quadHeight+30); 
-    glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset-30);
-
-    glEnd();
 }
+
+void dasonRenderBackground() 
+{
+    ren.backgroundImage = &img[0];
+    glGenTextures(1, &ren.backgroundTexture);
+    int w = ren.backgroundImage->width;
+    int h = ren.backgroundImage->height;
+    glBindTexture(GL_TEXTURE_2D, ren.backgroundTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
+            GL_RGB, GL_UNSIGNED_BYTE, ren.backgroundImage->data);
+    /*unsigned char *dasonMenuBackground = ren.backgroundImage->buildAlphaData(&img[1]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
+            GL_RGB, GL_UNSIGNED_BYTE, dasonMenuBackground);
+    free(dasonMenuBackground);*/
+
+}
+
+void dasonMazeLevelBackground() 
+{
+    ren.dasonLevelBackgroundImage = &img[1];
+    glGenTextures(1, &ren.dasonLevelBackgroundTexture);
+    int w = ren.dasonLevelBackgroundImage->width;
+    int h = ren.dasonLevelBackgroundImage->height;
+    glBindTexture(GL_TEXTURE_2D, ren.dasonLevelBackgroundTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    /*unsigned char *dasonMazeData = ren.dasonLevelBackgroundImage->buildAlphaData(&img[1]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
+            GL_RGB, GL_UNSIGNED_BYTE, dasonMazeData);
+    free(dasonMazeData);*/
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
+            GL_RGB, GL_UNSIGNED_BYTE, ren.dasonLevelBackgroundImage->data);
+}
+
+void makeStartScreen() 
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+    float quadWidth = g.xres;
+    float quadHeight = g.yres;
+    float screenAspect = static_cast<float>(g.xres) / g.yres;
+    if (g.game_state < 3) {
+        float imageAspect = 
+            static_cast<float>(ren.backgroundImage->width) 
+            / ren.backgroundImage->height;
+
+        // Adjust width/height based on aspect ratio
+        if (screenAspect > imageAspect) {
+            quadWidth = g.yres * imageAspect;
+        } else {
+            quadHeight = g.xres / imageAspect;
+        }
+
+        // Center the image in the viewport
+        float xOffset = (g.xres - quadWidth) / 2.0;
+        float yOffset = (g.yres - quadHeight) / 2.0;
+
+        glBindTexture(GL_TEXTURE_2D, ren.backgroundTexture);
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset-30);
+        glTexCoord2f(0.0, 0.0); glVertex2f(xOffset, yOffset + quadHeight+30); 
+        glTexCoord2f(1.0, 0.0); glVertex2f(xOffset + quadWidth, 
+                yOffset + quadHeight+30); 
+        glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset-30);
+
+        glEnd();
+        glPopMatrix();
+    } else if (g.game_state == 6) { 
+        //glDeleteTextures(1, &ren.backgroundTexture);
+
+        float imageAspect = 
+            static_cast<float>(ren.dasonLevelBackgroundImage->width) 
+            / ren.dasonLevelBackgroundImage->height;
+
+        // Adjust width/height based on aspect ratio
+        if (screenAspect > imageAspect) {
+            quadWidth = g.yres * imageAspect;
+        } else {
+            quadHeight = g.xres / imageAspect;
+        }
+
+        // Center the image in the viewport
+        float xOffset = (g.xres - quadWidth) / 2.0;
+        float yOffset = (g.yres - quadHeight) / 2.0;
+
+        glPushMatrix();
+        glBindTexture(GL_TEXTURE_2D, ren.dasonLevelBackgroundTexture);
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset-30);
+        glTexCoord2f(0.0, 0.0); glVertex2f(xOffset, yOffset + quadHeight+30); 
+        glTexCoord2f(1.0, 0.0); glVertex2f(xOffset + quadWidth, 
+                yOffset + quadHeight+30); 
+        glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset-30);
+
+        glEnd();
+        glPopMatrix();
+    }
+}
+
 float animationTime = 0.0f; 
 float bounceHeight = 0.5f;
 
@@ -374,12 +453,17 @@ void handleKeyRelease(XKeyEvent *event)
 void processMovement() 
 {
     if (g.key_states[XK_w])
-        g.tempy += 5;
+        if (!g.stop_w)
+            g.tempy += 5;
     if (g.key_states[XK_a])
-        g.tempx -= 5;
+        if (!g.stop_a)
+            g.tempx -= 5;
     if (g.key_states[XK_s])
-        g.tempy -= 5;
+        if (!g.stop_s)
+            g.tempy -= 5;
     if (g.key_states[XK_d])
-        g.tempx += 5;
+        if (!g.stop_d)
+            g.tempx += 5;
+    //cout << g.stop_d << endl;
 }
 /*----------------------------------------------------*/
