@@ -319,9 +319,9 @@ void render()
     makeStartScreen();
 
     // DRAW ALL BOXES
-    drawTriangles();
     drawBoxes();
     if (g.game_state == 3) {
+        drawTriangles();
         drawPlayerBox();
     }
     seanrungame();

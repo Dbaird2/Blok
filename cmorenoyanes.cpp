@@ -41,20 +41,18 @@ void carlosEndCredit (void)
 void drawTriangles ()
 {
     //draw the triangles
-    if (g.game_state == 3) {
-        //defineTriangle();
-        glPushMatrix();
-        glColor3f(1.0, 0, 0);
-        glDisable(GL_DEPTH_TEST);
-        // glTranslatef(t->pos[0], t->pos[1], t->post[2], 0.0f);
-        glTranslatef(0.0f, 0.0f, 0.0f);
-        glBegin(GL_TRIANGLES);
-        glVertex3f(100, 100, 0);
-        glVertex3f(150, 100, 0);
-        glVertex3f(100, 150, 0);
-        glEnd();
-        glPopMatrix();
-    }
+    //defineTriangle();
+    glPushMatrix();
+    glColor3f(1.0, 0, 0);
+    glDisable(GL_DEPTH_TEST);
+    glTranslatef(g.xres/2, g.yres/2, 0.0f);
+    //glTranslatef(0.0f, 0.0f, 0.0f);
+    glBegin(GL_TRIANGLES);
+    glVertex2f(100, 100);
+    glVertex2f(150, 100);
+    glVertex2f(100, 150);
+    glEnd();
+    glPopMatrix();
 }
 
 

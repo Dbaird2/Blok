@@ -91,17 +91,16 @@ void dasonMenuButtonPress(int x, int y)
                     g.game_state = 1;
                 }
                 if (j == 2) {
-                    // HARD
-                    g.game_state = 5;
+                    // EASY
+                    g.game_state = 3;
                     glDeleteTextures(1, &ren.backgroundTexture);
-
                 } else if (j == 1) {
                     // NORMAL
                     g.game_state = 4;
                     glDeleteTextures(1, &ren.backgroundTexture);
                 } else if (j == 0){
-                    // EASY
-                    g.game_state = 3;
+                    // HARD
+                    g.game_state = 5;
                     glDeleteTextures(1, &ren.backgroundTexture);
 
                 }
