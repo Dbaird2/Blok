@@ -1,5 +1,9 @@
 //
 //modified by: Dason B
+//Caroline C
+//Carlos M
+//Sean
+//RJ
 //date: Spring 2025
 //
 //original author: Gordon Griesel
@@ -31,7 +35,6 @@ using namespace std;
 #include "Global.h"
 #include "Image.h"
 #include "stoledoheader.h"
-
 // macro
 #define rnd() (float)rand() / (float)RAND_MAX
 #define MAX_PARTICLES 1000
@@ -316,8 +319,12 @@ void render()
     makeStartScreen();
 
     // DRAW ALL BOXES
+<<<<<<< HEAD
     drawBoxes();
     drawTriangles();
+=======
+	drawBoxes();
+>>>>>>> e6fe8199e5377d8a31d458a6bbb266868de67e53
     if (g.game_state == 3) {
         drawPlayerBox();
     }
