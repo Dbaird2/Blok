@@ -164,11 +164,6 @@ void dasonPhysics(int n)
 
         } else {
         }
-        /*player.stop_w = 0;
-        player.stop_s = 0;
-        player.stop_d = 0;
-        player.stop_a = 0;*/
-
     }
 
 }
@@ -343,7 +338,8 @@ void drawBoxes()
                 b->pos[1] += bounceOffset+sin(animationTime)*0.1;
             }*/
             glPushMatrix();
-            glColor3fv(boxes->color);
+            glColor3fv(b->color);
+            cout<<b->color[0]<<" "<<b->color[1]<<" "<<b->color[2] << endl;
             glTranslatef(b->pos[0], b->pos[1], 0.0f);
             glBegin(GL_QUADS);
             glVertex2f(-b->width, -b->height);
@@ -394,14 +390,16 @@ void drawPlayerBox () {
     player.pos[0] = player.tempx;
     player.pos[1] = player.tempy;
     Player *player_box = &player;
+    int width = player_box->width;
+    int height = player_box->height;
     glPushMatrix();
     glColor3fv(player_box->color);
     glTranslatef(player_box->pos[0], player_box->pos[1], 0.0f);
     glBegin(GL_QUADS);
-    glVertex2f(-player_box->width, -player_box->height);
-    glVertex2f(-player_box->width,  player_box->height);
-    glVertex2f( player_box->width, player_box->height);
-    glVertex2f( player_box->width, -player_box->height);
+    glVertex2f(-width, -height);
+    glVertex2f(-width,  height);
+    glVertex2f( width,  height);
+    glVertex2f( width, -height);
     glEnd();
     glPopMatrix();
 }

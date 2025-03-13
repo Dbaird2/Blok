@@ -10,9 +10,6 @@ class MenuBox {
         int width;
         int height;
         float pos[2];
-        //float prev[2];
-        //float vel[2];
-        //float force[2];
         float color[3];
         char text[100];
         MenuBox () 
@@ -86,9 +83,9 @@ class Global {
         int game_state;
         int credit;
         bool key_states[256];
-        float save_w;
-        float ydir;
-        float ypos[2];
+        //float save_w;
+        //float ydir;
+        //float ypos[2];
         int red, blue, green;
         int xres, yres;
         float gravity;
@@ -97,17 +94,19 @@ class Global {
             gravity = -0.5f;
             credit = 0;
             game_state = 1;
-            /* The number of boxes to produce using game_state  */
+            /* The number of boxes to produce using game_state 
+             * Will move to Menu Box */
             menu_box_amt[0] = {2};
             menu_box_amt[1] = {6};
             xres = 900;
             yres = 500;
-            ydir = 30.0f;
+            //ydir = 30.0f;
             red = 100;
             green = 120;
             blue = 220;
 
             ren.backgroundImage = nullptr;
+            ren.dasonLevelBackgroundImage = nullptr;
         }
 } ;
 
