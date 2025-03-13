@@ -53,7 +53,7 @@ Image img[2] = {
 int n = 0;
 float spd = 0;
 
-void makeParticle(int x, int y) 
+/*void makeParticle(int x, int y) 
 {
     if (n >= MAX_PARTICLES)
         return;
@@ -69,7 +69,7 @@ void makeParticle(int x, int y)
     particles[n].vel[0] = random_num * 0.3f;
     particles[n].vel[1] = random_num * 0.1f - 1.0;
     ++n;
-}
+}*/
 
 class X11_wrapper {
     private:
@@ -310,7 +310,7 @@ void* physics(void *arg)
     dasonPhysics(n);
     return 0;
 }
-
+int i = 0;
 void render()
 {
 
@@ -320,7 +320,12 @@ void render()
 
     if (g.game_state > 2)  {
         drawPlayerBox();
-        //cout << player.pos[0] << " " << player.pos[1] << endl;
+#ifdef MAP_HELP
+        if ( i % 10  == 0) {
+            cout << player.pos[0] << " " << player.pos[1] << endl;
+        }
+        i++;
+#endif
     }
     // DRAW ALL BOXES
     drawBoxes();

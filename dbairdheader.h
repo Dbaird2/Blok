@@ -1,11 +1,11 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <unistd.h> 
-#include <iostream>
+//#include <cstdio>
+//#include <cstdlib>
+//#include <cstring>
+//#include <unistd.h> 
+//#include <iostream>
 #include "Global.h"
 
 void makeStartScreen();
