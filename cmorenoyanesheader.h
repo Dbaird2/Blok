@@ -1,13 +1,9 @@
-#ifndef JOEMAMA_H
-#define JOEMAMA_H
+#ifndef CMORENO_H
+#define CMORENO_H
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <unistd.h> 
-#include <iostream>
+//#include "Image.h"
+//#include <GL/glx.h>
 #include "Global.h"
-
 void drawTriangles();
 
 #endif
