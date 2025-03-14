@@ -20,6 +20,7 @@ void handleKeyRelease(XKeyEvent *event);
 void processMovement();
 void dasonMazeLevelBackground();
 void init_dasonMazePlayer();
+void dasonDrawWalls();
 /*class Image {
     public:
         int width, height;

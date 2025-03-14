@@ -14,8 +14,10 @@ class MenuBox {
         char text[100];
         MenuBox () 
         {
-            width = 100;
-            height = 50;
+            width = 5;
+            height = 30;
+            pos[0] = 400;
+            pos[1] = 200;
             //vel[0] = vel[1] = 0.0f;
             color[0] = 0.5f;
             color[1] = 0.0f;
@@ -24,6 +26,30 @@ class MenuBox {
 };
 extern MenuBox boxes[];
 extern MenuBox particles[];
+
+class Wall {
+    public:
+        int id;
+        int width;
+        int height;
+        float pos[2];
+        float color[3];
+        Wall () 
+        {
+            width = 5;
+            height = 50;
+            color[0] = 0.5f;
+            color[1] = 0.0f;
+            color[2] = 1.0f;
+        }
+        Wall (int x, int y) 
+        {
+            width = x;
+            height = y;
+        }
+};
+extern Wall walls[];
+
 
 class Player {
     public:

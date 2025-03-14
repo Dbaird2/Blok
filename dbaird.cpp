@@ -124,50 +124,48 @@ void defineBox()
 
 void dasonPhysics(int n)
 {
+    
     if (g.game_state == 6) {
-        if (player.pos[0] >= 530 && player.pos[0] <= 565 
-         && player.pos[1] <= 320 && player.pos[1] - player.height >= 215) {
-            if (player.pos[0] >= 555) {
-                player.stop_a = 1;
-                //cout << player.stop_a << " a" << endl;
-            } else {
-                player.stop_a = 0;
-                //cout << player.stop_a << " a" << endl;
-            }
-            if (player.pos[1] == 315) {
-                player.stop_s = 1;
-                //cout << player.stop_s << " s" << endl;
-            } else {
-                player.stop_s = 0;
-                //cout << player.stop_s << " s" << endl;
-            }
-            if (player.pos[0] >= 540 && player.pos[0] <= 545) {
-                player.stop_d = 1;
-                //cout << player.stop_d << " d" << endl;
-            } else {
-                player.stop_d = 0;
-                //cout << player.stop_d << " d" << endl;
-            }
-            if (player.pos[1] <= 225) {
-                player.stop_w = 1;
-                //cout << player.stop_w << " w" << endl;
-            } else {
-                player.stop_w = 0;
-                //cout << player.stop_w << " w" << endl;
-            }
-        }
-        if (player.pos[0] >= 340 && player.pos[0] <= 545 
-         && player.pos[1] <= 295 && player.pos[1] >= 270){
-            if (player.pos[1] <= 280) {
-                player.stop_w = 1;
-            }
+        glClear(GL_COLOR_BUFFER_BIT);
+        for (int i = 0; i < 2; i++) {
+            Wall *w = &walls[i];
+            Player *p = &player;
+            
 
-        } else {
+            int x_offset = p->width;
+            int y_offset = p->height;
+            int box_top = w->pos[1] + w->height /*- p->height*/;
+            int box_bot = w->pos[1] - w->height /*- p->height*/;
+            int box_left = w->pos[0] - w->width*1.5;
+            int box_right = w->pos[0] + w->width*1.5;
+
+            if ((p->pos[1] <= box_top + y_offset)
+                    && (p->pos[1] >= box_bot - y_offset)
+                    && (p->pos[0] >= box_left - x_offset) 
+                    && (p->pos[0] <= box_right + x_offset)) {
+                if (p->pos[1] <= box_top - y_offset/4)
+                    p->tempy -= 5;
+                if (p->pos[1] >= box_bot+y_offset/4) 
+                    p->tempy += 5;
+                if (p->pos[0] <= box_right) 
+                    p->tempx -= 5;
+                if (p->pos[0] >= box_left)
+                    p->tempx += 5;
+
+
+
+#ifdef MAP_HELP
+                cout << box_top << "top " << box_bot << " bot" << endl;
+                cout << box_left << " left " << box_right << " right\n" << endl;
+                cout << w->pos[1] << " " << w->pos[0] << endl;
+#endif
+            } /*else { p->stop_a = 0; }*/
         }
     }
 
 }
 
+/* COMBINE INTO ONE FUNCTION */
 void dasonRenderBackground() 
 {
     ren.backgroundImage = &img[0];
@@ -179,13 +177,13 @@ void dasonRenderBackground()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
             GL_RGB, GL_UNSIGNED_BYTE, ren.backgroundImage->data);
-    /*unsigned char *dasonMenuBackground = ren.backgroundImage->buildAlphaData(&img[1]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
-            GL_RGB, GL_UNSIGNED_BYTE, dasonMenuBackground);
-    free(dasonMenuBackground);*/
+    /*unsigned char *dasonMenuBackground = 
+     * ren.backgroundImage->buildAlphaData(&img[1]);
+     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
+     GL_RGB, GL_UNSIGNED_BYTE, dasonMenuBackground);
+     free(dasonMenuBackground);*/
 
 }
-
 void dasonMazeLevelBackground() 
 {
     ren.dasonLevelBackgroundImage = &img[1];
@@ -195,13 +193,15 @@ void dasonMazeLevelBackground()
     glBindTexture(GL_TEXTURE_2D, ren.dasonLevelBackgroundTexture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    /*unsigned char *dasonMazeData = ren.dasonLevelBackgroundImage->buildAlphaData(&img[1]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
-            GL_RGB, GL_UNSIGNED_BYTE, dasonMazeData);
-    free(dasonMazeData);*/
+    /*unsigned char *dasonMazeData = 
+     * ren.dasonLevelBackgroundImage->buildAlphaData(&img[1]);
+     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
+     GL_RGB, GL_UNSIGNED_BYTE, dasonMazeData);
+     free(dasonMazeData);*/
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
             GL_RGB, GL_UNSIGNED_BYTE, ren.dasonLevelBackgroundImage->data);
 }
+/*---------------------------------------------------*/
 
 void makeStartScreen() 
 {
@@ -239,15 +239,15 @@ void makeStartScreen()
     } else if (g.game_state == 6) { 
         //glDeleteTextures(1, &ren.backgroundTexture);
 
-        float imageAspect = 
-            static_cast<float>(ren.dasonLevelBackgroundImage->width) 
-            / ren.dasonLevelBackgroundImage->height;
+        /*float imageAspect = 
+          static_cast<float>(ren.dasonLevelBackgroundImage->width) 
+          / ren.dasonLevelBackgroundImage->height;
 
         // Adjust width/height based on aspect ratio
         if (screenAspect > imageAspect) {
-            quadWidth = g.yres * imageAspect;
+        quadWidth = g.yres * imageAspect;
         } else {
-            quadHeight = g.xres / imageAspect;
+        quadHeight = g.xres / imageAspect;
         }
 
         // Center the image in the viewport
@@ -261,16 +261,57 @@ void makeStartScreen()
         glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset);
         glTexCoord2f(0.0, 0.0); glVertex2f(xOffset, yOffset + quadHeight); 
         glTexCoord2f(1.0, 0.0); glVertex2f(xOffset + quadWidth, 
-                yOffset + quadHeight); 
+        yOffset + quadHeight); 
         glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset);
 
         glEnd();
         glPopMatrix();
+        */
     }
 }
 
 float animationTime = 0.0f; 
 float bounceHeight = 0.5f;
+
+void dasonDrawWalls() 
+{
+    for ( int i = 0; i < 2; i++) {
+        glPushMatrix();
+        glColor3ub(50, 120, 220);
+        Wall *w = &walls[i];
+        int width = w->width;
+        int height = w->height;
+        w->pos[0] = g.xres/2 + i*6*width;
+        w->pos[1] = g.yres/2;
+        glTranslatef(w->pos[0], w->pos[1], 0.0f);
+        glBegin(GL_QUADS);
+        glVertex2f(-width, -height);
+        glVertex2f(-width,  height);
+        glVertex2f( width,  height);
+        glVertex2f( width, -height);
+        glEnd();
+        glPopMatrix();
+    }
+/*
+    glPushMatrix();
+    glColor3ub(50, 120, 220);
+    Wall *w2 = &walls[1];
+    w2->width = 50;
+    w2->height = 5;
+    width = w2->height;
+    height = w2->width;
+    w2->pos[0] = g.xres/2-width;
+    w2->pos[1] = g.yres/2;
+    glTranslatef(w2->pos[0], w2->pos[1], 0.0f);
+    glBegin(GL_QUADS);
+    glVertex2f(-width, -height);
+    glVertex2f(-width,  height);
+    glVertex2f( width,  height);
+    glVertex2f( width, -height);
+    glEnd();
+    glPopMatrix();
+*/
+}
 
 /*----------------------------------------------------*/
 /* START MENU BOXEES */
@@ -325,21 +366,21 @@ void drawBoxes()
             MenuBox *b = &boxes[i];
 
             /*float bounceOffset = sin(animationTime) * bounceHeight;
-            if (i == 0) {
-                bounceHeight = 0.3f;
-                b->pos[1] += bounceOffset+sin(animationTime)*(-0.1);
-            }
-            if (i == 1) {
-                bounceHeight = 0.3f;
-                b->pos[1] += bounceOffset+sin(animationTime)*0.1;
-            }
-            if (i == 2 || i == 3 || i == 4) {
-                bounceHeight = 0.5f;
-                b->pos[1] += bounceOffset+sin(animationTime)*0.1;
-            }*/
+              if (i == 0) {
+              bounceHeight = 0.3f;
+              b->pos[1] += bounceOffset+sin(animationTime)*(-0.1);
+              }
+              if (i == 1) {
+              bounceHeight = 0.3f;
+              b->pos[1] += bounceOffset+sin(animationTime)*0.1;
+              }
+              if (i == 2 || i == 3 || i == 4) {
+              bounceHeight = 0.5f;
+              b->pos[1] += bounceOffset+sin(animationTime)*0.1;
+              }*/
             glPushMatrix();
             glColor3fv(b->color);
-            cout<<b->color[0]<<" "<<b->color[1]<<" "<<b->color[2] << endl;
+            //cout<<b->color[0]<<" "<<b->color[1]<<" "<<b->color[2] << endl;
             glTranslatef(b->pos[0], b->pos[1], 0.0f);
             glBegin(GL_QUADS);
             glVertex2f(-b->width, -b->height);

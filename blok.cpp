@@ -42,6 +42,7 @@ using namespace std;
 //some structures
 //
 Global g;
+Wall walls[100];
 ImageRenderer ren;
 MenuBox boxes[MAX_BOXES];
 Player player;
@@ -318,6 +319,9 @@ void render()
     glClear(GL_COLOR_BUFFER_BIT);
     makeStartScreen();
 
+    if (g.game_state == 6) {
+        dasonDrawWalls();
+    }
     if (g.game_state > 2)  {
         drawPlayerBox();
 #ifdef MAP_HELP
