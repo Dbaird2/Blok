@@ -4,23 +4,8 @@
  * Assignment: cmorenoyanes.cpp   *
  **********************************/
 
-#include <iostream>
-#include <stdio.h>
-#include <random>
-#include <unistd.h>
-#include <cstdlib>
-#include <ctime>
-#include <cstring>
-#include <cmath>
-#include <X11/Xlib.h>
-#include <X11/keysym.h>
-#include <GL/glx.h>
 #include "fonts.h"
-#include <pthread.h>
-#include "functions.h"
 #include "cmorenoyanesheader.h"
-#include "Global.h"
-#include "Image.h"
 
 using namespace std;
 
@@ -40,17 +25,15 @@ void carlosEndCredit (void)
 
 void drawTriangles ()
 {
-    //draw the triangles
-    //defineTriangle();
+    // Draw the triangles
     glPushMatrix();
     glColor3f(1.0, 0, 0);
     glDisable(GL_DEPTH_TEST);
     glTranslatef(g.xres/2, g.yres/2, 0.0f);
-    //glTranslatef(0.0f, 0.0f, 0.0f);
     glBegin(GL_TRIANGLES);
-    glVertex2f(100, 100);
-    glVertex2f(150, 100);
-    glVertex2f(100, 150);
+    glVertex2f(-17.32, -10.0);
+    glVertex2f(17.32, -10.0);
+    glVertex2f(0.0, 20.0);
     glEnd();
     glPopMatrix();
 }
