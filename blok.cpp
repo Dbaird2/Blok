@@ -46,14 +46,14 @@ ImageRenderer ren;
 MenuBox boxes[MAX_BOXES];
 Player player;
 MenuBox particles[MAX_PARTICLES];
-Image img[1] = {
-    "./background.png" 
+Image img[2] = {
+    "./background.png",
+    "./wip.png"
 };
 int n = 0;
-//int b = 0;
 float spd = 0;
 
-void makeParticle(int x, int y) 
+/*void makeParticle(int x, int y) 
 {
     if (n >= MAX_PARTICLES)
         return;
@@ -69,7 +69,7 @@ void makeParticle(int x, int y)
     particles[n].vel[0] = random_num * 0.3f;
     particles[n].vel[1] = random_num * 0.1f - 1.0;
     ++n;
-}
+}*/
 
 class X11_wrapper {
     private:
@@ -252,23 +252,31 @@ int check_keys(XEvent *e)
     if (e->type != KeyPress && e->type != KeyRelease)
         return 0;
     if (e->type == KeyPress || e->type == KeyRelease) {
-        int key = XLookupKeysym(&e->xkey, 0);
-        //cout << "Type " << e->type << endl;
         switch (e->type) {
             case KeyPress:
                 //Any Key is Pressed
                 //Function to add pressed button into array keysym
                 //This allows multiple button presses at the sametime
-                //if (release)
                 handleKeyPress(&e->xkey);
                 break;
             case KeyRelease:
                 handleKeyRelease(&e->xkey);
                 break;
         }
+    }
+    if (e->type == KeyPress ) {
+        int key = XLookupKeysym(&e->xkey, 0);
         switch (key) {
             case XK_Escape:
                 return 1;
+            case XK_c:
+                g.credit = !g.credit;
+                break;
+            case XK_l:
+                g.game_state = 6;
+                glDeleteTextures(1, &ren.backgroundTexture);
+                init_dasonMazePlayer();
+                //init_opengl();
         }
     }
     return 0;
@@ -292,16 +300,8 @@ void init_opengl(void)
     glEnable(GL_TEXTURE_2D);
     initialize_fonts();
 
+    dasonMazeLevelBackground();
     dasonRenderBackground();
-    /*rend.backgroundImage = &img[0];
-    glGenTextures(1, &rend.backgroundTexture);
-    w = g.backgroundImage->width; 
-    h = g.backgroundImage->height; 
-    glBindTexture(GL_TEXTURE_2D, g.backgroundTexture);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
-            GL_RGB, GL_UNSIGNED_BYTE, g.backgroundImage->data);
-*/
 }
 
 
@@ -310,7 +310,7 @@ void* physics(void *arg)
     dasonPhysics(n);
     return 0;
 }
-//void startScreenTexture(Image *backgroundImage, 
+int i = 0;
 void render()
 {
 
@@ -318,11 +318,19 @@ void render()
     glClear(GL_COLOR_BUFFER_BIT);
     makeStartScreen();
 
+    if (g.game_state > 2)  {
+        drawPlayerBox();
+#ifdef MAP_HELP
+        if ( i % 10  == 0) {
+            cout << player.pos[0] << " " << player.pos[1] << endl;
+        }
+        i++;
+#endif
+    }
     // DRAW ALL BOXES
     drawBoxes();
     if (g.game_state == 3) {
         drawTriangles();
-        drawPlayerBox();
     }
     seanrungame();
 

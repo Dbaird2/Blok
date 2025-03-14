@@ -1,11 +1,11 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <unistd.h> 
-#include <iostream>
+//#include <cstdio>
+//#include <cstdlib>
+//#include <cstring>
+//#include <unistd.h> 
+//#include <iostream>
 #include "Global.h"
 
 void makeStartScreen();
@@ -18,6 +18,8 @@ void drawPlayerBox();
 void handleKeyPress(XKeyEvent *event);
 void handleKeyRelease(XKeyEvent *event);
 void processMovement();
+void dasonMazeLevelBackground();
+void init_dasonMazePlayer();
 /*class Image {
     public:
         int width, height;
