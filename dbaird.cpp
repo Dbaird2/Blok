@@ -134,23 +134,23 @@ void dasonPhysics(int n)
         int y_offset = p->height;
         int box_top = w->pos[1] + w->height /*- p->height*/;
         int box_bot = w->pos[1] - w->height /*- p->height*/;
+        int box_left = w->pos[0] - w->width*1.5;
         int box_right = w->pos[0] + w->width*1.5;
-        int box_left = w->pos[0] /*- w->width*1.5*/;
-        /*int box_left = w->pos[0] - w->width*1.5;
-        int box_right = w->pos[0] + w->width*1.5;*/
         //cout << p->pos[0] << " " << w->pos[0] << endl;
         if ((p->pos[1] <= box_top + y_offset)
                 && (p->pos[1] >= box_bot - y_offset)
-                && (p->pos[0] >= box_right - x_offset) 
-                && (p->pos[0] <= box_left + x_offset)) {
+                && (p->pos[0] >= box_left - x_offset) 
+                && (p->pos[0] <= box_right + x_offset)) {
             if (p->pos[1] <= box_top - y_offset/4)
                 p->tempy -= 5;
                 //cout << " bot" <<endl;
-            if (p->pos[1] >= box_bot) 
+            if (p->pos[1] >= box_bot+y_offset/4) 
                 p->tempy += 5;
                 //cout << " top" <<endl;
-            if (p->pos[0] <= box_left - p->width) 
+            if (p->pos[0] <= box_right) 
                 p->tempx -= 5;
+            if (p->pos[0] >= box_left)
+                p->tempx += 5;
             
             
 
