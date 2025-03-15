@@ -7,9 +7,9 @@
 #include "fonts.h"
 #include <math.h>
 #include <GL/glut.h>
+#include "Global.h"
 
-void carolineDrawCircle(float centerX, float centerY, float radius,
-		int segments);
+void carolineDrawCircle();
 void carolineEndCredit (void);
 
 #endif
