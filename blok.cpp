@@ -38,39 +38,29 @@ using namespace std;
 // macro
 #define rnd() (float)rand() / (float)RAND_MAX
 #define MAX_PARTICLES 1000
-#define MAX_BOXES 5
+#define MAX_BOXES 6
 //some structures
 //
 Global g;
+#define GRID_SIZE 10 
+Grid grid[GRID_SIZE];
 Wall walls[100];
 ImageRenderer ren;
 MenuBox boxes[MAX_BOXES];
 Player player;
-MenuBox particles[MAX_PARTICLES];
 Image img[2] = {
     "./background.png",
     "./wip.png"
 };
+
+int height[10] = {25, 5, 20, 25, 30, 35, 40, 5, 10, 20};
+int width[10] = {5, 25, 10, 60, 10, 20, 90, 15, 10, 20};
+int x[10] = {20, 0, 20, 250, 300, 350, 400, 500, 150, -200};
+int y[10] = {100, 100, 200, 250, 300, 350, 40, 50, 100, 200};
+
+
 int n = 0;
 float spd = 0;
-
-/*void makeParticle(int x, int y) 
-{
-    if (n >= MAX_PARTICLES)
-        return;
-    random_device rd;
-    mt19937 gen(rd());
-    uniform_real_distribution<> dis(-3.0, 6.0);
-    double random_num = dis(gen);
-
-    particles[n].width = 4;
-    particles[n].height = 4;
-    particles[n].pos[0] = x;
-    particles[n].pos[1] = y;
-    particles[n].vel[0] = random_num * 0.3f;
-    particles[n].vel[1] = random_num * 0.1f - 1.0;
-    ++n;
-}*/
 
 class X11_wrapper {
     private:
@@ -162,6 +152,7 @@ int check_keys(XEvent *e);
 
 int main()
 {
+    dasonLoadStruct(grid, height, width, x, y, GRID_SIZE);
     pthread_t p_thread[2];
     init_opengl();
     int value = 0;
@@ -320,7 +311,7 @@ void render()
     makeStartScreen();
 
     if (g.game_state == 6) {
-        dasonDrawWalls();
+        dasonDrawWalls(grid, GRID_SIZE);
     }
     if (g.game_state > 2)  {
         drawPlayerBox();
@@ -332,28 +323,13 @@ void render()
 #endif
     }
     // DRAW ALL BOXES
-    drawBoxes();
+    if ((g.game_state == 1) || (g.game_state == 2))
+        drawBoxes();
     if (g.game_state == 3) {
         drawTriangles();
     }
     seanrungame();
 
-    // DRAW ALL PARTICLES
-    for (int i = 0; i < n; i++ ) {
-        glPushMatrix();
-        glColor3ub(50, 120, 220);
-        MenuBox *p = &particles[i];
-        // 
-
-        glTranslatef(p->pos[0], p->pos[1], 0.0f);
-        glBegin(GL_QUADS);
-        glVertex2f(-p->width, -p->height);
-        glVertex2f(-p->width,  p->height);
-        glVertex2f( p->width,  p->height);
-        glVertex2f( p->width, -p->height);
-        glEnd();
-        glPopMatrix();
-    }
      if (g.credit == 1) {
         dasonEndCredit();
         carlosEndCredit();
