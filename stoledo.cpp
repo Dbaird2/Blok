@@ -30,30 +30,33 @@ void seanEndCredit(void) {
 }
 
 //Entity
-struct Entity{
-    float x, y, size;
+struct Entity {
+    float x, y;
+    float width, height;  
     float speed;
 };
 
+
 //Enemies
 Entity enemies[] = {
-    {300, 200, 20, 0.5},
-    {500, 400, 20, 0.5}
+    {300, 200, 20, 20, 0.5},
+    {500, 400, 20, 20, 0.5}
 };
 
 //Enemy Direction
 float enemydir[] = {1, -1};
 
 //Draw Enemy Rectangle
-void drawRect(float x, float y, float size, float r, float g, float b) {
+void drawRect(float x, float y, float width, float height, float r, float g, float b) {
     glColor3f(r, g, b);
     glBegin(GL_QUADS);
     glVertex2f(x, y);                   
-    glVertex2f(x + size, y);
-    glVertex2f(x + size, y + size);
-    glVertex2f(x, y + size);
+    glVertex2f(x + width, y);
+    glVertex2f(x + width, y + height);
+    glVertex2f(x, y + height);
     glEnd();
 }
+
 
 //Enemy Movement
 void updateEnemies() {
@@ -67,30 +70,10 @@ void updateEnemies() {
 
 //Collision
 bool checkCollision(Entity &enemy) {
-    return (player.pos[0] < enemy.x + enemy.size &&
-            player.pos[0] + player.width > enemy.x &&  // FIXED: Use player.width
-            player.pos[1] < enemy.y + enemy.size &&
+    return (player.pos[0] < enemy.x + enemy.width &&
+            player.pos[0] + player.width > enemy.x &&  
+            player.pos[1] < enemy.y + enemy.height &&
             player.pos[1] + player.height > enemy.y);
-}
-
-
-
-
-void drawTank(float x, float y) {
-    // Draw Main Body (Green)
-    drawRect(x, y, 50, 0.0f, 0.5f, 0.0f);
-
-    // Draw Turret (Dark Green)
-    drawRect(x + 15, y + 35, 20, 0.0f, 0.3f, 0.0f);
-
-    // Draw Cannon (Gray)
-    drawRect(x + 22, y + 50, 6, 0.5f, 0.5f, 0.5f);
-
-    // Draw Left Track (Black)
-    drawRect(x - 5, y - 5, 10, 0.0f, 0.0f, 0.0f);
-
-    // Draw Right Track (Black)
-    drawRect(x + 45, y - 5, 10, 0.0f, 0.0f, 0.0f);
 }
 
 
@@ -105,11 +88,11 @@ void seanrungame() {
                 player.pos[1] = 300; // Reset player on collision
             }
         }
-        drawTank(100 , 200);
         for (int i = 0; i < 2; i++)
-        drawRect(enemies[i].x, enemies[i].y, enemies[i].size, 1, 0, 0);
+        drawRect(enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height,1, 0, 0);
         
         
     }
 }
 
+ 
