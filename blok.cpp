@@ -55,10 +55,10 @@ Image img[2] = {
     "./wip.png"
 };
 
-int dason_height[10] = {25, 5, 20, 25, 30, 35, 40, 5, 10, 20};
-int dason_width[10] = {5, 25, 10, 60, 10, 20, 90, 15, 10, 20};
-int dason_x[10] = {20, 0, 20, 250, 300, 350, 400, 500, 150, -200};
-int dason_y[10] = {100, 100, 200, 250, 300, 350, 40, 50, 100, 200};
+int dason_height[10] = {5, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+int dason_width[10] = {40, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+int dason_x[10] = {540, 0, 20, 250, 300, 350, 400, 500, 150, -200};
+int dason_y[10] = {275, 100, 200, 250, 300, 350, 40, 50, 100, 200};
 
 
 int n = 0;
@@ -321,7 +321,7 @@ void render()
         drawPlayerBox();
 #ifdef MAP_HELP
         if ( i % 10  == 0) {
-            cout << player.pos[0] << " " << player.pos[1] << endl;
+            cout << "x " << player.pos[0] << " y " << player.pos[1] << endl;
         }
         i++;
 #endif
