@@ -32,6 +32,7 @@ using namespace std;
 #include "functions.h"
 #include "dbairdheader.h"
 #include "cmorenoyanesheader.h"
+#include "caroline.h"
 #include "Global.h"
 #include "Image.h"
 #include "stoledoheader.h"
@@ -214,7 +215,9 @@ void check_mouse(XEvent *e)
                 // MAIN MENU OVER GAME START   
 
             }
-
+		if(e->xbutton.button == 7) {
+			carolineDrawCircle();
+		}
 
             /*for (int i = 0; i < 10; i++) {
                 spd = 0;
