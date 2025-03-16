@@ -6,8 +6,11 @@
 
 #include "fonts.h"
 #include "cmorenoyanesheader.h"
+#include <math.h>
 
 using namespace std;
+float circleOffset = 0.0f;
+bool direction = true;
 
 void carlosEndCredit (void)
 {
@@ -18,10 +21,6 @@ void carlosEndCredit (void)
     ggprint8b(&credit, 16, 0x00ff0000, "Author 2: Carlos Moreno");
 }
 
-/*void defineTriangle()
-{
-    if (g.game_state >= 2)
-}*/
 
 void drawTriangles ()
 {
@@ -57,5 +56,45 @@ void drawTriangles ()
     glPopMatrix();
 }
 
+void drawCircles ()
+{
+    // Move the circles back and forth
+    if (direction)
+        circleOffset += 3.5f;
+    else
+        circleOffset -= 3.5f;
+
+    if (circleOffset > 40.0f || circleOffset < -40.0f)
+        direction = !direction;
+
+    glPushMatrix();
+    glColor3f(1.0, 0, 0);
+
+    float radius = 13.0f;
+    float circleMargin = 80.0f;
+    float positions[4][2] = {
+        {static_cast<float>(g.xres / 2 - circleMargin), static_cast<float>(g.yres / 2)},
+        {static_cast<float>(g.xres / 2 + circleMargin), static_cast<float>(g.yres / 2)},
+        {static_cast<float>(g.xres / 2), static_cast<float>(g.yres / 2 - circleMargin)},
+        {static_cast<float>(g.xres / 2), static_cast<float>(g.yres / 2 + circleMargin)}
+    };
+
+    for (int i = 0; i < 4; i++) {
+        glPushMatrix();
+        glTranslatef(positions[i][0] + circleOffset, positions[i][1], 0.0f);
+
+        glBegin(GL_TRIANGLE_FAN);
+        glVertex2f(0, 0);
+        for (int j = 0; j <= 360; j += 10) {
+            float angle = j * M_PI / 180.0f;
+            glVertex2f(cos(angle) * radius, sin(angle) * radius);
+        }
+        glEnd();
+
+        glPopMatrix();
+    }
+
+    glPopMatrix();
+}
 
 

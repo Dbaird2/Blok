@@ -331,8 +331,9 @@ void render()
         drawBoxes();
     if (g.game_state == 3) {
         drawTriangles();
+        drawCircles();
     }
-	if(g.game_state == 6 || g.game_state == 7) {
+	if(g.game_state == 7) {
 		carolineDrawCircle();
 	}
     seanrungame();
