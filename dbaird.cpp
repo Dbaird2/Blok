@@ -375,7 +375,7 @@ void drawBoxes()
             glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
             glPushMatrix();
             glDisable(GL_BLEND);
-            glColor3f(1.0f, 1.0f, 1.0f);
+            glColor3fv(box->color);
             glTranslatef(box->pos[0], box->pos[1], 0.0f);
             glBegin(GL_QUADS);
             glVertex2f(-box->width, -box->height);
