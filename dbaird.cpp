@@ -180,7 +180,7 @@ void dasonPhysics(int size)
 #ifdef MAP_HELP
                 cout << "y " <<  w->pos[1] << " x " << w->pos[0] << endl;
 #endif
-            } /*else { p->stop_a = 0; }*/
+            } 
         }
     }
 

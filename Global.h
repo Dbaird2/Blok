@@ -108,10 +108,6 @@ class Global {
         int game_state;
         int credit;
         bool key_states[256];
-        //float save_w;
-        //float ydir;
-        //float ypos[2];
-        //int red, blue, green;
         int xres, yres;
         float gravity;
         Global() {
@@ -125,10 +121,6 @@ class Global {
             menu_box_amt[1] = {6};
             xres = 900;
             yres = 500;
-            //ydir = 30.0f;
-            /*red = 100;
-            green = 120;
-            blue = 220;*/
 
             ren.backgroundImage = nullptr;
             ren.dasonLevelBackgroundImage = nullptr;
@@ -136,4 +128,4 @@ class Global {
 } ;
 
 extern Global g;
-#endif // GLOBAL_h
+#endif // GLOBAL_H
