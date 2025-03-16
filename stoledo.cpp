@@ -2,8 +2,8 @@
 //Date : Spring 2025
 //Blok
 //
-//#include <iostream>
-//using namespace std;
+#include <iostream>
+using namespace std;
 //#include <stdio.h>
 //#include <random>
 //#include <unistd.h>
@@ -70,10 +70,20 @@ void updateEnemies() {
 
 //Collision
 bool checkCollision(Entity &enemy) {
-    return (player.pos[0] < enemy.x + enemy.width &&
-            player.pos[0] + player.width > enemy.x &&  
-            player.pos[1] < enemy.y + enemy.height &&
-            player.pos[1] + player.height > enemy.y);
+    float playerLeft = player.pos[0] - player.width / 2;
+    float playerRight = player.pos[0] + player.width / 2;
+    float playerTop = player.pos[1] - player.height / 2;
+    float playerBottom = player.pos[1] + player.height / 2;
+
+    float enemyLeft = enemy.x;
+    float enemyRight = enemy.x + enemy.width;
+    float enemyTop = enemy.y;
+    float enemyBottom = enemy.y + enemy.height;
+
+    return (playerLeft < enemyRight &&
+            playerRight > enemyLeft &&  
+            playerTop < enemyBottom &&
+            playerBottom > enemyTop);
 }
 
 
@@ -84,8 +94,9 @@ void seanrungame() {
         updateEnemies();
         for (int i = 0; i < 2; i++) {
             if (checkCollision(enemies[i])) {
-                player.pos[0] = 100;
-                player.pos[1] = 300; // Reset player on collision
+                cout << "Collision detected with enemy " << i << "!\n";
+                player.tempx = 100;
+                player.tempy = 300; // Reset player on collision
             }
         }
         for (int i = 0; i < 2; i++)
