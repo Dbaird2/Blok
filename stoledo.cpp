@@ -21,6 +21,8 @@ using namespace std;
 #include "Global.h"
 //#include "Image.h"
 
+
+
 void seanEndCredit(void) {
     Rect title;
     title.bot = 18;
@@ -35,10 +37,13 @@ struct Entity {
     float width, height;  
     float speed;
 };
-
+//Goal
+Entity goal = {800, 250, 25, 25, 0};
 
 //Enemies
 Entity enemies[] = {
+    {300, 200, 20, 20, 0.5},
+    {500, 400, 20, 20, 0.5},
     {300, 200, 20, 20, 0.5},
     {500, 400, 20, 20, 0.5}
 };
@@ -64,6 +69,13 @@ void updateEnemies() {
         enemies[i].y += enemydir[i] * enemies[i].speed;
         if (enemies[i].y <= 100 || enemies[i].y >= g.yres - 100)
             enemydir[i] *= -1; 
+    
+    }
+    for (int j = 2; j < 4; j++) {
+        enemies[j].x += enemydir[j] * enemies[j].speed;
+        if (enemies[j].x <= 100 || enemies[j].x >= g.xres - 100)
+            enemydir[j] *= -1; 
+    
     }
 }
 
@@ -90,19 +102,26 @@ bool checkCollision(Entity &enemy) {
 void seanrungame() {
     if (g.game_state == 4) {
         // Draw Player Box
+
+        player.tempx = 50;
+        player.tempy = 250;
         drawPlayerBox();
         updateEnemies();
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 4; i++) {
             if (checkCollision(enemies[i])) {
                 cout << "Collision detected with enemy " << i << "!\n";
-                player.tempx = 100;
-                player.tempy = 300; // Reset player on collision
+                player.tempx = 50;
+                player.tempy = 250; 
             }
         }
-        for (int i = 0; i < 2; i++)
+        drawRect(goal.x, goal.y, goal.width, goal.height, 0, 1, 0);
+        for (int i = 0; i < 4; i++)
         drawRect(enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height,1, 0, 0);
         
-        
+        if (checkCollision(goal)) {
+            cout << "You Win!" << endl;
+            g.game_state = 2;
+    }
     }
 }
 
