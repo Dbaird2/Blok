@@ -198,11 +198,6 @@ void dasonRenderBackground()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
             GL_RGB, GL_UNSIGNED_BYTE, ren.backgroundImage->data);
-    /*unsigned char *dasonMenuBackground = 
-     * ren.backgroundImage->buildAlphaData(&img[1]);
-     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
-     GL_RGB, GL_UNSIGNED_BYTE, dasonMenuBackground);
-     free(dasonMenuBackground);*/
 
 }
 void dasonMazeLevelBackground() 
@@ -257,37 +252,6 @@ void makeStartScreen()
 
         glEnd();
         glPopMatrix();
-    } else if (g.game_state == 6) { 
-        //glDeleteTextures(1, &ren.backgroundTexture);
-
-        /*float imageAspect = 
-          static_cast<float>(ren.dasonLevelBackgroundImage->width) 
-          / ren.dasonLevelBackgroundImage->height;
-
-        // Adjust width/height based on aspect ratio
-        if (screenAspect > imageAspect) {
-        quadWidth = g.yres * imageAspect;
-        } else {
-        quadHeight = g.xres / imageAspect;
-        }
-
-        // Center the image in the viewport
-        float xOffset = (g.xres - quadWidth) / 2.0;
-        float yOffset = (g.yres - quadHeight) / 2.0;
-
-        glPushMatrix();
-        glBindTexture(GL_TEXTURE_2D, ren.dasonLevelBackgroundTexture);
-        glColor3f(1.0f, 1.0f, 1.0f);
-        glBegin(GL_QUADS);
-        glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset);
-        glTexCoord2f(0.0, 0.0); glVertex2f(xOffset, yOffset + quadHeight); 
-        glTexCoord2f(1.0, 0.0); glVertex2f(xOffset + quadWidth, 
-        yOffset + quadHeight); 
-        glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset);
-
-        glEnd();
-        glPopMatrix();
-        */
     }
 }
 
@@ -309,8 +273,6 @@ void dasonDrawWalls(Grid grid[], int size)
 
         int width = w->width;
         int height = w->height;
-        //w->pos[0] = g.xres/2 + i*6*width;
-        //w->pos[1] = g.yres/2;
         glTranslatef(w->pos[0], w->pos[1], 0.0f);
         glBegin(GL_QUADS);
         glVertex2f(-width, -height);
@@ -471,6 +433,5 @@ void processMovement()
     if (g.key_states[XK_d])
         if (!player.stop_d)
             player.tempx += 5;
-    //cout << g.stop_d << endl;
 }
 /*----------------------------------------------------*/
