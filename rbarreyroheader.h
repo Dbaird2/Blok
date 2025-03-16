@@ -1,6 +1,7 @@
 #ifndef RBARREYRO_HEADER_H
 #define RBARREYRO_HEADER_H
 
+#include "Global.h"
 #include <X11/Xlib.h>
 #include <GL/glx.h>
 #include <vector>
@@ -11,6 +12,7 @@
 struct Player;
 class GameMap;
 
+void rj_rungame();
 //--------------------------------------------------
 // physics.h
 struct Player {

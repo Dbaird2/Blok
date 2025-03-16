@@ -3,6 +3,8 @@
 //
 //
 #include "rbarreyroheader.h"
+#include "dbairdheader.h"
+#include "Global.h"
 #include <iostream>
 #include <unistd.h>
 #include <stdexcept>
@@ -191,5 +193,18 @@ int main() {
         return 1;
     }
 }
+
+void rj_rungame() {
+    if (g.game_state == 4) {
+        // Draw Player Box
+        drawPlayerBox();
+        updateEnemies();
+        for (int i = 0; i < 2; i++)
+        drawRect(enemies[i].x, enemies[i].y, enemies[i].size, 1, 0, 0);
+        
+        
+    }
+}
+
 
 //--------------------------------------------------------------------
