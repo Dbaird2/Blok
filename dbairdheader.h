@@ -20,15 +20,17 @@ void handleKeyRelease(XKeyEvent *event);
 void processMovement();
 void dasonMazeLevelBackground();
 void init_dasonMazePlayer();
-void dasonDrawWalls();
-/*class Image {
-    public:
-        int width, height;
-        unsigned char *data;
 
-        ~Image();                       
-        Image(const char *fname);       
-        void render();
-};*/
+struct Grid {
+    int state;
+    int height;
+    int width;
+    int x;
+    int y;
+};
+
+void dasonLoadStruct(Grid grid[], int height[], int width[], 
+        int x[], int y[], int size);
+void dasonDrawWalls(Grid grid[], int size);
 
 #endif

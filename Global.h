@@ -18,7 +18,6 @@ class MenuBox {
             height = 30;
             pos[0] = 400;
             pos[1] = 200;
-            //vel[0] = vel[1] = 0.0f;
             color[0] = 0.5f;
             color[1] = 0.0f;
             color[2] = 1.0f;
@@ -112,7 +111,7 @@ class Global {
         //float save_w;
         //float ydir;
         //float ypos[2];
-        int red, blue, green;
+        //int red, blue, green;
         int xres, yres;
         float gravity;
         Global() {
@@ -127,9 +126,9 @@ class Global {
             xres = 900;
             yres = 500;
             //ydir = 30.0f;
-            red = 100;
+            /*red = 100;
             green = 120;
-            blue = 220;
+            blue = 220;*/
 
             ren.backgroundImage = nullptr;
             ren.dasonLevelBackgroundImage = nullptr;
