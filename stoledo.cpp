@@ -42,14 +42,14 @@ Entity goal = {800, 250, 25, 25, 0};
 
 //Enemies
 Entity enemies[] = {
-    {300, 200, 20, 20, 0.5},
-    {500, 400, 20, 20, 0.5},
-    {300, 200, 20, 20, 0.5},
-    {500, 400, 20, 20, 0.5}
+    {300, 200, 20, 20, 30.0},
+    {500, 400, 20, 20, 30.0},
+    {300, 200, 20, 20, 30.0},
+    {500, 400, 20, 20, 30.0}
 };
 
 //Enemy Direction
-float enemydir[] = {1, -1};
+float enemydir[] = {1, -1, 1 ,-1};
 
 //Draw Enemy Rectangle
 void drawRect(float x, float y, float width, float height, float r, float g, float b) {
