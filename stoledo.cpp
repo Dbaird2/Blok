@@ -99,12 +99,16 @@ bool checkCollision(Entity &enemy) {
 }
 
 
+
 void seanrungame() {
     if (g.game_state == 4) {
+        static bool initialized = false;
+        if (!initialized) {
+            player.tempx = 50;
+            player.tempy = 250;
+            initialized = true;
+        }
         // Draw Player Box
-
-        player.tempx = 50;
-        player.tempy = 250;
         drawPlayerBox();
         updateEnemies();
         for (int i = 0; i < 4; i++) {
