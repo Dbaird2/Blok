@@ -37,8 +37,8 @@ struct Entity{
 
 //Enemies
 Entity enemies[] = {
-    {300, 200, 20, 3},
-    {500, 400, 20, 3}
+    {300, 200, 20, 0.5},
+    {500, 400, 20, 0.5}
 };
 
 //Enemy Direction
@@ -65,11 +65,47 @@ void updateEnemies() {
 }
 
 
+//Collision
+bool checkCollision(Player &player, Entity &enemy) {
+    return (player.pos[0] < enemy.x + enemy.size &&
+            player.pos[0] + player.width > enemy.x &&  // FIXED: Use player.width
+            player.pos[1] < enemy.y + enemy.size &&
+            player.pos[1] + player.height > enemy.y);
+}
+
+
+
+
+void drawTank(float x, float y) {
+    // Draw Main Body (Green)
+    drawRect(x, y, 50, 0.0f, 0.5f, 0.0f);
+
+    // Draw Turret (Dark Green)
+    drawRect(x + 15, y + 35, 20, 0.0f, 0.3f, 0.0f);
+
+    // Draw Cannon (Gray)
+    drawRect(x + 22, y + 50, 6, 0.5f, 0.5f, 0.5f);
+
+    // Draw Left Track (Black)
+    drawRect(x - 5, y - 5, 10, 0.0f, 0.0f, 0.0f);
+
+    // Draw Right Track (Black)
+    drawRect(x + 45, y - 5, 10, 0.0f, 0.0f, 0.0f);
+}
+
+
 void seanrungame() {
     if (g.game_state == 4) {
         // Draw Player Box
         drawPlayerBox();
         updateEnemies();
+        for (int i = 0; i < 2; i++) {
+            if (checkCollision(player, enemies[i])) {
+                player.pos[0] = 100;
+                player.pos[1] = 300; // Reset player on collision
+            }
+        }
+        drawTank(100 , 200);
         for (int i = 0; i < 2; i++)
         drawRect(enemies[i].x, enemies[i].y, enemies[i].size, 1, 0, 0);
         

@@ -43,8 +43,8 @@ using namespace std;
 //some structures
 //
 Global g;
-#define GRID_SIZE 10 
-Grid grid[GRID_SIZE];
+#define DASON_GRID_SIZE 10 
+Grid dason_grid[DASON_GRID_SIZE];
 Wall walls[100];
 ImageRenderer ren;
 MenuBox boxes[MAX_BOXES];
@@ -54,10 +54,10 @@ Image img[2] = {
     "./wip.png"
 };
 
-int height[10] = {25, 5, 20, 25, 30, 35, 40, 5, 10, 20};
-int width[10] = {5, 25, 10, 60, 10, 20, 90, 15, 10, 20};
-int x[10] = {20, 0, 20, 250, 300, 350, 400, 500, 150, -200};
-int y[10] = {100, 100, 200, 250, 300, 350, 40, 50, 100, 200};
+int dason_height[10] = {25, 5, 20, 25, 30, 35, 40, 5, 10, 20};
+int dason_width[10] = {5, 25, 10, 60, 10, 20, 90, 15, 10, 20};
+int dason_x[10] = {20, 0, 20, 250, 300, 350, 400, 500, 150, -200};
+int dason_y[10] = {100, 100, 200, 250, 300, 350, 40, 50, 100, 200};
 
 
 int n = 0;
@@ -153,7 +153,7 @@ int check_keys(XEvent *e);
 
 int main()
 {
-    dasonLoadStruct(grid, height, width, x, y, GRID_SIZE);
+    dasonLoadStruct(dason_grid, dason_height, dason_width, dason_x, dason_y, DASON_GRID_SIZE);
     pthread_t p_thread[2];
     init_opengl();
     int value = 0;
@@ -314,7 +314,7 @@ void render()
     makeStartScreen();
 
     if (g.game_state == 6) {
-        dasonDrawWalls(grid, GRID_SIZE);
+        dasonDrawWalls(dason_grid, DASON_GRID_SIZE);
     }
     if (g.game_state > 2)  {
         drawPlayerBox();
