@@ -178,9 +178,9 @@ void dasonPhysics(int size)
                 else if (p->pos[0] <= box_left) 
                     p->tempx -= 5;
 #ifdef MAP_HELP
-                cout << w->pos[1] << " " << w->pos[0] << endl;
+                cout << "y " <<  w->pos[1] << " x " << w->pos[0] << endl;
 #endif
-            } /*else { p->stop_a = 0; }*/
+            } 
         }
     }
 

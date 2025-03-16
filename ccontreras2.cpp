@@ -1,19 +1,22 @@
 //Caroline Contreras
 //Spring 2025
 //3350 Project
-
+//Date: 3/16/25
 #include <iostream>
 #include "functions.h"
 #include "fonts.h"
 #include <math.h>
-#include <GL/glut.h>
+#include <GL/gl.h>
 #include "caroline.h"
+
+#include <vector>
+#include "Global.h"
 
 using namespace std;
 //=================================================================
 // GOAL: Render a circle
 //=================================================================
-const double PI = 3.14159265358979323846;
+const float PI = 3.14159265358979323846f;
 class Circle {
 	public: 
 		float cX;
@@ -21,10 +24,10 @@ class Circle {
 		float r;
 		float circleSegments;
 		Circle(){
-			cX = 0.0f;
-			cY = 0.0f;
-			r = 0.5f;
-			circleSegments = 360;
+			cX = 100.0f;
+			cY = 100.0f;
+			r = 10.0f;
+			circleSegments = 20;
 		}
 		Circle(float circleX, float circleY, float rad, int cirSegments) {
 			cX = circleX;
@@ -37,17 +40,18 @@ class Circle {
 void carolineDrawCircle() {
 	glPushMatrix();
 	Circle circle1;
-	glColor3f(1.0, 0, 0);
+	glColor3f(0.5f, 0.5f, 0.5f);
 	glTranslatef(g.xres/2, g.yres/2, 0.0f);
 
 	glBegin(GL_TRIANGLE_FAN);//basically uses a bunch of triangles 
 							 //to make a circle
 	glVertex2f(circle1.cX, circle1.cY); // Center of the circle
 	for (int i = 0; i <= circle1.circleSegments; ++i) {
-		float angle = 2.0 * PI * float(i) / float(circle1.circleSegments);
+		float angle = 2.0f * PI * float(i) / float(circle1.circleSegments);
 		float x = circle1.r * cos(angle);
 		float y = circle1.r * sin(angle);
-		glVertex2f(circle1.cX + x, circle1.cY + y);
+		glVertex2f(circle1.cX/1.0f + x, circle1.cY/1.0f + y);
+//		cout << "angle " << angle << "x " << x << "y " << y << endl;
 	}
 	glEnd();
 	glPopMatrix();
