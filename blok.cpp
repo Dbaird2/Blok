@@ -40,6 +40,7 @@ using namespace std;
 #define rnd() (float)rand() / (float)RAND_MAX
 #define MAX_PARTICLES 1000
 #define MAX_BOXES 6
+
 //some structures
 //
 Global g;
@@ -331,6 +332,9 @@ void render()
     if (g.game_state == 3) {
         drawTriangles();
     }
+	if(g.game_state == 7) {
+		carolineDrawCircle();
+	}
     seanrungame();
 
      if (g.credit == 1) {

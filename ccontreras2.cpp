@@ -37,9 +37,8 @@ class Circle {
 void carolineDrawCircle() {
 	glPushMatrix();
 	Circle circle1;
-	//glColor3fv(boxes->color);
-	glTranslatef(g.xres/2, g.yres/2, 0.0f);
 	glColor3f(1.0, 0, 0);
+	glTranslatef(g.xres/2, g.yres/2, 0.0f);
 
 	glBegin(GL_TRIANGLE_FAN);//basically uses a bunch of triangles 
 							 //to make a circle
@@ -53,9 +52,7 @@ void carolineDrawCircle() {
 	glEnd();
 	glPopMatrix();
 }
-
-//carolineDrawCircle(cX, cY, r, circleSegments);
-
+//below is my function for my end credit
 void carolineEndCredit (void)
 {
 	Rect title;
