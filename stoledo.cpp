@@ -16,7 +16,7 @@
 //#include <GL/glx.h>
 #include "fonts.h"
 //#include <pthread.h>
-#include "functions.h"
+//#include "functions.h"
 #include "dbairdheader.h"
 #include "Global.h"
 //#include "Image.h"
@@ -66,7 +66,7 @@ void updateEnemies() {
 
 
 //Collision
-bool checkCollision(Player &player, Entity &enemy) {
+bool checkCollision(Entity &enemy) {
     return (player.pos[0] < enemy.x + enemy.size &&
             player.pos[0] + player.width > enemy.x &&  // FIXED: Use player.width
             player.pos[1] < enemy.y + enemy.size &&
@@ -100,7 +100,7 @@ void seanrungame() {
         drawPlayerBox();
         updateEnemies();
         for (int i = 0; i < 2; i++) {
-            if (checkCollision(player, enemies[i])) {
+            if (checkCollision(enemies[i])) {
                 player.pos[0] = 100;
                 player.pos[1] = 300; // Reset player on collision
             }
