@@ -20,9 +20,35 @@ using namespace std;
 #include "dbairdheader.h"
 #include "Global.h"
 //#include "Image.h"
+#include <AL/al.h>
+#include <AL/alc.h>
+#include <AL/alut.h>
 
+//Music
+/* ALuint buffer, source;
+void initAudio(const char* filename) {
+    alutInit(0, NULL); // Initialize OpenAL
+    buffer = alutCreateBufferFromFile(filename); // Load audio file
 
+    if (buffer == AL_NONE) {
+        cerr << "Error loading sound file: " << alutGetErrorString(alutGetError()) << endl;
+        return;
+    }
 
+    alGenSources(1, &source);
+    alSourcei(source, AL_BUFFER, buffer);
+    alSourcei(source, AL_LOOPING, AL_TRUE); // Enable looping
+    alSourcePlay(source);
+} 
+
+// Function to Cleanup OpenAL
+void cleanupAudio() {
+    alDeleteSources(1, &source);
+    alDeleteBuffers(1, &buffer);
+    alutExit();
+} */
+
+//End Credit
 void seanEndCredit(void) {
     Rect title;
     title.bot = 18;
@@ -62,7 +88,6 @@ void drawRect(float x, float y, float width, float height, float r, float g, flo
     glEnd();
 }
 
-
 //Enemy Movement
 void updateEnemies() {
     for (int i = 0; i < 2; i++) {
@@ -78,7 +103,6 @@ void updateEnemies() {
     
     }
 }
-
 
 //Collision
 bool checkCollision(Entity &enemy) {
@@ -98,9 +122,8 @@ bool checkCollision(Entity &enemy) {
             playerBottom > enemyTop);
 }
 
-
-
 void seanrungame() {
+    //initAudio("background.wav");
     if (g.game_state == 4) {
         static bool initialized = false;
         if (!initialized) {
@@ -113,7 +136,7 @@ void seanrungame() {
         updateEnemies();
         for (int i = 0; i < 4; i++) {
             if (checkCollision(enemies[i])) {
-                cout << "Collision detected with enemy " << i << "!\n";
+                //cout << "Collision detected with enemy " << i << "!\n";
                 player.tempx = 50;
                 player.tempy = 250; 
             }
@@ -122,10 +145,12 @@ void seanrungame() {
         for (int i = 0; i < 4; i++)
         drawRect(enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height,1, 0, 0);
         
-        if (checkCollision(goal)) {
+        /* if (checkCollision(goal)) {
             cout << "You Win!" << endl;
             g.game_state = 2;
-    }
+            cleanupAudio(); 
+
+    }*/
     }
 }
 
