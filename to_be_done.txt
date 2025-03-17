@@ -1,0 +1,9 @@
+Ending Death Screen                                                                            
+Ending Success Screen       -- Caroline
+Button to show controls (WASD, Credits)                                                       
+Enemies types (can be multiple people)                                                       
+Coin grabbing                                                                 
+Death Mechanic to keep track of deaths of a certain level                                      
+Audio for Levels                                                                                
+Time Tracking
+(Yours) Level (can be multiple people)         -- Dason

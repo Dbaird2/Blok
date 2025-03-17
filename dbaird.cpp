@@ -32,15 +32,7 @@ void dasonEndCredit(void)
     title.center = 0;
     ggprint8b(&title, 16, 0x00ff0000, "Author 3: Dason Baird");
 }
-/*
-void deleteParticle(int a, int n) 
-{
-    if (n == 0)
-        return;
-    particles[a] = particles[--n];
 
-}
-*/
 int b = 0;
 void init_dasonMazePlayer();
 void dasonMenuButtonPress(int x, int y) 
@@ -116,8 +108,8 @@ void dasonMenuButtonPress(int x, int y)
 
 void init_dasonMazePlayer() 
 {
-    player.tempx = g.xres/2+75;
-    player.tempy = g.yres/2+5;
+    player.tempx = 530;
+    player.tempy = 5;
     player.width = 5;
     player.height = 5;
 }
