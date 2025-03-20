@@ -10,17 +10,54 @@ using namespace std;
 #include "Global.h"
 #include "dbairdheader.h"
 
-int WALL_AMOUNT = 0;
+/*---------------------------------------------------------------------------*/
+/* --------------- MAP WALL STRUCTURES --------------------------------------*/
+#define DASON_GRID_SIZE 58
+Grid dason_grid[DASON_GRID_SIZE];
+int dason_height[58] = {5, 5, 20, 5, 60, 5, 60, 5, 45, 50, 250, 5, 5, 480,
+    115, 5, 130, 5, 90, 5, 5, 5, 80, 5, 60/**/, 5, 5,
+    60, 65, 5, 60, 70, 5, 90, 5, 60, 50, 5, 5, 50, 5, 5,
+    60, /**/100, 30, 200, 5, 30, 40, 5, 200, /**/
+    40, 40, 40, 40, 40, 40, 40};
+int dason_width[58] = {250, 175, 5, 200, 5, 75, 5, 50, 5, 5, 5, 250, 175, 5,
+    5, 95, 5, 20, 5, 120, 30, 25, 5, 20, 5/**/, 30, 90, 5,
+    5, 35, 5, 5, 90, 5, 50, 5, 5, 15, 45, 5, 45, 60, 5,
+    /**/5, 100, 5, 90, 95, 5, 60, 20, /**/
+    5, 5, 5, 5, 5, 5, 5};
+int dason_x[58] = {250, 725, 555, 485, 290, 220, 250, 205, 195, 150, 5, 660,
+    185, 895, 105, 200, 55, 80, 335, 220, 400, 35, 375, 360,
+    105/**/, 70, 100, 160, 195, 265, 335, 235, 150, 295, 350,
+    375, 410, 395, 425, 465, 425, 440, 445, /**/495, 590, 720,
+    625, 595, 670, 725, 805, /**/
+    635, 600, 565, 530, 495, 460, 425};
+int dason_y[58] = {5, 5, 30, 45, 110, 175, 70, 135, 55, 90, 260, 495, 495,
+    490, 155, 220, 170, 160, 180, 270, 95, 335, 180, 265,
+    365/**/, 385, 430, 335, 370, 310, 335, 385, 460, 405, 430,
+    370, 290, 335, 210, 100, 150, 370, 275, /**/ 270, 140,
+    210, 245, 345, 415, 450, 255, /**/
+    415, 415, 415, 415, 415, 415, 415};
+/*---------------------------------------------------------------------------*/
+
+Grid growing_box[10];
+int growing_height[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5};
+int growing_width[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5};
+int growing_x[10] = {50, 350, 80, 100, 120, 140, 160, 180, 200};
+int growing_y[10] = {50, 15, 80, 100, 120, 140, 160, 180, 200};
+int grow[10] = {5, 15, 25, 35, 45, 45, 35, 25, 15, 5};
+float animationTime = 0.0f; 
+float bounceHeight = 0.5f;
 
 void dasonLoadStruct(Grid grid[], int height[], int width[], 
         int x[], int y[], int size) 
 {
-    WALL_AMOUNT = size;
     for (int i = 0; i < size; i++) {
         grid[i].height = height[i];
         grid[i].width = width[i];
         grid[i].x = x[i];
         grid[i].y = y[i];
+        grid[i].r = rand() % 256;
+        grid[i].g = rand() % 256;
+        grid[i].b = rand() % 256;
     }
 }
 
@@ -96,18 +133,21 @@ void dasonMenuButtonPress(int x, int y)
                 } else if (j == 5) {
                     g.game_state = 1;
                     b = 0;
-                 }
+                }
             }
         }
-
-    } else if (g.game_state == 3) {
-        //glDeleteTextures(1, &ren.backgroundTexture);
     }
 }
 
 
 void init_dasonMazePlayer() 
 {
+    /* GROWING BOXES ENEMIES */
+    dasonLoadStruct(growing_box, growing_height, growing_width, 
+            growing_x, growing_y, 10);
+    /* WALLS */
+    dasonLoadStruct(dason_grid, dason_height, dason_width, 
+            dason_x, dason_y, DASON_GRID_SIZE);
     player.tempx = 530;
     player.tempy = 5;
     player.width = 5;
@@ -129,26 +169,67 @@ void defineBox()
     boxes[b].height = 15;
     boxes[b].pos[0] = g.xres /2.5;
     boxes[b].pos[1] = 3*b * 15 +80;
-    boxes[b].color[0] = 1.0f;  // Example: Red
+    boxes[b].color[0] = 1.0f;  
     boxes[b].color[1] = 0.0f;
     boxes[b].color[2] = 1.0f;
-
-    /*cout << "b " << b;
-    cout << " Color1 " << boxes[b].color[0];
-    cout << " Color2 " << boxes[b].color[1];
-    cout << " Color3 " << boxes[b].color[2] << endl;*/
     ++b;
 }
 
+float grow_animation = 0.0f;
 void dasonPhysics(int size)
 {
-    
+
     if (g.game_state == 6) {
         glClear(GL_COLOR_BUFFER_BIT);
-        for (int i = 0; i < WALL_AMOUNT; i++) {
+        for (int i = 0; i < 10; i++) {
+            Player *p = &player;
+            int box_x = growing_box[i].x;
+            int box_y = growing_box[i].y;
+            int box_h = growing_box[i].height;
+            int box_w = growing_box[i].width;
+
+
+            float bounceOffset = sin(grow_animation) * bounceHeight;
+                growing_box[i].width += bounceOffset+sin(grow_animation)*10.0f;
+                growing_box[i].height += bounceOffset+sin(grow_animation)*10.0f;
+            grow_animation += 0.05f;
+/*
+            for (int j = 0; j < 10; j++) {
+                growing_box[i].width = grow[j];
+                growing_box[i].height = grow[j];
+            }
+            */
+            int x_offset = p->width;
+            int y_offset = p->height;
+            int box_top = box_y + box_h;
+            int box_bot = box_y - box_h;
+            int box_left = box_x - box_w;
+            int box_right = box_x + box_w;
+
+            if ((p->pos[1] <= box_top + y_offset)
+                    && (p->pos[1] >= box_bot - y_offset)
+                    && (p->pos[0] >= box_left - x_offset) 
+                    && (p->pos[0] <= box_right + x_offset)) {
+                if (p->pos[1] >= box_top - y_offset/4) {
+                    p->tempy = 5;
+                    p->tempx = 530;
+                } else if (p->pos[1] <= box_bot+y_offset/10) {
+                    p->tempy = 5;
+                    p->tempx = 530;
+                } else if (p->pos[0] >= box_right) {
+                    p->tempx = 530;
+                    p->tempy = 5;
+                } else if (p->pos[0] <= box_left) {
+                    p->tempx = 530;
+                    p->tempy = 5;
+                }
+            } 
+        }
+
+        for (int i = 0; i < DASON_GRID_SIZE; i++) {
             Wall *w = &walls[i];
             Player *p = &player;
-            
+
 
             int x_offset = p->width;
             int y_offset = p->height;
@@ -247,21 +328,26 @@ void makeStartScreen()
     }
 }
 
-float animationTime = 0.0f; 
-float bounceHeight = 0.5f;
 
+/* This is only to draw game_state 6 */
 void dasonDrawWalls(Grid grid[], int size) 
 {
-    for ( int i = 0; i < WALL_AMOUNT; i++) {
+    for ( int i = 0; i < size; i++) {
 
         glPushMatrix();
-        glColor3ub(50, 120, 220);
+        if (size == 10)
+            glColor3ub(grid[i].r, grid[i].g,grid[i].b);
+        else
+            glColor3ub(0, 0, 0);
         Wall *w = &walls[i];
 
         w->width = grid[i].width;
         w->height = grid[i].height;
         w->pos[0] = grid[i].x;
         w->pos[1] = grid[i].y;
+        w->color[0] = grid[i].r;
+        w->color[1] = grid[i].g;
+        w->color[2] = grid[i].b;
 
         int width = w->width;
         int height = w->height;
@@ -278,7 +364,7 @@ void dasonDrawWalls(Grid grid[], int size)
 
 /*----------------------------------------------------*/
 /* START MENU BOXEES */
-        int j = 0;
+int j = 0;
 void drawBoxes() 
 {
     //draw the boxes
@@ -377,6 +463,10 @@ void drawBoxes()
 /*----------------------------------------------------*/
 /* DRAW PLAYER BOX */
 void drawPlayerBox () {
+    if (g.game_state == 6) {
+        dasonDrawWalls(growing_box, 10);
+        dasonDrawWalls(dason_grid, DASON_GRID_SIZE);
+    }
     player.pos[0] = player.tempx;
     player.pos[1] = player.tempy;
     Player *player_box = &player;

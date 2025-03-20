@@ -44,8 +44,6 @@ using namespace std;
 //some structures
 //
 Global g;
-#define DASON_GRID_SIZE 100
-Grid dason_grid[DASON_GRID_SIZE];
 Wall walls[100];
 ImageRenderer ren;
 MenuBox boxes[MAX_BOXES];
@@ -54,15 +52,6 @@ Image img[2] = {
     "./background.png",
     "./wip.png"
 };
-
-int dason_height[100] = {5, 5, 20, 5, 60, 5, 60, 5, 45, 50
-                  , 250, 5, 5, 480, 115, 5, 130};
-int dason_width[100] = {250, 175, 5, 200, 5, 75, 5, 50, 5, 5
-                  , 5, 250, 175, 5, 5, 95, 5};
-int dason_x[100] = {250, 725, 555, 485, 290, 220, 250, 205, 195, 150
-                  , 5, 660, 185, 895, 105, 200, 55};
-int dason_y[100] = { 5, 5, 30, 45, 110, 175, 70, 135, 55, 90
-                  , 260, 495, 495, 490, 155, 220, 170};
 
 
 int n = 0;
@@ -108,7 +97,7 @@ class X11_wrapper {
         void set_title() {
             //Set the window title bar.
             XMapWindow(dpy, win);
-            XStoreName(dpy, win, "3350 Lab-6 - Esc to exit");
+            XStoreName(dpy, win, "World's Easiest Game");
         }
         bool getXPending() {
             //See if there are pending events.
@@ -158,7 +147,6 @@ int check_keys(XEvent *e);
 
 int main()
 {
-    dasonLoadStruct(dason_grid, dason_height, dason_width, dason_x, dason_y, DASON_GRID_SIZE);
     pthread_t p_thread[2];
     init_opengl();
     int value = 0;
@@ -318,9 +306,9 @@ void render()
     glClear(GL_COLOR_BUFFER_BIT);
     makeStartScreen();
 
-    if (g.game_state == 6) {
+    /*if (g.game_state == 6) {
         dasonDrawWalls(dason_grid, DASON_GRID_SIZE);
-    }
+    }*/
     if (g.game_state > 2)  {
         drawPlayerBox();
 #ifdef MAP_HELP

@@ -27,6 +27,9 @@ struct Grid {
     int width;
     int x;
     int y;
+    int r;
+    int g;
+    int b;
 };
 
 void dasonLoadStruct(Grid grid[], int height[], int width[], 

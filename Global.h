@@ -119,6 +119,7 @@ class Global {
              * Will move to Menu Box */
             menu_box_amt[0] = {2};
             menu_box_amt[1] = {6};
+            /* WINDOW SIZE */
             xres = 900;
             yres = 500;
 
