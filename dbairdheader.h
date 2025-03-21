@@ -11,7 +11,7 @@
 void makeStartScreen();
 void dasonEndCredit();
 void drawBoxes();
-void dasonPhysics(int n);
+void dasonPhysics(int n, int l);
 void dasonMenuButtonPress(int x, int y);
 void dasonRenderBackground();
 void drawPlayerBox();

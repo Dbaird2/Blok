@@ -41,8 +41,8 @@ int dason_y[58] = {5, 5, 30, 45, 110, 175, 70, 135, 55, 90, 260, 495, 495,
 Grid growing_box[10];
 int growing_height[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5};
 int growing_width[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5};
-int growing_x[10] = {50, 350, 80, 100, 120, 140, 160, 180, 200};
-int growing_y[10] = {50, 15, 80, 100, 120, 140, 160, 180, 200};
+int growing_x[10] = {50, 350, 80, 200, 320, 440, 560, 680, 700};
+int growing_y[10] = {50, 15, 80, 300, 220, 340, 60, 280, 300};
 int grow[10] = {5, 15, 25, 35, 45, 45, 35, 25, 15, 5};
 float animationTime = 0.0f; 
 float bounceHeight = 0.5f;
@@ -176,40 +176,68 @@ void defineBox()
 }
 
 float grow_animation = 0.0f;
-void dasonPhysics(int size)
+float bounceOffset = 0;
+
+/*int growingBoxAnimation(Grid growing[], float size_factor, 
+        float animation, int i)
 {
+    bounceOffset = sin(grow_animation) * bounceHeight;
+    growing[i].width += bounceOffset+sin(grow_animation)*0.1f*size_factor;
+    growing[i].height += bounceOffset+sin(grow_animation)*0.1f*size_factor;
+    grow_animation += 0.005f;
+}*/
 
-    if (g.game_state == 6) {
-        glClear(GL_COLOR_BUFFER_BIT);
-        for (int i = 0; i < 10; i++) {
-            Player *p = &player;
-            int box_x = growing_box[i].x;
-            int box_y = growing_box[i].y;
-            int box_h = growing_box[i].height;
-            int box_w = growing_box[i].width;
+void growingBoxPhysics (int size) 
+{
+    if (size == 0) 
+        return;
+    for (int i = 0; i < size; i++) {
+        Player *p = &player;
+        int box_x = growing_box[i].x;
+        int box_y = growing_box[i].y;
+        int box_h = growing_box[i].height;
+        int box_w = growing_box[i].width;
 
+        //growingBoxAnimation (growing_box, 7.5, 0.0f, i);
+        float bounceOffset = sin(grow_animation) * bounceHeight;
+        growing_box[i].width += bounceOffset+sin(grow_animation)*0.1f*7.5;
+        growing_box[i].height += bounceOffset+sin(grow_animation)*0.1f*7.5;
+        grow_animation += 0.005f;
 
-            float bounceOffset = sin(grow_animation) * bounceHeight;
-                growing_box[i].width += bounceOffset+sin(grow_animation)*10.0f;
-                growing_box[i].height += bounceOffset+sin(grow_animation)*10.0f;
-            grow_animation += 0.05f;
-/*
-            for (int j = 0; j < 10; j++) {
-                growing_box[i].width = grow[j];
-                growing_box[i].height = grow[j];
-            }
-            */
-            int x_offset = p->width;
-            int y_offset = p->height;
-            int box_top = box_y + box_h;
-            int box_bot = box_y - box_h;
-            int box_left = box_x - box_w;
-            int box_right = box_x + box_w;
+        int x_offset = p->width;
+        int y_offset = p->height;
+        int box_top = box_y + box_h;
+        int box_bot = box_y - box_h;
+        int box_left = box_x - box_w;
+        int box_right = box_x + box_w;
 
+        if (bounceOffset < 0) {
+            if ((p->pos[1] >= box_top - y_offset)
+                    && (p->pos[1] <= box_bot + y_offset)
+                    && (p->pos[0] <= box_left + x_offset) 
+                    && (p->pos[0] >= box_right - x_offset)) {
+                p->death_count++;
+                if (p->pos[1] <= box_top + y_offset/4) {
+                    p->tempy = 5;
+                    p->tempx = 530;
+                } else if (p->pos[1] >= box_bot - y_offset/10) {
+                    p->tempy = 5;
+                    p->tempx = 530;
+                } else if (p->pos[0] <= box_right) {
+                    p->tempx = 530;
+                    p->tempy = 5;
+                } else if (p->pos[0] >= box_left) {
+                    p->tempx = 530;
+                    p->tempy = 5;
+                }
+            } 
+
+        } else {
             if ((p->pos[1] <= box_top + y_offset)
                     && (p->pos[1] >= box_bot - y_offset)
                     && (p->pos[0] >= box_left - x_offset) 
                     && (p->pos[0] <= box_right + x_offset)) {
+                p->death_count++;
                 if (p->pos[1] >= box_top - y_offset/4) {
                     p->tempy = 5;
                     p->tempx = 530;
@@ -225,38 +253,44 @@ void dasonPhysics(int size)
                 }
             } 
         }
-
-        for (int i = 0; i < DASON_GRID_SIZE; i++) {
-            Wall *w = &walls[i];
-            Player *p = &player;
-
-
-            int x_offset = p->width;
-            int y_offset = p->height;
-            int box_top = w->pos[1] + w->height /*- p->height*/;
-            int box_bot = w->pos[1] - w->height;
-            int box_left = w->pos[0] - w->width;
-            int box_right = w->pos[0] + w->width;
-
-            if ((p->pos[1] <= box_top + y_offset)
-                    && (p->pos[1] >= box_bot - y_offset)
-                    && (p->pos[0] >= box_left - x_offset) 
-                    && (p->pos[0] <= box_right + x_offset)) {
-                if (p->pos[1] >= box_top - y_offset/4) 
-                    p->tempy += 5;
-                else if (p->pos[1] <= box_bot+y_offset/10) 
-                    p->tempy -= 5;
-                else if (p->pos[0] >= box_right) 
-                    p->tempx += 5;
-                else if (p->pos[0] <= box_left) 
-                    p->tempx -= 5;
-#ifdef MAP_HELP
-                cout << "y " <<  w->pos[1] << " x " << w->pos[0] << endl;
-#endif
-            } 
-        }
     }
+}
 
+void dasonPhysics(int wall_size, int growing_size)
+{
+
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    growingBoxPhysics(growing_size);
+    for (int i = 0; i < wall_size; i++) {
+        Wall *w = &walls[i];
+        Player *p = &player;
+
+
+        int x_offset = p->width;
+        int y_offset = p->height;
+        int box_top = w->pos[1] + w->height /*- p->height*/;
+        int box_bot = w->pos[1] - w->height;
+        int box_left = w->pos[0] - w->width;
+        int box_right = w->pos[0] + w->width;
+
+        if ((p->pos[1] <= box_top + y_offset)
+                && (p->pos[1] >= box_bot - y_offset)
+                && (p->pos[0] >= box_left - x_offset) 
+                && (p->pos[0] <= box_right + x_offset)) {
+            if (p->pos[1] >= box_top - y_offset/4) 
+                p->tempy += 5;
+            else if (p->pos[1] <= box_bot+y_offset/10) 
+                p->tempy -= 5;
+            else if (p->pos[0] >= box_right) 
+                p->tempx += 5;
+            else if (p->pos[0] <= box_left) 
+                p->tempx -= 5;
+#ifdef MAP_HELP
+            cout << "y " <<  w->pos[1] << " x " << w->pos[0] << endl;
+#endif
+        } 
+    }
 }
 
 /* COMBINE INTO ONE FUNCTION */
@@ -459,13 +493,22 @@ void drawBoxes()
     } 
 }
 /*----------------------------------------------------*/
+void renderDeathCount ()
+{
+    Rect title;
+    title.bot = 0;
+    title.left = 0;
+    title.center = 0;
+    ggprint8b(&title, 0, 0x00ff0000, "Death count: %i", player.death_count);
 
+}
 /*----------------------------------------------------*/
 /* DRAW PLAYER BOX */
 void drawPlayerBox () {
     if (g.game_state == 6) {
         dasonDrawWalls(growing_box, 10);
         dasonDrawWalls(dason_grid, DASON_GRID_SIZE);
+        renderDeathCount(); 
     }
     player.pos[0] = player.tempx;
     player.pos[1] = player.tempy;

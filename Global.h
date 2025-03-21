@@ -53,6 +53,7 @@ extern Wall walls[];
 class Player {
     public:
         int id;
+        int death_count;
         int stop_w; int stop_a; int stop_s; int stop_d;
         int tempx;
         int tempy;
@@ -66,6 +67,7 @@ class Player {
         char text[100];
         Player() 
         {
+            death_count = -1;
             stop_w = stop_a = stop_s = stop_d = 0;
             tempx = 450;
             tempy = 200;
@@ -109,11 +111,13 @@ class Global {
         int credit;
         bool key_states[256];
         int xres, yres;
+        int vsync;
         float gravity;
         Global() {
             key_states[256] = {false};
             gravity = -0.5f;
             credit = 0;
+            vsync = 1;
             game_state = 1;
             /* The number of boxes to produce using game_state 
              * Will move to Menu Box */

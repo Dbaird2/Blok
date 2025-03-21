@@ -59,10 +59,10 @@ float spd = 0;
 
 class X11_wrapper {
     private:
+    public:
         Display *dpy;
         Window win;
         GLXContext glc;
-    public:
         X11_wrapper() {
             GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
             int w = g.xres, h = g.yres;
@@ -265,6 +265,23 @@ int check_keys(XEvent *e)
                 glDeleteTextures(1, &ren.backgroundTexture);
                 init_dasonMazePlayer();
                 //init_opengl();
+            case XK_v:
+                g.vsync ^= 1;
+                //vertical synchronization
+                //https://github.com/godotengine/godot/blob/master/platform/
+                //x11/context_gl_x11.cpp
+                static PFNGLXSWAPINTERVALEXTPROC glXSwapIntervalEXT = NULL;
+                glXSwapIntervalEXT =
+                    (PFNGLXSWAPINTERVALEXTPROC)glXGetProcAddressARB(
+                            (const GLubyte *)"glXSwapIntervalEXT");
+                GLXDrawable drawable = glXGetCurrentDrawable();
+                if (g.vsync) {
+                    glXSwapIntervalEXT(x11.dpy, drawable, 1);
+                } else {
+                    glXSwapIntervalEXT(x11.dpy, drawable, 0);
+                }
+                break;
+
         }
     }
     return 0;
@@ -295,7 +312,8 @@ void init_opengl(void)
 
 void* physics(void *arg)
 {
-    dasonPhysics(n);
+    if (g.game_state == 6)
+        dasonPhysics(58, 10);
     return 0;
 }
 int i = 0;
