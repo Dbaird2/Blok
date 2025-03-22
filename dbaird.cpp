@@ -39,11 +39,10 @@ int dason_y[58] = {5, 5, 30, 45, 110, 175, 70, 135, 55, 90, 260, 495, 495,
 /*---------------------------------------------------------------------------*/
 
 Grid growing_box[10];
-int growing_height[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5};
-int growing_width[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5};
-int growing_x[10] = {50, 350, 80, 200, 320, 440, 560, 680, 700};
-int growing_y[10] = {50, 15, 80, 300, 220, 340, 60, 280, 300};
-int grow[10] = {5, 15, 25, 35, 45, 45, 35, 25, 15, 5};
+int growing_height[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
+int growing_width[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5,5};
+int growing_x[10] = {40, 350, 110, 200, 320, 440, 160, 230, 410, 200};
+int growing_y[10] = {40, 15, 80, 300, 220, 340, 60, 450, 250, 200};
 float animationTime = 0.0f; 
 float bounceHeight = 0.5f;
 
@@ -363,7 +362,6 @@ void makeStartScreen()
 }
 
 
-/* This is only to draw game_state 6 */
 void dasonDrawWalls(Grid grid[], int size) 
 {
     for ( int i = 0; i < size; i++) {
