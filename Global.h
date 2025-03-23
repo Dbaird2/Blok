@@ -18,9 +18,10 @@ class MenuBox {
             height = 30;
             pos[0] = 400;
             pos[1] = 200;
-            color[0] = 0.5f;
-            color[1] = 0.0f;
+            color[0] = 1.0f;
+            color[1] = 1.0f;
             color[2] = 1.0f;
+
         }
 };
 extern MenuBox boxes[];
@@ -36,7 +37,9 @@ class Wall {
         Wall () 
         {
             width = 5;
-            height = 50;
+            height = 5;
+            pos[0] = 0;
+            pos[1] = 0;
             color[0] = 0.5f;
             color[1] = 0.0f;
             color[2] = 1.0f;
@@ -67,9 +70,9 @@ class Player {
         char text[100];
         Player() 
         {
-            death_count = -1;
+            death_count = 0;
             stop_w = stop_a = stop_s = stop_d = 0;
-            tempx = 450;
+            tempx = 400;
             tempy = 200;
             width = 15;
             height = 15;
@@ -113,15 +116,22 @@ class Global {
         int xres, yres;
         int vsync;
         float gravity;
+        float grow_animation;
+        float animationTime;
+        float bounceHeight;
+
         Global() {
             key_states[256] = {false};
-            gravity = -0.5f;
+            //gravity = -0.5f;
             credit = 0;
             vsync = 1;
             game_state = 1;
+            grow_animation = 0.0f;
+            animationTime = 0.0f;
+            bounceHeight = 0.5;
             /* The number of boxes to produce using game_state 
              * Will move to Menu Box */
-            menu_box_amt[0] = {2};
+            menu_box_amt[0] = {3};
             menu_box_amt[1] = {6};
             /* WINDOW SIZE */
             xres = 900;
@@ -129,6 +139,7 @@ class Global {
 
             ren.backgroundImage = nullptr;
             ren.dasonLevelBackgroundImage = nullptr;
+
         }
 } ;
 

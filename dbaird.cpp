@@ -2,7 +2,27 @@
 // Date: Spring 2025
 //
 //
+/* If you want growing boxes in your levels
+ * Then in your own file do
+ * Step 1) make a struct Grid name[size],
+ * Step 2) call dasonLoadStruct(name_of_grid, height_of_boxes, width_of_boxes,
+ *                      xpos_of_boxes, ypos_of_boxes, size);
+ * Step 3) call dasonDrawWalls_Boxes(name_of_grid, size_of_struct);
+ * Step 4) lastly call dasonPhysics(amount_of_walls, amount_of_growing_boxes
+ *                          , 1, name_of_grid);      
+ * If you ALSO want WALLS then do Step 1, Step 2, & Step 3 but for walls.
+ *
+ * Note: If you choose to not have growing boxes then just do
+ * Step 1, 2, 3 for Walls, and call 
+ * dasonPhysics(amount_of_walls, 0, 0, NULL)
+ *
+ * If you want a player box call drawPlayerBox
+ * If you want to change it's position change player.tempx or player.tempy
+ * for size do player.width, player.height
+ */
 using namespace std;
+#include <algorithm>
+#include <cstring>
 #include <iostream>
 #include <random>
 #include <GL/glx.h>
@@ -38,30 +58,17 @@ int dason_y[58] = {5, 5, 30, 45, 110, 175, 70, 135, 55, 90, 260, 495, 495,
     415, 415, 415, 415, 415, 415, 415};
 /*---------------------------------------------------------------------------*/
 
-Grid growing_box[10];
+//Grid growing_box[10];
 int growing_height[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
 int growing_width[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5,5};
 int growing_x[10] = {40, 350, 110, 200, 320, 440, 160, 230, 410, 200};
 int growing_y[10] = {40, 15, 80, 300, 220, 340, 60, 450, 250, 200};
-float animationTime = 0.0f; 
-float bounceHeight = 0.5f;
-
-void dasonLoadStruct(Grid grid[], int height[], int width[], 
-        int x[], int y[], int size) 
-{
-    for (int i = 0; i < size; i++) {
-        grid[i].height = height[i];
-        grid[i].width = width[i];
-        grid[i].x = x[i];
-        grid[i].y = y[i];
-        grid[i].r = rand() % 256;
-        grid[i].g = rand() % 256;
-        grid[i].b = rand() % 256;
-    }
-}
 
 void dasonEndCredit(void)
 {
+#ifdef MAP_HELP
+    cout << "dasonEndCredit" << endl;
+#endif
     Rect title;
     title.bot = 50;
     title.left = 10;
@@ -73,6 +80,9 @@ int b = 0;
 void init_dasonMazePlayer();
 void dasonMenuButtonPress(int x, int y) 
 {
+#ifdef MAP_HELP
+    cout << "dasonMenuButtonPress" << endl;
+#endif
     /* Start/Credits button Collision Detection */
     if (g.game_state == 1) {
         for (int j = 0; j < g.menu_box_amt[g.game_state-1]; j++) {
@@ -111,24 +121,24 @@ void dasonMenuButtonPress(int x, int y)
                 if (j == 0){
                     // CAROLINE
                     g.game_state = 7;
-                    glDeleteTextures(1, &ren.backgroundTexture);
+                    //glDeleteTextures(1, &ren.backgroundTexture);
                 } else if (j == 1) {
                     // SEAN
                     g.game_state = 4;
-                    glDeleteTextures(1, &ren.backgroundTexture);
+                    //glDeleteTextures(1, &ren.backgroundTexture);
                 } else if (j == 2) {
                     // CARLOS
                     g.game_state = 3;
-                    glDeleteTextures(1, &ren.backgroundTexture);
+                    //glDeleteTextures(1, &ren.backgroundTexture);
                 } else if (j == 3) {
                     // DASON
                     g.game_state = 6;
-                    glDeleteTextures(1, &ren.backgroundTexture);
+                    //glDeleteTextures(1, &ren.backgroundTexture);
                     init_dasonMazePlayer();
                 } else if (j == 4) {
                     // RJ
                     g.game_state = 5;
-                    glDeleteTextures(1, &ren.backgroundTexture);
+                    //glDeleteTextures(1, &ren.backgroundTexture);
                 } else if (j == 5) {
                     g.game_state = 1;
                     b = 0;
@@ -138,10 +148,25 @@ void dasonMenuButtonPress(int x, int y)
     }
 }
 
+void renderDeathCount ()
+{
+#ifdef MAP_HELP
+    cout << "renderDeathCount" << endl;
+#endif
+    Rect title;
+    title.bot = 0;
+    title.left = 0;
+    title.center = 0;
+    ggprint8b(&title, 0, 0x00ff0000, "Death count: %i", player.death_count);
+
+}
 
 void init_dasonMazePlayer() 
 {
-    /* GROWING BOXES ENEMIES */
+#ifdef MAP_HELP
+    cout << "init_dasonMazePlayer" << endl;
+#endif
+    /* GROWING BOX ENEMIES */
     dasonLoadStruct(growing_box, growing_height, growing_width, 
             growing_x, growing_y, 10);
     /* WALLS */
@@ -153,8 +178,25 @@ void init_dasonMazePlayer()
     player.height = 5;
 }
 
+void dasonMazeRender ()
+{
+#ifdef MAP_HELP
+    cout << "dasonMazeRender" << endl;
+#endif
+    dasonDrawWalls_Boxes(growing_box, 10);
+    dasonDrawWalls_Boxes(dason_grid, DASON_GRID_SIZE);
+    renderDeathCount(); 
+    if (g.key_states[XK_q]) {
+        std::fill(walls, walls + 100, Wall());
+        g.game_state = 2;
+    }
+}
+
 void defineBox() 
 {
+#ifdef MAP_HELP
+    cout << "defineBox" << endl;
+#endif
     if (g.game_state == 1) {
         if (b >= g.menu_box_amt[g.game_state-1])
             return;
@@ -168,40 +210,84 @@ void defineBox()
     boxes[b].height = 15;
     boxes[b].pos[0] = g.xres /2.5;
     boxes[b].pos[1] = 3*b * 15 +80;
-    boxes[b].color[0] = 1.0f;  
-    boxes[b].color[1] = 0.0f;
-    boxes[b].color[2] = 1.0f;
+    boxes[b].color[0] = 1.0;  
+    boxes[b].color[1] = 0.0;
+    boxes[b].color[2] = 0.0;
     ++b;
 }
 
-float grow_animation = 0.0f;
-float bounceOffset = 0;
+/*--------------------------------------------------------------------------*/
 
-/*int growingBoxAnimation(Grid growing[], float size_factor, 
-        float animation, int i)
+void dasonLoadStruct(Grid grid[], int height[], int width[], 
+        int x[], int y[], int size) 
 {
-    bounceOffset = sin(grow_animation) * bounceHeight;
-    growing[i].width += bounceOffset+sin(grow_animation)*0.1f*size_factor;
-    growing[i].height += bounceOffset+sin(grow_animation)*0.1f*size_factor;
-    grow_animation += 0.005f;
-}*/
+#ifdef MAP_HELP
+    cout << "dasonLoadStruct" << endl;
+#endif
+    for (int i = 0; i < size; i++) {
+        grid[i].height = height[i];
+        grid[i].width = width[i];
+        grid[i].x = x[i];
+        grid[i].y = y[i];
+        grid[i].r = rand() % 256;
+        grid[i].g = rand() % 256;
+        grid[i].b = rand() % 256;
+    }
+}
 
-void growingBoxPhysics (int size) 
+void dasonDrawWalls_Boxes(Grid grid[], int size) 
 {
-    if (size == 0) 
+#ifdef MAP_HELP
+    cout << "dasonDrawWalls_Boxes" << endl;
+#endif
+    for ( int i = 0; i < size; i++) {
+
+        glPushMatrix();
+        if (size == 10)
+            glColor3ub(grid[i].r, grid[i].g,grid[i].b);
+        else
+            glColor3ub(0, 0, 0);
+        Wall *w = &walls[i];
+
+        w->width = grid[i].width;
+        w->height = grid[i].height;
+        w->pos[0] = grid[i].x;
+        w->pos[1] = grid[i].y;
+        w->color[0] = grid[i].r;
+        w->color[1] = grid[i].g;
+        w->color[2] = grid[i].b;
+
+        int width = w->width;
+        int height = w->height;
+        glTranslatef(w->pos[0], w->pos[1], 0.0f);
+        glBegin(GL_QUADS);
+        glVertex2f(-width, -height);
+        glVertex2f(-width,  height);
+        glVertex2f( width,  height);
+        glVertex2f( width, -height);
+        glEnd();
+        glPopMatrix();
+    }
+}
+
+void growingBoxPhysics (int size, Grid grid[]) 
+{
+#ifdef MAP_HELP
+    cout << "growingBoxPhysics" << endl;
+#endif
+    if (size < 0) 
         return;
     for (int i = 0; i < size; i++) {
         Player *p = &player;
-        int box_x = growing_box[i].x;
-        int box_y = growing_box[i].y;
-        int box_h = growing_box[i].height;
-        int box_w = growing_box[i].width;
+        int box_x = grid[i].x;
+        int box_y = grid[i].y;
+        int box_h = grid[i].height;
+        int box_w = grid[i].width;
 
-        //growingBoxAnimation (growing_box, 7.5, 0.0f, i);
-        float bounceOffset = sin(grow_animation) * bounceHeight;
-        growing_box[i].width += bounceOffset+sin(grow_animation)*0.1f*7.5;
-        growing_box[i].height += bounceOffset+sin(grow_animation)*0.1f*7.5;
-        grow_animation += 0.005f;
+        float bounceOffset = sin(g.grow_animation) * g.bounceHeight;
+        grid[i].width += bounceOffset+sin(g.grow_animation)*0.1f*8.0;
+        grid[i].height += bounceOffset+sin(g.grow_animation)*0.1f*8.0;
+        g.grow_animation += 0.005f;
 
         int x_offset = p->width;
         int y_offset = p->height;
@@ -255,12 +341,22 @@ void growingBoxPhysics (int size)
     }
 }
 
-void dasonPhysics(int wall_size, int growing_size)
+
+
+void dasonPhysics(int wall_size, int growing_size, 
+        int growing_enemy_check, Grid grid[])
 {
+#ifdef MAP_HELP
+    cout << "dasonPhysics" << endl;
+#endif
+    if (g.game_state == 6) {
+        //checkCollision(moving_enemy);
+    }
 
     glClear(GL_COLOR_BUFFER_BIT);
 
-    growingBoxPhysics(growing_size);
+    if (growing_enemy_check) 
+        growingBoxPhysics(growing_size, grid);
     for (int i = 0; i < wall_size; i++) {
         Wall *w = &walls[i];
         Player *p = &player;
@@ -291,10 +387,14 @@ void dasonPhysics(int wall_size, int growing_size)
         } 
     }
 }
+/*--------------------------------------------------------------------------*/
 
 /* COMBINE INTO ONE FUNCTION */
 void dasonRenderBackground() 
 {
+#ifdef MAP_HELP
+    cout << "dasonRenderBackground" << endl;
+#endif
     ren.backgroundImage = &img[0];
     glGenTextures(1, &ren.backgroundTexture);
     int w = ren.backgroundImage->width;
@@ -308,6 +408,9 @@ void dasonRenderBackground()
 }
 void dasonMazeLevelBackground() 
 {
+#ifdef MAP_HELP
+    cout << "dasonMazeLeveBackground" << endl;
+#endif
     ren.dasonLevelBackgroundImage = &img[1];
     glGenTextures(1, &ren.dasonLevelBackgroundTexture);
     int w = ren.dasonLevelBackgroundImage->width;
@@ -327,6 +430,9 @@ void dasonMazeLevelBackground()
 
 void makeStartScreen() 
 {
+#ifdef MAP_HELP
+    cout << "makeStartScreen" << endl;
+#endif
     glClear(GL_COLOR_BUFFER_BIT);
     float quadWidth = g.xres;
     float quadHeight = g.yres;
@@ -359,57 +465,61 @@ void makeStartScreen()
         glEnd();
         glPopMatrix();
     }
-}
+    if (g.game_state == 6) {
+        float imageAspect = 
+            static_cast<float>(ren.dasonLevelBackgroundImage->width) 
+            / ren.dasonLevelBackgroundImage->height;
 
+        // Adjust width/height based on aspect ratio
+        if (screenAspect > imageAspect) {
+            quadWidth = g.yres * imageAspect;
+        } else {
+            quadHeight = g.xres / imageAspect;
+        }
 
-void dasonDrawWalls(Grid grid[], int size) 
-{
-    for ( int i = 0; i < size; i++) {
+        // Center the image in the viewport
+        float xOffset = (g.xres - quadWidth) / 2.0;
+        float yOffset = (g.yres - quadHeight) / 2.0;
 
-        glPushMatrix();
-        if (size == 10)
-            glColor3ub(grid[i].r, grid[i].g,grid[i].b);
-        else
-            glColor3ub(0, 0, 0);
-        Wall *w = &walls[i];
-
-        w->width = grid[i].width;
-        w->height = grid[i].height;
-        w->pos[0] = grid[i].x;
-        w->pos[1] = grid[i].y;
-        w->color[0] = grid[i].r;
-        w->color[1] = grid[i].g;
-        w->color[2] = grid[i].b;
-
-        int width = w->width;
-        int height = w->height;
-        glTranslatef(w->pos[0], w->pos[1], 0.0f);
+        glBindTexture(GL_TEXTURE_2D, ren.dasonLevelBackgroundTexture);
+        glColor3f(1.0f, 1.0f, 1.0f);
         glBegin(GL_QUADS);
-        glVertex2f(-width, -height);
-        glVertex2f(-width,  height);
-        glVertex2f( width,  height);
-        glVertex2f( width, -height);
+        glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset-30);
+        glTexCoord2f(0.0, 0.0); glVertex2f(xOffset, yOffset + quadHeight+30); 
+        glTexCoord2f(1.0, 0.0); glVertex2f(xOffset + quadWidth, 
+                yOffset + quadHeight+30); 
+        glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset-30);
+
         glEnd();
         glPopMatrix();
     }
 }
+
+
 
 /*----------------------------------------------------*/
 /* START MENU BOXEES */
 int j = 0;
 void drawBoxes() 
 {
+#ifdef MAP_HELP
+    cout << "drawBoxes" << endl;
+#endif
     //draw the boxes
-    Rect rect;
 
     defineBox(); 
     if (g.game_state == 1) {
         for (int i = 0; i < g.menu_box_amt[g.game_state-1]; i++) {
             MenuBox *box = &boxes[i];
 
-            glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+            Rect rect;
+            //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
             glPushMatrix();
-            glColor3fv(box->color);
+            box->color[0] = 1.0f;
+            box->color[1] = 0.0f;
+            box->color[2] = 0.0f;
+            glColor3f(1.0f, 0.0f, 0.0f);
+            glDisable(GL_BLEND);
             glTranslatef(box->pos[0], box->pos[1], 0.0f);
             glBegin(GL_QUADS);
             glVertex2f(-box->width, -box->height);
@@ -421,12 +531,13 @@ void drawBoxes()
 
             rect.bot = box->pos[1]-7;
             rect.center = 0;
-            float bounceOffset = sin(animationTime) * bounceHeight;
+            float bounceOffset = sin(g.animationTime) * g.bounceHeight;
             if (i == 0)
                 box->pos[1] += bounceOffset;
             if (i == 1) {
-                box->pos[1] += bounceOffset+sin(animationTime);
+                box->pos[1] += bounceOffset+sin(g.animationTime);
             }
+            
             switch (i)
             {
                 case 1:
@@ -435,15 +546,16 @@ void drawBoxes()
                     break;
                 case 0:
                     rect.left = box->pos[0] - 20;
-                    ggprint8b(&rect, 0, 0x00CC8899, "Credit");
+                    ggprint8b(&rect, 0, 0x00D30000, "Credit");
                     break;
             }
         }
-        animationTime += 0.3f;
+        g.animationTime += 0.3f;
     } else if (g.game_state == 2) {
         for (int i = 0; i < g.menu_box_amt[g.game_state-1]; i++) {
             MenuBox *box = &boxes[i];
 
+            Rect rect;
             glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
             glPushMatrix();
             glDisable(GL_BLEND);
@@ -463,51 +575,38 @@ void drawBoxes()
             {
                 case 5:
                     rect.left = box->pos[0] -20;
-                    ggprint8b(&rect, 0, 0x00ffffff, "Back");
+                    ggprint8b(&rect, 0, 0x00000000, "Back");
                     break;
                 case 4:
                     rect.left = box->pos[0] -25;
-                    ggprint8b(&rect, 0, 0x00ffffff, "Rj's Level");
+                    ggprint8b(&rect, 0, 0x00000000, "Rj's Level");
                     break;
                 case 3:
                     rect.left = box->pos[0] -40;
-                    ggprint8b(&rect, 0, 0x00FFffff, "Dason's Level");
+                    ggprint8b(&rect, 0, 0x00000000, "Dason's Level");
                     break;
                 case 2:
                     rect.left = box->pos[0] -30;
-                    ggprint8b(&rect, 0, 0x00ffffff, "Carlos's Level");
+                    ggprint8b(&rect, 0, 0x00000000, "Carlos's Level");
                     break;
                 case 1:
                     rect.left = box->pos[0] -30;
-                    ggprint8b(&rect, 0, 0x00ffffff, "Sean's Level");
+                    ggprint8b(&rect, 0, 0x00000000, "Sean's Level");
                     break;
                 case 0:
                     rect.left = box->pos[0] -40;
-                    ggprint8b(&rect, 0, 0x00FFffff, "Caroline's Level");
+                    ggprint8b(&rect, 0, 0x00D30000, "Caroline's Level");
                     break;
             }
         }
-        animationTime += 0.6f;
+        g.animationTime += 0.6f;
     } 
 }
 /*----------------------------------------------------*/
-void renderDeathCount ()
-{
-    Rect title;
-    title.bot = 0;
-    title.left = 0;
-    title.center = 0;
-    ggprint8b(&title, 0, 0x00ff0000, "Death count: %i", player.death_count);
 
-}
 /*----------------------------------------------------*/
 /* DRAW PLAYER BOX */
 void drawPlayerBox () {
-    if (g.game_state == 6) {
-        dasonDrawWalls(growing_box, 10);
-        dasonDrawWalls(dason_grid, DASON_GRID_SIZE);
-        renderDeathCount(); 
-    }
     player.pos[0] = player.tempx;
     player.pos[1] = player.tempy;
     Player *player_box = &player;

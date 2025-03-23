@@ -39,12 +39,13 @@ using namespace std;
 // macro
 #define rnd() (float)rand() / (float)RAND_MAX
 #define MAX_PARTICLES 1000
-#define MAX_BOXES 6
+#define MAX_BOXES 7
 
 //some structures
 //
 Global g;
 Wall walls[100];
+Grid growing_box[10];
 ImageRenderer ren;
 MenuBox boxes[MAX_BOXES];
 Player player;
@@ -85,7 +86,7 @@ class X11_wrapper {
                 ButtonPress | ButtonReleaseMask |
                 PointerMotionMask |
                 StructureNotifyMask | SubstructureNotifyMask;
-            
+
             win = XCreateWindow(dpy, root, 0, 0, w, h, 0, vi->depth,
                     InputOutput, vi->visual, CWColormap | CWEventMask, &swa);
             XSelectInput(dpy, win, KeyPressMask | KeyReleaseMask | 
@@ -140,16 +141,16 @@ class X11_wrapper {
 
 //Function prototypes
 void init_opengl(void);
-void* physics(void *arg);
+void physics(void);
 void render(void);
 void check_mouse(XEvent *e);
 int check_keys(XEvent *e);
 
 int main()
 {
-    pthread_t p_thread[2];
+    //pthread_t p_thread[2];
     init_opengl();
-    int value = 0;
+    //int value = 0;
     int done = 0;
     //main game loop
     while (!done) {
@@ -161,10 +162,11 @@ int main()
             done = check_keys(&e);
         }
         processMovement();
-        pthread_create(&p_thread[0], nullptr, physics, (void *)&value);
+        //pthread_create(&p_thread[0], nullptr, physics, (void *)&value);
+        physics();
         render();
         x11.swapBuffers();
-        pthread_join(p_thread[0], nullptr);
+        //pthread_join(p_thread[0], nullptr);
     }
     cleanup_fonts();
     return 0;
@@ -199,14 +201,14 @@ void check_mouse(XEvent *e)
                 // MAIN MENU OVER GAME START   
 
             }
-		if(e->xbutton.button == 7) {
-			carolineDrawCircle();
-		}
+            if(e->xbutton.button == 7) {
+                carolineDrawCircle();
+            }
 
             /*for (int i = 0; i < 10; i++) {
-                spd = 0;
-                makeParticle(e->xbutton.x, y);
-            }*/
+              spd = 0;
+              makeParticle(e->xbutton.x, y);
+              }*/
             return;
         }
         if (e->xbutton.button==3) {
@@ -262,9 +264,7 @@ int check_keys(XEvent *e)
                 break;
             case XK_l:
                 g.game_state = 6;
-                glDeleteTextures(1, &ren.backgroundTexture);
                 init_dasonMazePlayer();
-                //init_opengl();
             case XK_v:
                 g.vsync ^= 1;
                 //vertical synchronization
@@ -299,6 +299,7 @@ void init_opengl(void)
     //Clear the screen
     glClearColor(1.0, 1.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
+    glShadeModel( GL_SMOOTH );
     //Do this to allow texture maps
 
     // allow fonts
@@ -310,11 +311,11 @@ void init_opengl(void)
 }
 
 
-void* physics(void *arg)
+void physics(void)
 {
     if (g.game_state == 6)
-        dasonPhysics(58, 10);
-    return 0;
+        dasonPhysics(58, 10, 1, growing_box);
+    //return 0;
 }
 int i = 0;
 void render()
@@ -322,11 +323,11 @@ void render()
 
     //clear the window
     glClear(GL_COLOR_BUFFER_BIT);
-    makeStartScreen();
+    if (g.game_state == 6) {
 
-    /*if (g.game_state == 6) {
-        dasonDrawWalls(dason_grid, DASON_GRID_SIZE);
-    }*/
+        makeStartScreen();
+        dasonMazeRender();
+    }
     if (g.game_state > 2)  {
         drawPlayerBox();
 #ifdef MAP_HELP
@@ -337,18 +338,20 @@ void render()
 #endif
     }
     // DRAW ALL BOXES
-    if ((g.game_state == 1) || (g.game_state == 2))
+    if ((g.game_state == 1) || (g.game_state == 2)) {
+        makeStartScreen();
         drawBoxes();
+    }
     if (g.game_state == 3) {
         drawTriangles();
         drawCircles();
     }
-	if(g.game_state == 7) {
-		carolineDrawCircle();
-	}
+    if(g.game_state == 7) {
+        carolineDrawCircle();
+    }
     seanrungame();
 
-     if (g.credit == 1) {
+    if (g.credit == 1) {
         dasonEndCredit();
         carlosEndCredit();
         carolineEndCredit();
