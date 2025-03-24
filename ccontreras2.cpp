@@ -2,20 +2,94 @@
 //Spring 2025
 //3350 Project
 //Date: 3/16/25
+
 #include <iostream>
 #include "functions.h"
 #include "fonts.h"
 #include <math.h>
 #include <GL/gl.h>
 #include "caroline.h"
-
 #include <vector>
-#include "Global.h"
-
 using namespace std;
-//=================================================================
-// GOAL: Render a circle
-//=================================================================
+
+//=========================================================
+#ifdef USE_OPENAL_SOUND
+#include "src/setup/oal.h"
+#include </usr/include/AL/alut.h>
+#endif 
+
+
+#ifdef USE_OPENAL_SOUND
+
+//void Sound::initSound()
+void initSound()
+{
+#ifdef USE_OPENAL_SOUND
+	alutInit(0, NULL);
+	if (alGetError() != AL_NO_ERROR) {
+		printf("ERROR: alutInit()\n");
+		return;
+	}
+	alGetError();
+	//Forward and up vectors are used.
+	float vec[6] = {0.0f,0.0f,1.0f, 0.0f,1.0f,0.0f};
+	alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f);
+	alListenerfv(AL_ORIENTATION, vec);
+	alListenerf(AL_GAIN, 1.0f);
+	
+	//Buffer holds the sound information.
+	//FIX THIS CODE BELOW
+	ALuint alBuffer;
+	alBuffer = alutCreateBufferFromFile("./winningScreenAudio.wav");
+	winScreen = alutCreateBufferFromFile("./src/sounds/");
+	
+	//Source refers to the sound.
+	/*ALunit alSource;*/
+	//Generate a source, and store it in a buffer.
+	alGenSources(1, &alSource);
+	alSourcei(alSource, AL_BUFFER, alBuffer);
+	//Set volume and pitch to normal, no looping of sound.
+	alSourcef(g.alSourceCoin, AL_GAIN, 1.0f);
+	alSourcef(g.alSourceCoin, AL_PITCH, 1.0f);
+	alSourcei(g.alSourceCoin, AL_LOOPING, AL_FALSE);
+	if (alGetError() != AL_NO_ERROR) {
+		printf("ERROR: setting source\n");
+		return;
+	}
+	#endif //USE_OPENAL_SOUND
+}
+
+//void Sound::cleanupSound()
+void cleanupSound()
+{
+        //First delete the source.
+        alDeleteSources(1, &alSource);
+        //Delete the buffer.
+        alDeleteBuffers(1, &alBuffer);
+        //Close out OpenAL itself.
+        //Get active context.
+        ALCcontext *Context = alcGetCurrentContext();
+        //Get device for active context.
+        ALCdevice *Device = alcGetContextsDevice(Context);
+        //Disable context.
+        alcMakeContextCurrent(NULL);
+        //Release context(s).
+        alcDestroyContext(Context);
+        //Close device.
+        alcCloseDevice(Device);
+}
+
+//void Sound::playSound(ALuint source)
+void playSound(ALuint source)
+{
+#ifdef USE_OPENAL_SOUND
+	alSourcePlay(source);
+#endif
+}
+#endif //USE_OPENAL_SOUND
+//=========================================================
+
+
 const float PI = 3.14159265358979323846f;
 class Circle {
 	public: 
