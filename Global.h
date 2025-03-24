@@ -40,9 +40,9 @@ class Wall {
             height = 5;
             pos[0] = 0;
             pos[1] = 0;
-            color[0] = 0.5f;
+            color[0] = 0.0f;
             color[1] = 0.0f;
-            color[2] = 1.0f;
+            color[2] = 0.0f;
         }
         Wall (int x, int y) 
         {
@@ -51,6 +51,7 @@ class Wall {
         }
 };
 extern Wall walls[];
+extern Wall growing_boxes[];
 
 
 class Player {
@@ -131,7 +132,7 @@ class Global {
             bounceHeight = 0.5;
             /* The number of boxes to produce using game_state 
              * Will move to Menu Box */
-            menu_box_amt[0] = {3};
+            menu_box_amt[0] = {2};
             menu_box_amt[1] = {6};
             /* WINDOW SIZE */
             xres = 900;

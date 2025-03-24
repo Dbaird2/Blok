@@ -45,6 +45,7 @@ using namespace std;
 //
 Global g;
 Wall walls[100];
+Wall growing_boxes[10];
 Grid growing_box[10];
 ImageRenderer ren;
 MenuBox boxes[MAX_BOXES];
