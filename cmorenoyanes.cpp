@@ -1,7 +1,7 @@
 /**********************************
  * Author: Carlos Moreno          *
  * Date:   Spring 2025            *
- * Assignment: cmorenoyanes.cpp   *
+ * Assignment: blok               *
  **********************************/
 
 #include "fonts.h"
@@ -33,11 +33,15 @@ void drawTriangles ()
     float margin = 40.0f;
 
     float positions[4][2] = {
-        {margin, margin},                           // Bottom-left
-        {static_cast<float>(g.xres) - margin, margin},     // Bottom-right
-        {margin, static_cast<float>(g.yres) - margin},     // Top-left
-        {static_cast<float>(g.xres) - margin, static_cast<float>(g.yres) - margin} 
+        // Bottom-left
+        {margin, margin},
+        // Bottom-right
+        {static_cast<float>(g.xres) - margin, margin},
+        // Top-left
+        {margin, static_cast<float>(g.yres) - margin},     
         // Top-right
+        {static_cast<float>(g.xres) - margin, 
+            static_cast<float>(g.yres) - margin} 
     };
 
     for (int i = 0; i < 4; i++) {
@@ -60,11 +64,11 @@ void drawCircles ()
 {
     // Move the circles back and forth
     if (direction)
-        circleOffset += 3.5f;
+        circleOffset += 5.0f;
     else
-        circleOffset -= 3.5f;
+        circleOffset -= 5.0f;
 
-    if (circleOffset > 40.0f || circleOffset < -40.0f)
+    if (circleOffset > 50.0f || circleOffset < -50.0f)
         direction = !direction;
 
     glPushMatrix();
@@ -73,10 +77,14 @@ void drawCircles ()
     float radius = 13.0f;
     float circleMargin = 80.0f;
     float positions[4][2] = {
-        {static_cast<float>(g.xres / 2 - circleMargin), static_cast<float>(g.yres / 2)},
-        {static_cast<float>(g.xres / 2 + circleMargin), static_cast<float>(g.yres / 2)},
-        {static_cast<float>(g.xres / 2), static_cast<float>(g.yres / 2 - circleMargin)},
-        {static_cast<float>(g.xres / 2), static_cast<float>(g.yres / 2 + circleMargin)}
+        {static_cast<float>(g.xres / 2 - circleMargin),
+            static_cast<float>(g.yres / 2)},
+        {static_cast<float>(g.xres / 2 + circleMargin),
+            static_cast<float>(g.yres / 2)},
+        {static_cast<float>(g.xres / 2),
+            static_cast<float>(g.yres / 2 - circleMargin)},
+        {static_cast<float>(g.xres / 2),
+            static_cast<float>(g.yres / 2 + circleMargin)}
     };
 
     for (int i = 0; i < 4; i++) {

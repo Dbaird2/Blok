@@ -7,7 +7,8 @@
  * Step 1) make a struct Grid name[size],
  * Step 2) call dasonLoadStruct(name_of_grid, height_of_boxes, width_of_boxes,
  *                      xpos_of_boxes, ypos_of_boxes, size);
- * Step 3) call dasonDrawWalls_Boxes(name_of_grid, size_of_struct);
+ * Step 3) call dasonDrawWalls(name_of_grid, size_of_struct);
+ *      OR call dasonDrawGrowingBoxes(name_of_grid, size_of_struct);
  * Step 4) lastly call dasonPhysics(amount_of_walls, amount_of_growing_boxes
  *                          , 1, name_of_grid);      
  * If you ALSO want WALLS then do Step 1, Step 2, & Step 3 but for walls.
@@ -183,11 +184,12 @@ void dasonMazeRender ()
 #ifdef MAP_HELP
     cout << "dasonMazeRender" << endl;
 #endif
-    dasonDrawWalls_Boxes(growing_box, 10);
-    dasonDrawWalls_Boxes(dason_grid, DASON_GRID_SIZE);
+    dasonDrawGrowingBoxes(growing_box, 10);
+    dasonDrawWalls(dason_grid, DASON_GRID_SIZE);
     renderDeathCount(); 
     if (g.key_states[XK_q]) {
         std::fill(walls, walls + 100, Wall());
+        player.death_count = 0;
         g.game_state = 2;
     }
 }
@@ -235,7 +237,39 @@ void dasonLoadStruct(Grid grid[], int height[], int width[],
     }
 }
 
-void dasonDrawWalls_Boxes(Grid grid[], int size) 
+void dasonDrawGrowingBoxes(Grid grid[], int size)
+{
+#ifdef MAP_HELP
+    cout << "dasonDrawWalls_Boxes" << endl;
+#endif
+    for ( int i = 0; i < size; i++) {
+
+        glPushMatrix();
+        glColor3ub(grid[i].r, grid[i].g,grid[i].b);
+        Wall *b = &growing_boxes[i];
+
+        b->width = grid[i].width;
+        b->height = grid[i].height;
+        b->pos[0] = grid[i].x;
+        b->pos[1] = grid[i].y;
+        b->color[0] = grid[i].r;
+        b->color[1] = grid[i].g;
+        b->color[2] = grid[i].b;
+
+        int width = b->width;
+        int height = b->height;
+        glTranslatef(b->pos[0], b->pos[1], 0.0f);
+        glBegin(GL_QUADS);
+        glVertex2f(-width, -height);
+        glVertex2f(-width,  height);
+        glVertex2f( width,  height);
+        glVertex2f( width, -height);
+        glEnd();
+        glPopMatrix();
+    }
+}
+
+void dasonDrawWalls(Grid grid[], int size)
 {
 #ifdef MAP_HELP
     cout << "dasonDrawWalls_Boxes" << endl;
@@ -389,7 +423,7 @@ void dasonPhysics(int wall_size, int growing_size,
 }
 /*--------------------------------------------------------------------------*/
 
-/* COMBINE INTO ONE FUNCTION */
+/*  */
 void dasonRenderBackground() 
 {
 #ifdef MAP_HELP
@@ -643,9 +677,12 @@ void handleKeyRelease(XKeyEvent *event)
 
 void processMovement() 
 {
+    //player.color[0] -= 0.02f;
     if (g.key_states[XK_w])
-        if (!player.stop_w) 
+        if (!player.stop_w) {
             player.tempy += 5;
+           // player.color[0] += 0.05f;
+        }
     if (g.key_states[XK_a])
         if (!player.stop_a)
             player.tempx -= 5;

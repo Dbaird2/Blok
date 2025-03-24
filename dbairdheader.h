@@ -29,7 +29,8 @@ void dasonMazeLevelBackground();
 void init_dasonMazePlayer();
 void dasonLoadStruct(Grid grid[], int height[], int width[], 
         int x[], int y[], int size);
-void dasonDrawWalls_Boxes(Grid grid[], int size);
+void dasonDrawGrowingBoxes(Grid grid[], int size);
+void dasonDrawWalls(Grid grid[], int size);
 void dasonPhysics(int n, int l, int check, Grid grid[]);
 void dasonMazeRender();
 
