@@ -44,7 +44,7 @@ void initSound()
 	winScreen = alutCreateBufferFromFile("./src/sounds/");
 	
 	//Source refers to the sound.
-	/*ALunit alSource;*/
+	ALunit alSource;
 	//Generate a source, and store it in a buffer.
 	alGenSources(1, &alSource);
 	alSourcei(alSource, AL_BUFFER, alBuffer);
@@ -56,6 +56,8 @@ void initSound()
 		printf("ERROR: setting source\n");
 		return;
 	}
+
+
 	#endif //USE_OPENAL_SOUND
 }
 
@@ -130,6 +132,11 @@ void carolineDrawCircle() {
 	glEnd();
 	glPopMatrix();
 }
+
+void carolineWinScreen() {
+	
+}
+
 //below is my function for my end credit
 void carolineEndCredit (void)
 {

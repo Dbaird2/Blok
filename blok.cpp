@@ -203,7 +203,8 @@ void check_mouse(XEvent *e)
 
             }
             if(e->xbutton.button == 7) {
-                carolineDrawCircle();
+                //carolineDrawCircle();
+				carolineWinScreen();
             }
 
             /*for (int i = 0; i < 10; i++) {
@@ -348,8 +349,9 @@ void render()
         drawCircles();
     }
     if(g.game_state == 7) {
-        carolineDrawCircle();
-    }
+        //carolineDrawCircle();
+    	carolineWinScreen();
+	}
     seanrungame();
 
     if (g.credit == 1) {
