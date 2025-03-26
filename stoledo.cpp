@@ -23,6 +23,7 @@ using namespace std;
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <AL/alut.h>
+#include "stoledoheader.h"
 
 //Music
 /* ALuint buffer, source;
@@ -58,24 +59,25 @@ void seanEndCredit(void) {
 }
 
 //Entity
-struct Entity {
+/*struct Entity {
     float x, y;
     float width, height;  
     float speed;
-};
+};*/
 //Goal
-Entity goal = {800, 250, 25, 25, 0};
+Entity goal = {800, 250, 25, 25, 0, 0};
+
 
 //Enemies
-Entity enemies[] = {
-    {300, 200, 20, 20, 30.0},
-    {500, 400, 20, 20, 30.0},
-    {300, 200, 20, 20, 30.0},
-    {500, 400, 20, 20, 30.0}
+Entity enemies[30] = {
+    {300, 200, 20, 20, 30.0, 1},
+    {500, 400, 20, 20, 30.0, -1},
+    {300, 200, 20, 20, 30.0, 1},
+    {500, 400, 20, 20, 30.0, -1}
 };
 
+
 //Enemy Direction
-float enemydir[] = {1, -1, 1 ,-1};
 
 //Draw Enemy Rectangle
 void drawRect(float x, float y, float width, float height, float r, float g, float b) {
@@ -89,23 +91,27 @@ void drawRect(float x, float y, float width, float height, float r, float g, flo
 }
 
 //Enemy Movement
-void updateEnemies() {
+void SeanEnemyMovementVertical() {
     for (int i = 0; i < 2; i++) {
-        enemies[i].y += enemydir[i] * enemies[i].speed;
+        //Up and Down
+        enemies[i].y += enemies[i].dir * enemies[i].speed;
         if (enemies[i].y <= 100 || enemies[i].y >= g.yres - 100)
-            enemydir[i] *= -1; 
-    
-    }
-    for (int j = 2; j < 4; j++) {
-        enemies[j].x += enemydir[j] * enemies[j].speed;
-        if (enemies[j].x <= 100 || enemies[j].x >= g.xres - 100)
-            enemydir[j] *= -1; 
+            enemies[i].dir *= -1; 
     
     }
 }
+void SeanEnemyMovementHorizontal() {
+    for (int j = 2; j < 4; j++) {
+        enemies[j].x += enemies[j].dir * enemies[j].speed;
+
+        if (enemies[j].x <= 100 || enemies[j].x >= g.xres - 100)
+            enemies[j].dir *= -1;
+    }
+}
+
 
 //Collision
-bool checkCollision(Entity &enemy) {
+bool SeanCheckCollision(Entity &enemy) {
     float playerLeft = player.pos[0] - player.width / 2;
     float playerRight = player.pos[0] + player.width / 2;
     float playerTop = player.pos[1] - player.height / 2;
@@ -133,9 +139,10 @@ void seanrungame() {
         }
         // Draw Player Box
         drawPlayerBox();
-        updateEnemies();
+        SeanEnemyMovementVertical();
+        SeanEnemyMovementHorizontal();
         for (int i = 0; i < 4; i++) {
-            if (checkCollision(enemies[i])) {
+            if (SeanCheckCollision(enemies[i])) {
                 //cout << "Collision detected with enemy " << i << "!\n";
                 player.tempx = 50;
                 player.tempy = 250; 
@@ -145,12 +152,12 @@ void seanrungame() {
         for (int i = 0; i < 4; i++)
         drawRect(enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height,1, 0, 0);
         
-        /* if (checkCollision(goal)) {
+         if (SeanCheckCollision(goal)) {
             cout << "You Win!" << endl;
             g.game_state = 2;
-            cleanupAudio(); 
+          
 
-    }*/
+    }
     }
 }
 
