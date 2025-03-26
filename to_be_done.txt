@@ -1,6 +1,6 @@
 Ending Death Screen                                                                            
 Ending Success Screen       -- Caroline
-Button to show controls (WASD, Credits) -- Carlos                                                       
+Button to show controls (WASD, Credits, Quit) -- Carlos                                       
 Enemies types (can be multiple people)                                                       
 Coin grabbing                                                                 
 Death Mechanic to keep track of deaths of a certain level                                      
