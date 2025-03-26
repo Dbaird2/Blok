@@ -21,7 +21,6 @@ extern Entity goal;
 
 
 void seanrungame();
-void drawRect();
 void updateEnemies();
 void SeanDrawRect();
 #endif
