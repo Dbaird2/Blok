@@ -25,5 +25,5 @@ void updateEnemies();
 void SeanDrawRect();
 void SeanEnemiesVertical(int start, int end, int yBoundary);
 void SeanEnemiesHorizontal(int start, int end, int xBoundary);
-void SeanCheckCollision(float x, float y, float width, float height, float r, float g, float b);
+bool SeanCheckCollision(Entity &enemy);
 #endif
