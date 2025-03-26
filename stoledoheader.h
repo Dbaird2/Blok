@@ -23,7 +23,7 @@ extern Entity goal;
 void seanrungame();
 void updateEnemies();
 void SeanDrawRect();
-void SeanEnemyMovementVertical();
-void SeanEnemyMovementHorizontal();
-void SeanCheckCollision((float x, float y, float width, float height, float r, float g, float b));
+void SeanEnemiesVertical(int start, int end, int yBoundary);
+void SeanEnemiesHorizontal(int start, int end, int xBoundary);
+void SeanCheckCollision(float x, float y, float width, float height, float r, float g, float b);
 #endif

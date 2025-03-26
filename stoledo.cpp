@@ -91,23 +91,22 @@ void SeanDrawRect(float x, float y, float width, float height, float r, float g,
 }
 
 //Enemy Movement
-void SeanEnemyMovementVertical() {
-    for (int i = 0; i < 2; i++) {
-        //Up and Down
+void SeanEnemiesVertical(int start, int end, int yBoundary) {
+    for (int i = start; i < end; i++) {
         enemies[i].y += enemies[i].dir * enemies[i].speed;
-        if (enemies[i].y <= 100 || enemies[i].y >= g.yres - 100)
-            enemies[i].dir *= -1; 
-    
+        if (enemies[i].y <= 100 || enemies[i].y >= yBoundary - 100)
+            enemies[i].dir *= -1;
     }
 }
-void SeanEnemyMovementHorizontal() {
-    for (int j = 2; j < 4; j++) {
-        enemies[j].x += enemies[j].dir * enemies[j].speed;
 
-        if (enemies[j].x <= 100 || enemies[j].x >= g.xres - 100)
-            enemies[j].dir *= -1;
+void SeanEnemiesHorizontal(int start, int end, int xBoundary) {
+    for (int i = start; i < end; i++) {
+        enemies[i].x += enemies[i].dir * enemies[i].speed;
+        if (enemies[i].x <= 100 || enemies[i].x >= xBoundary - 100)
+            enemies[i].dir *= -1;
     }
 }
+
 
 
 //Collision
@@ -150,8 +149,8 @@ void seanrungame() {
         // Draw Player Box
         drawDeathCounter(deathcounter);
         drawPlayerBox();
-        SeanEnemyMovementVertical();
-        SeanEnemyMovementHorizontal();
+        SeanEnemiesVertical(0, 2, g.yres);
+        SeanEnemiesHorizontal(2, 4, g.xres);
         for (int i = 0; i < 4; i++) {
             if (SeanCheckCollision(enemies[i])) {
                 //cout << "Collision detected with enemy " << i << "!\n";
