@@ -8,13 +8,13 @@ struct Grid {
     int size;
     int height;
     int width;
-    int x;
-    int y;
+    float x;
+    float y;
     int r;
     int g;
     int b;
 };
-extern Grid growing_box[10];
+extern Grid growing_box[15];
 
 void makeStartScreen();
 void dasonEndCredit();
