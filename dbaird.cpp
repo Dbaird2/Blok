@@ -30,8 +30,16 @@ using namespace std;
 #include "fonts.h"
 #include "Global.h"
 #include "dbairdheader.h"
+#include "stoledoheader.h"
 
 /*---------------------------------------------------------------------------*/
+Entity dason_enemies[20] = {
+    {530.0, 15.0, 20.0, 20.0, 30.0, 1},
+    {300.0, 200.0, 20.0, 20.0, 30.0, -1},
+    {300.0, 200.0, 20.0, 20.0, 30.0, 1},
+    {500.0, 200.0, 20.0, 20.0, 30.0, -1}
+};
+
 /* --------------- MAP WALL STRUCTURES --------------------------------------*/
 #define DASON_GRID_SIZE 58
 Grid dason_grid[DASON_GRID_SIZE];
@@ -176,6 +184,10 @@ void init_dasonMazePlayer()
 
 void dasonMazeRender()
 {
+    for (int i = 0; i < 4; i++)
+        SeanDrawRect(dason_enemies[i].x, dason_enemies[i].y, 
+                dason_enemies[i].width, dason_enemies[i].height, 
+                0, rand() % 256, 0);
     dasonDrawGrowingBoxes(growing_box, 10);
     dasonDrawWalls(dason_grid, DASON_GRID_SIZE);
     renderDeathCount(); 
@@ -358,7 +370,15 @@ void dasonPhysics(int wall_size, int growing_size,
         int growing_enemy_check, Grid grid[])
 {
     if (g.game_state == 6) {
-        //checkCollision(moving_enemy);
+        SeanEnemiesVertical(0, 4, g.yres);
+        for (int i = 0; i < 4; i++) {
+            if (SeanCheckCollision(dason_enemies[i])) {
+                player.death_count++;
+                player.tempy = 5;
+                player.tempx = 530;
+            }
+        }
+
     }
 
     glClear(GL_COLOR_BUFFER_BIT);
