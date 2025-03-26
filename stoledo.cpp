@@ -80,7 +80,7 @@ Entity enemies[30] = {
 //Enemy Direction
 
 //Draw Enemy Rectangle
-void drawRect(float x, float y, float width, float height, float r, float g, float b) {
+void SeanDrawRect(float x, float y, float width, float height, float r, float g, float b) {
     glColor3f(r, g, b);
     glBegin(GL_QUADS);
     glVertex2f(x, y);                   
@@ -128,16 +128,27 @@ bool SeanCheckCollision(Entity &enemy) {
             playerBottom > enemyTop);
 }
 
+void drawDeathCounter(int deathCount) {
+    Rect r;
+    r.bot = 20;        
+    r.left = 10;       
+    r.center = 0;
+
+    ggprint8b(&r, 16, 0xff0000ff, "Deaths:");
+    ggprint8b(&r, 16, 0xff0000ff, "%d", deathCount);
+}
+int deathcounter = 0;
 void seanrungame() {
     //initAudio("background.wav");
+    static bool initialized = false;
     if (g.game_state == 4) {
-        static bool initialized = false;
         if (!initialized) {
             player.tempx = 50;
             player.tempy = 250;
             initialized = true;
         }
         // Draw Player Box
+        drawDeathCounter(deathcounter);
         drawPlayerBox();
         SeanEnemyMovementVertical();
         SeanEnemyMovementHorizontal();
@@ -146,18 +157,24 @@ void seanrungame() {
                 //cout << "Collision detected with enemy " << i << "!\n";
                 player.tempx = 50;
                 player.tempy = 250; 
+                deathcounter++;
             }
         }
-        drawRect(goal.x, goal.y, goal.width, goal.height, 0, 1, 0);
+        SeanDrawRect(goal.x, goal.y, goal.width, goal.height, 0, 1, 0);
         for (int i = 0; i < 4; i++)
-        drawRect(enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height,1, 0, 0);
+        SeanDrawRect(enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height,1, 0, 0);
         
          if (SeanCheckCollision(goal)) {
             cout << "You Win!" << endl;
-            g.game_state = 2;
+            g.game_state = 0 ;
+         }
+      
+        
           
 
-    }
+    
+    
+
     }
 }
 
