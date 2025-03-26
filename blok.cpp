@@ -200,11 +200,9 @@ void check_mouse(XEvent *e)
                 dasonMenuButtonPress(x, y);
             } else {
                 // MAIN MENU OVER GAME START   
-
             }
             if(e->xbutton.button == 7) {
-                //carolineDrawCircle();
-				carolineWinScreen();
+				carolineDisplayWinScreen();
             }
 
             /*for (int i = 0; i < 10; i++) {
@@ -350,7 +348,7 @@ void render()
     }
     if(g.game_state == 7) {
         //carolineDrawCircle();
-    	carolineWinScreen();
+    	carolineDisplayWinScreen();
 	}
     seanrungame();
 

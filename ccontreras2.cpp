@@ -8,20 +8,23 @@
 #include "fonts.h"
 #include <math.h>
 #include <GL/gl.h>
+#include <AL/al.h>
+#include <AL/alc.h>
+#include <AL/alut.h>
 #include "caroline.h"
 #include <vector>
 using namespace std;
 
 //=========================================================
 #ifdef USE_OPENAL_SOUND
-#include "src/setup/oal.h"
 #include </usr/include/AL/alut.h>
 #endif 
 
+ALuint alBuffer;
+ALuint alSource;
 
 #ifdef USE_OPENAL_SOUND
 
-//void Sound::initSound()
 void initSound()
 {
 #ifdef USE_OPENAL_SOUND
@@ -39,19 +42,16 @@ void initSound()
 	
 	//Buffer holds the sound information.
 	//FIX THIS CODE BELOW
-	ALuint alBuffer;
 	alBuffer = alutCreateBufferFromFile("./winningScreenAudio.wav");
-	winScreen = alutCreateBufferFromFile("./src/sounds/");
-	
+	//winScreen = alutCreateBufferFromFile("./src/sounds/");
 	//Source refers to the sound.
-	ALunit alSource;
 	//Generate a source, and store it in a buffer.
 	alGenSources(1, &alSource);
 	alSourcei(alSource, AL_BUFFER, alBuffer);
 	//Set volume and pitch to normal, no looping of sound.
-	alSourcef(g.alSourceCoin, AL_GAIN, 1.0f);
-	alSourcef(g.alSourceCoin, AL_PITCH, 1.0f);
-	alSourcei(g.alSourceCoin, AL_LOOPING, AL_FALSE);
+	alSourcef(alSource, AL_GAIN, 1.0f);
+	alSourcef(alSource, AL_PITCH, 1.0f);
+	alSourcei(alSource, AL_LOOPING, AL_FALSE);
 	if (alGetError() != AL_NO_ERROR) {
 		printf("ERROR: setting source\n");
 		return;
@@ -62,7 +62,7 @@ void initSound()
 }
 
 //void Sound::cleanupSound()
-void cleanupSound()
+void cleanupSound(ALuint alSource, ALuint alBuffer)
 {
         //First delete the source.
         alDeleteSources(1, &alSource);
@@ -82,10 +82,10 @@ void cleanupSound()
 }
 
 //void Sound::playSound(ALuint source)
-void playSound(ALuint source)
+void playSound(ALuint alSource)
 {
 #ifdef USE_OPENAL_SOUND
-	alSourcePlay(source);
+	alSourcePlay(alSource);
 #endif
 }
 #endif //USE_OPENAL_SOUND
@@ -133,8 +133,8 @@ void carolineDrawCircle() {
 	glPopMatrix();
 }
 
-void carolineWinScreen() {
-	
+void carolineDisplayWinScreen() {
+
 }
 
 //below is my function for my end credit
