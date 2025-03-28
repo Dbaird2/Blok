@@ -128,7 +128,7 @@ void dasonMenuButtonPress(int x, int y)
                     (x >= (cx - cw)) &&
                     (x <= (cx + cw)) &&
                     (y >= (cy - ch))) {
-                if (j == 0){
+                if (j == 0) {
                     // CAROLINE
                     g.game_state = 7;
                     //glDeleteTextures(1, &ren.backgroundTexture);
