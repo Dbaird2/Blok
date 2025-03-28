@@ -105,4 +105,10 @@ void drawCircles ()
     glPopMatrix();
 }
 
+/*void carlosRunGame()
+{
+    drawCircles();
+    drawTriangles();
+
+}*/
 
