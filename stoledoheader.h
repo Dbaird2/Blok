@@ -22,14 +22,11 @@ extern Entity goal;
 
 void seanrungame();
 void updateEnemies();
-<<<<<<< HEAD
 void SeanEnemiesVertical(int start, int end, int yBoundary);
 void SeanEnemiesHorizontal(int start, int end, int xBoundary);
-=======
 void SeanDrawRect();
-void SeanEnemiesVertical(int start, int end, int yBoundary,Entity &enemy);
-void SeanEnemiesHorizontal(int start, int end, int xBoundary,Entity &enemy);
->>>>>>> e95b532 ( CHANGES)
+void SeanEnemiesVertical(int start, int end, int yBoundary);
+void SeanEnemiesHorizontal(int start, int end, int xBoundary);
 bool SeanCheckCollision(Entity &enemy);
 void SeanDrawRect(float x, float y, float width, float height, float r, float g, float b);
 

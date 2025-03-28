@@ -91,7 +91,7 @@ void SeanDrawRect(float x, float y, float width, float height, float r, float g,
 }
 
 //Enemy Movement
-void SeanEnemiesVertical(int start, int end, int yBoundary,Entity &enemy) {
+void SeanEnemiesVertical(int start, int end, int yBoundary) {
     for (int i = start; i < end; i++) {
         enemies[i].y += enemies[i].dir * enemies[i].speed;
         if (enemies[i].y <= 100 || enemies[i].y >= yBoundary - 100)
@@ -99,7 +99,7 @@ void SeanEnemiesVertical(int start, int end, int yBoundary,Entity &enemy) {
     }
 }
 
-void SeanEnemiesHorizontal(int start, int end, int xBoundary,Entity &enemy) {
+void SeanEnemiesHorizontal(int start, int end, int xBoundary) {
     for (int i = start; i < end; i++) {
         enemies[i].x += enemies[i].dir * enemies[i].speed;
         if (enemies[i].x <= 100 || enemies[i].x >= xBoundary - 100)
