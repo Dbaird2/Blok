@@ -319,7 +319,7 @@ void growingBoxPhysics(int size, Grid grid[])
         int box_left = box_x - box_w;
         int box_right = box_x + box_w;
 
-        if (bounceOffset < 0) {
+        //if (bounceOffset < 0) {
             if ((p->pos[1] >= box_top - y_offset)
                     && (p->pos[1] <= box_bot + y_offset)
                     && (p->pos[0] <= box_left + x_offset) 
@@ -340,7 +340,7 @@ void growingBoxPhysics(int size, Grid grid[])
                 }
             } 
 
-        } else {
+        //} else {
             if ((p->pos[1] <= box_top + y_offset)
                     && (p->pos[1] >= box_bot - y_offset)
                     && (p->pos[0] >= box_left - x_offset) 
@@ -359,7 +359,7 @@ void growingBoxPhysics(int size, Grid grid[])
                     p->tempx = 530;
                     p->tempy = 5;
                 }
-            } 
+            //} 
         }
     }
 }
