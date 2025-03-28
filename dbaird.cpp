@@ -370,7 +370,7 @@ void dasonPhysics(int wall_size, int growing_size,
         int growing_enemy_check, Grid grid[])
 {
     if (g.game_state == 6) {
-        SeanEnemiesVertical(0, 4, g.yres);
+        //SeanEnemiesVertical(0, 4, g.yres);
         for (int i = 0; i < 4; i++) {
             if (SeanCheckCollision(dason_enemies[i])) {
                 player.death_count++;
