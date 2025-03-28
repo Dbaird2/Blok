@@ -9,7 +9,7 @@
 #include <iostream>
 #include "Global.h"
 
-struct Entity;
+struct RB_Entity;
 struct Coin;
 
 void rbarreyroRunGame();
@@ -19,11 +19,11 @@ void rjEndCredit();
 void RB_InitializeLevel();
 void RB_DrawColoredRect(float x, float y, float w, float h, float r, float g, float b);
 void RB_UpdateEnemyMovement();
-bool RB_CheckEntityCollision(const Entity& a, const Entity& b);
+bool RB_CheckEntityCollision(const RB_Entity& a, const RB_Entity& b);
 
 
 // Entity structure declaration
-struct Entity {
+struct RB_Entity {
     float x, y;
     float width, height;
     float speed;

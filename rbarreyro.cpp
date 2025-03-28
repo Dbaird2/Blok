@@ -32,12 +32,12 @@ const float GOAL_Y = 250.0f;
 const float COIN_RADIUS = 10.0f;
 
 // Game State Variables
-Entity Russ_goal = {GOAL_X, GOAL_Y, 25, 25, 0, true};
+RB_Entity Russ_goal = {GOAL_X, GOAL_Y, 25, 25, 0, true};
 std::vector<Coin> coins;
 int collectedCoins = 0;
 
 // Enemies
-Entity Russ_enemies[NUM_ENEMIES] = {
+RB_Entity Russ_enemies[NUM_ENEMIES] = {
     {300, 200, 20, 20, 30.0, true},
     {500, 400, 20, 20, 30.0, true},
     {300, 200, 20, 20, 30.0, true},
@@ -97,7 +97,7 @@ void RB_UpdateSpecialCoins() {
 }
 
 // Check Entity Collision
-bool RB_CheckEntityCollision(const Entity& a, const Entity& b) {
+bool RB_CheckEntityCollision(const RB_Entity& a, const RB_Entity& b) {
     return (a.x < b.x + b.width &&
             a.x + a.width > b.x &&
             a.y < b.y + b.height &&
@@ -106,7 +106,7 @@ bool RB_CheckEntityCollision(const Entity& a, const Entity& b) {
 
 // Check Coin Collection
 void RB_CheckCoinCollection() {
-    Entity playerBounds = {
+    RB_Entity playerBounds = {
         player.pos[0] - player.width/2,
         player.pos[1] - player.height/2,
         player.width,
@@ -117,7 +117,7 @@ void RB_CheckCoinCollection() {
 
     for (auto& coin : coins) {
         if (!coin.collected) {
-            Entity coinBounds = {coin.x - COIN_RADIUS, coin.y - COIN_RADIUS,
+            RB_Entity coinBounds = {coin.x - COIN_RADIUS, coin.y - COIN_RADIUS,
                 COIN_RADIUS*2, COIN_RADIUS*2, 0.0f, true};
 
             if (RB_CheckEntityCollision(playerBounds, coinBounds)) {
@@ -194,7 +194,7 @@ void rbarreyroRunGame() {
         RB_DrawCoinCounter();
 
         // Check collisions
-        Entity playerBounds = {
+        RB_Entity playerBounds = {
             player.pos[0] - static_cast<float>(player.width)/2.0f,
             player.pos[1] - static_cast<float>(player.height)/2.0f,
             static_cast<float>(player.width),

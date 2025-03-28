@@ -32,6 +32,7 @@ using namespace std;
 #include "functions.h"
 #include "dbairdheader.h"
 #include "cmorenoyanesheader.h"
+#include "rbarreyroheader.h"
 #include "caroline.h"
 #include "Global.h"
 #include "Image.h"
@@ -441,6 +442,7 @@ void render()
     	carolineDisplayWinScreen();
 	}
     seanrungame();
+    rbarreyroRunGame();
 
     if (g.credit == 1) {
         dasonEndCredit();
