@@ -46,7 +46,7 @@ using namespace std;
 Global g;
 Wall walls[100];
 Wall growing_boxes[10];
-Grid growing_box[10];
+Grid growing_box[15];
 ImageRenderer ren;
 MenuBox boxes[MAX_BOXES];
 Player player;
@@ -54,11 +54,15 @@ Image img[2] = {
     "./background.png",
     "./wip.png"
 };
-
+void init_opengl(void);
+void physics(void);
+void render(void);
+void check_mouse(XEvent *e);
+int check_keys(XEvent *e);
 
 int n = 0;
 float spd = 0;
-
+/*
 class X11_wrapper {
     private:
     public:
@@ -115,6 +119,7 @@ class X11_wrapper {
             glXSwapBuffers(dpy, win);
         }
         void setupScreenRes(const int w, const int h) {
+            cout << w << " " << h << endl;
             g.xres = w;
             g.yres = h;
         }
@@ -139,13 +144,98 @@ class X11_wrapper {
             }
         }
 } x11;
+*/
+class X11_wrapper {
+private:
+        //X Windows variables
+public:
+        Display *dpy;
+        Window win;
+        GLXContext glc;
+        X11_wrapper() {
+                GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
+                //GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, None };
+                XSetWindowAttributes swa;
+                setup_screen_res(g.xres, g.yres);
+                dpy = XOpenDisplay(NULL);
+                if (dpy == NULL) {
+                        printf("\n\tcannot connect to X server\n\n");
+                        exit(EXIT_FAILURE);
+                }
+                Window root = DefaultRootWindow(dpy);
+                XVisualInfo *vi = glXChooseVisual(dpy, 0, att);
+                if (vi == NULL) {
+                        printf("\n\tno appropriate visual found\n\n");
+                        exit(EXIT_FAILURE);
+                }
+                Colormap cmap = XCreateColormap(dpy, root, vi->visual, AllocNone);
+                swa.colormap = cmap;
+                swa.event_mask = ExposureMask |
+                                                KeyPressMask |
+                                                KeyReleaseMask |
+                                                ButtonPressMask |
+                                                ButtonReleaseMask |
+                                                PointerMotionMask |
+                                                StructureNotifyMask |
+                                                SubstructureNotifyMask;
+                win = XCreateWindow(dpy, root, 0, 0, g.xres, g.yres, 0,
+                                                                vi->depth, InputOutput, vi->visual,
+                                                                CWColormap | CWEventMask, &swa);
+                set_title();
+                glc = glXCreateContext(dpy, vi, NULL, GL_TRUE);
+                glXMakeCurrent(dpy, win, glc);
 
+        }
+        ~X11_wrapper() {
+                XDestroyWindow(dpy, win);
+                XCloseDisplay(dpy);
+        }
+        void set_title() {
+                //Set the window title bar.
+                XMapWindow(dpy, win);
+                XStoreName(dpy, win, "CS335 - OpenGL Animation Template Under XWindows");
+        }
+        void setup_screen_res(const int w, const int h) {
+                g.xres = w;
+                g.yres = h;
+        }
+        void reshape_window(int width, int height) {
+                //window has been resized.
+                g.xres = width;
+                g.yres = height;
+                setup_screen_res(width, height);
+                //
+                glViewport(0, 0, (GLint)width, (GLint)height);
+                glMatrixMode(GL_PROJECTION); glLoadIdentity();
+                glMatrixMode(GL_MODELVIEW); glLoadIdentity();
+                glOrtho(0, g.xres, 0, g.yres, -1, 1);
+                set_title();
+                init_opengl();
+        }
+        void check_resize(XEvent *e) {
+                //The ConfigureNotify is sent by the
+                //server if the window is resized.
+                if (e->type != ConfigureNotify)
+                        return;
+                XConfigureEvent xce = e->xconfigure;
+                if (xce.width != g.xres || xce.height != g.yres) {
+                        //Window size did change.
+                        reshape_window(xce.width, xce.height);
+                }
+        }
+        bool getXPending() {
+                return XPending(dpy);
+        }
+        XEvent getXNextEvent() {
+                XEvent e;
+                XNextEvent(dpy, &e);
+                return e;
+        }
+        void swapBuffers() {
+                glXSwapBuffers(dpy, win);
+        }
+} x11;
 //Function prototypes
-void init_opengl(void);
-void physics(void);
-void render(void);
-void check_mouse(XEvent *e);
-int check_keys(XEvent *e);
 
 int main()
 {
@@ -200,11 +290,9 @@ void check_mouse(XEvent *e)
                 dasonMenuButtonPress(x, y);
             } else {
                 // MAIN MENU OVER GAME START   
-
             }
             if(e->xbutton.button == 7) {
-                //carolineDrawCircle();
-				carolineWinScreen();
+				carolineDisplayWinScreen();
             }
 
             /*for (int i = 0; i < 10; i++) {
@@ -350,7 +438,7 @@ void render()
     }
     if(g.game_state == 7) {
         //carolineDrawCircle();
-    	carolineWinScreen();
+    	carolineDisplayWinScreen();
 	}
     seanrungame();
 

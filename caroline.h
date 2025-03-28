@@ -14,7 +14,7 @@ void cleanupSound();
 //void playSound(ALuint source);
 void carolineDrawCircle();
 void carolineEndCredit (void);
-void carolineWinScreen();
+void carolineDisplayWinScreen();
 
 
 #endif

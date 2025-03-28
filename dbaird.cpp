@@ -30,29 +30,44 @@ using namespace std;
 #include "fonts.h"
 #include "Global.h"
 #include "dbairdheader.h"
+#include "stoledoheader.h"
 
 /*---------------------------------------------------------------------------*/
+Entity dason_enemies[20] = {
+    {530.0, 15.0, 20.0, 20.0, 30.0, 1},
+    {300.0, 200.0, 20.0, 20.0, 30.0, -1},
+    {300.0, 200.0, 20.0, 20.0, 30.0, 1},
+    {500.0, 200.0, 20.0, 20.0, 30.0, -1}
+};
+
 /* --------------- MAP WALL STRUCTURES --------------------------------------*/
 #define DASON_GRID_SIZE 58
 Grid dason_grid[DASON_GRID_SIZE];
-int dason_height[58] = {5, 5, 20, 5, 60, 5, 60, 5, 45, 50, 250, 5, 5, 480,
+int dason_height[58] = {5
+    , 5, 20, 5, 60, 5, 60, 5, 45, 50, 250, 5, 5, 
+    250,
     115, 5, 130, 5, 90, 5, 5, 5, 80, 5, 60/**/, 5, 5,
     60, 65, 5, 60, 70, 5, 90, 5, 60, 50, 5, 5, 50, 5, 5,
     60, /**/100, 30, 200, 5, 30, 40, 5, 200, /**/
     40, 40, 40, 40, 40, 40, 40};
-int dason_width[58] = {250, 175, 5, 200, 5, 75, 5, 50, 5, 5, 5, 250, 175, 5,
+int dason_width[58] = {250
+    , 175, 5, 200, 5, 75, 5, 50, 5, 5, 5, 250, 175,
+    5,
     5, 95, 5, 20, 5, 120, 30, 25, 5, 20, 5/**/, 30, 90, 5,
     5, 35, 5, 5, 90, 5, 50, 5, 5, 15, 45, 5, 45, 60, 5,
     /**/5, 100, 5, 90, 95, 5, 60, 20, /**/
     5, 5, 5, 5, 5, 5, 5};
-int dason_x[58] = {250, 725, 555, 485, 290, 220, 250, 205, 195, 150, 5, 660,
+int dason_x[58] = {250
+    , 725, 555, 485, 290, 220, 250, 205, 195, 150, 5, 
+    660,
     185, 895, 105, 200, 55, 80, 335, 220, 400, 35, 375, 360,
     105/**/, 70, 100, 160, 195, 265, 335, 235, 150, 295, 350,
     375, 410, 395, 425, 465, 425, 440, 445, /**/495, 590, 720,
     625, 595, 670, 725, 805, /**/
     635, 600, 565, 530, 495, 460, 425};
-int dason_y[58] = {5, 5, 30, 45, 110, 175, 70, 135, 55, 90, 260, 495, 495,
-    490, 155, 220, 170, 160, 180, 270, 95, 335, 180, 265,
+int dason_y[58] = {5
+    , 5, 30, 45, 110, 175, 70, 135, 55, 90, 260, 495, 495,
+    250, 155, 220, 170, 160, 180, 270, 95, 335, 180, 265,
     365/**/, 385, 430, 335, 370, 310, 335, 385, 460, 405, 430,
     370, 290, 335, 210, 100, 150, 370, 275, /**/ 270, 140,
     210, 245, 345, 415, 450, 255, /**/
@@ -67,23 +82,17 @@ int growing_y[10] = {40, 15, 80, 300, 220, 340, 60, 450, 250, 200};
 
 void dasonEndCredit(void)
 {
-#ifdef MAP_HELP
-    cout << "dasonEndCredit" << endl;
-#endif
     Rect title;
     title.bot = 50;
     title.left = 10;
     title.center = 0;
-    ggprint8b(&title, 16, 0x00ff0000, "Author 3: Dason Baird");
+    ggprint8b(&title, 16, 0x00ffffff, "Author 3: Dason Baird");
 }
 
 int b = 0;
 void init_dasonMazePlayer();
 void dasonMenuButtonPress(int x, int y) 
 {
-#ifdef MAP_HELP
-    cout << "dasonMenuButtonPress" << endl;
-#endif
     /* Start/Credits button Collision Detection */
     if (g.game_state == 1) {
         for (int j = 0; j < g.menu_box_amt[g.game_state-1]; j++) {
@@ -149,11 +158,8 @@ void dasonMenuButtonPress(int x, int y)
     }
 }
 
-void renderDeathCount ()
+void renderDeathCount()
 {
-#ifdef MAP_HELP
-    cout << "renderDeathCount" << endl;
-#endif
     Rect title;
     title.bot = 0;
     title.left = 0;
@@ -164,9 +170,6 @@ void renderDeathCount ()
 
 void init_dasonMazePlayer() 
 {
-#ifdef MAP_HELP
-    cout << "init_dasonMazePlayer" << endl;
-#endif
     /* GROWING BOX ENEMIES */
     dasonLoadStruct(growing_box, growing_height, growing_width, 
             growing_x, growing_y, 10);
@@ -179,11 +182,12 @@ void init_dasonMazePlayer()
     player.height = 5;
 }
 
-void dasonMazeRender ()
+void dasonMazeRender()
 {
-#ifdef MAP_HELP
-    cout << "dasonMazeRender" << endl;
-#endif
+    for (int i = 0; i < 4; i++)
+        SeanDrawRect(dason_enemies[i].x, dason_enemies[i].y, 
+                dason_enemies[i].width, dason_enemies[i].height, 
+                0, rand() % 256, 0);
     dasonDrawGrowingBoxes(growing_box, 10);
     dasonDrawWalls(dason_grid, DASON_GRID_SIZE);
     renderDeathCount(); 
@@ -196,9 +200,6 @@ void dasonMazeRender ()
 
 void defineBox() 
 {
-#ifdef MAP_HELP
-    cout << "defineBox" << endl;
-#endif
     if (g.game_state == 1) {
         if (b >= g.menu_box_amt[g.game_state-1])
             return;
@@ -223,9 +224,6 @@ void defineBox()
 void dasonLoadStruct(Grid grid[], int height[], int width[], 
         int x[], int y[], int size) 
 {
-#ifdef MAP_HELP
-    cout << "dasonLoadStruct" << endl;
-#endif
     for (int i = 0; i < size; i++) {
         grid[i].height = height[i];
         grid[i].width = width[i];
@@ -239,9 +237,6 @@ void dasonLoadStruct(Grid grid[], int height[], int width[],
 
 void dasonDrawGrowingBoxes(Grid grid[], int size)
 {
-#ifdef MAP_HELP
-    cout << "dasonDrawWalls_Boxes" << endl;
-#endif
     for ( int i = 0; i < size; i++) {
 
         glPushMatrix();
@@ -271,9 +266,6 @@ void dasonDrawGrowingBoxes(Grid grid[], int size)
 
 void dasonDrawWalls(Grid grid[], int size)
 {
-#ifdef MAP_HELP
-    cout << "dasonDrawWalls_Boxes" << endl;
-#endif
     for ( int i = 0; i < size; i++) {
 
         glPushMatrix();
@@ -304,11 +296,8 @@ void dasonDrawWalls(Grid grid[], int size)
     }
 }
 
-void growingBoxPhysics (int size, Grid grid[]) 
+void growingBoxPhysics(int size, Grid grid[]) 
 {
-#ifdef MAP_HELP
-    cout << "growingBoxPhysics" << endl;
-#endif
     if (size < 0) 
         return;
     for (int i = 0; i < size; i++) {
@@ -330,7 +319,7 @@ void growingBoxPhysics (int size, Grid grid[])
         int box_left = box_x - box_w;
         int box_right = box_x + box_w;
 
-        if (bounceOffset < 0) {
+        //if (bounceOffset < 0) {
             if ((p->pos[1] >= box_top - y_offset)
                     && (p->pos[1] <= box_bot + y_offset)
                     && (p->pos[0] <= box_left + x_offset) 
@@ -351,7 +340,7 @@ void growingBoxPhysics (int size, Grid grid[])
                 }
             } 
 
-        } else {
+        //} else {
             if ((p->pos[1] <= box_top + y_offset)
                     && (p->pos[1] >= box_bot - y_offset)
                     && (p->pos[0] >= box_left - x_offset) 
@@ -370,7 +359,7 @@ void growingBoxPhysics (int size, Grid grid[])
                     p->tempx = 530;
                     p->tempy = 5;
                 }
-            } 
+            //} 
         }
     }
 }
@@ -380,11 +369,16 @@ void growingBoxPhysics (int size, Grid grid[])
 void dasonPhysics(int wall_size, int growing_size, 
         int growing_enemy_check, Grid grid[])
 {
-#ifdef MAP_HELP
-    cout << "dasonPhysics" << endl;
-#endif
     if (g.game_state == 6) {
-        //checkCollision(moving_enemy);
+        SeanEnemiesVertical(0, 4, g.yres);
+        for (int i = 0; i < 4; i++) {
+            if (SeanCheckCollision(dason_enemies[i])) {
+                player.death_count++;
+                player.tempy = 5;
+                player.tempx = 530;
+            }
+        }
+
     }
 
     glClear(GL_COLOR_BUFFER_BIT);
@@ -415,9 +409,6 @@ void dasonPhysics(int wall_size, int growing_size,
                 p->tempx += 5;
             else if (p->pos[0] <= box_left) 
                 p->tempx -= 5;
-#ifdef MAP_HELP
-            cout << "y " <<  w->pos[1] << " x " << w->pos[0] << endl;
-#endif
         } 
     }
 }
@@ -426,9 +417,6 @@ void dasonPhysics(int wall_size, int growing_size,
 /*  */
 void dasonRenderBackground() 
 {
-#ifdef MAP_HELP
-    cout << "dasonRenderBackground" << endl;
-#endif
     ren.backgroundImage = &img[0];
     glGenTextures(1, &ren.backgroundTexture);
     int w = ren.backgroundImage->width;
@@ -442,9 +430,6 @@ void dasonRenderBackground()
 }
 void dasonMazeLevelBackground() 
 {
-#ifdef MAP_HELP
-    cout << "dasonMazeLeveBackground" << endl;
-#endif
     ren.dasonLevelBackgroundImage = &img[1];
     glGenTextures(1, &ren.dasonLevelBackgroundTexture);
     int w = ren.dasonLevelBackgroundImage->width;
@@ -464,9 +449,6 @@ void dasonMazeLevelBackground()
 
 void makeStartScreen() 
 {
-#ifdef MAP_HELP
-    cout << "makeStartScreen" << endl;
-#endif
     glClear(GL_COLOR_BUFFER_BIT);
     float quadWidth = g.xres;
     float quadHeight = g.yres;
@@ -500,7 +482,7 @@ void makeStartScreen()
         glPopMatrix();
     }
     if (g.game_state == 6) {
-        float imageAspect = 
+        /*float imageAspect = 
             static_cast<float>(ren.dasonLevelBackgroundImage->width) 
             / ren.dasonLevelBackgroundImage->height;
 
@@ -526,6 +508,7 @@ void makeStartScreen()
 
         glEnd();
         glPopMatrix();
+        */
     }
 }
 
@@ -536,9 +519,6 @@ void makeStartScreen()
 int j = 0;
 void drawBoxes() 
 {
-#ifdef MAP_HELP
-    cout << "drawBoxes" << endl;
-#endif
     //draw the boxes
 
     defineBox(); 
@@ -571,12 +551,12 @@ void drawBoxes()
             if (i == 1) {
                 box->pos[1] += bounceOffset+sin(g.animationTime);
             }
-            
+
             switch (i)
             {
                 case 1:
                     rect.left = box->pos[0] - 17;
-                    ggprint8b(&rect, 0, 0x00D30000, "Start!");
+                    ggprint8b(&rect, 0, 0x00ffffff, "Start!");
                     break;
                 case 0:
                     rect.left = box->pos[0] - 20;
@@ -589,6 +569,11 @@ void drawBoxes()
         for (int i = 0; i < g.menu_box_amt[g.game_state-1]; i++) {
             MenuBox *box = &boxes[i];
 
+            if (i < g.menu_box_amt[g.game_state-1] -1) {
+                box->color[0] = 0.0f;
+                box->color[1] = 0.0f;
+                box->color[2] = 0.0f;
+            }
             Rect rect;
             glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
             glPushMatrix();
@@ -608,28 +593,28 @@ void drawBoxes()
             switch (i)
             {
                 case 5:
-                    rect.left = box->pos[0] -20;
+                    rect.left = box->pos[0] -17;
                     ggprint8b(&rect, 0, 0x00000000, "Back");
                     break;
                 case 4:
                     rect.left = box->pos[0] -25;
-                    ggprint8b(&rect, 0, 0x00000000, "Rj's Level");
+                    ggprint8b(&rect, 0, 0x00ffffff, "Rj's Level");
                     break;
                 case 3:
                     rect.left = box->pos[0] -40;
-                    ggprint8b(&rect, 0, 0x00000000, "Dason's Level");
+                    ggprint8b(&rect, 0, 0x00ffffff, "Dason's Level");
                     break;
                 case 2:
-                    rect.left = box->pos[0] -30;
-                    ggprint8b(&rect, 0, 0x00000000, "Carlos's Level");
+                    rect.left = box->pos[0] -37;
+                    ggprint8b(&rect, 0, 0x00ffffff, "Carlos's Level");
                     break;
                 case 1:
-                    rect.left = box->pos[0] -30;
-                    ggprint8b(&rect, 0, 0x00000000, "Sean's Level");
+                    rect.left = box->pos[0] -33;
+                    ggprint8b(&rect, 0, 0x00ffffff, "Sean's Level");
                     break;
                 case 0:
-                    rect.left = box->pos[0] -40;
-                    ggprint8b(&rect, 0, 0x00D30000, "Caroline's Level");
+                    rect.left = box->pos[0] -42;
+                    ggprint8b(&rect, 0, 0x00ffffff, "Caroline's Level");
                     break;
             }
         }
@@ -640,7 +625,15 @@ void drawBoxes()
 
 /*----------------------------------------------------*/
 /* DRAW PLAYER BOX */
-void drawPlayerBox () {
+void drawPlayerBox() 
+{
+    /*if (player.color[0] > 0.95f) {
+        player.height = 10;
+        player.width = 10;
+    } else {
+        player.height = 5;
+        player.width = 5;
+    }*/
     player.pos[0] = player.tempx;
     player.pos[1] = player.tempy;
     Player *player_box = &player;
@@ -677,20 +670,30 @@ void handleKeyRelease(XKeyEvent *event)
 
 void processMovement() 
 {
-    //player.color[0] -= 0.02f;
+    if ((!g.key_states[XK_w] || !g.key_states[XK_s]
+            || !g.key_states[XK_a] || !g.key_states[XK_d])
+       && player.color[0] > -0.05 ) {
+        //player.color[0] -= 0.05f;
+    }
     if (g.key_states[XK_w])
         if (!player.stop_w) {
             player.tempy += 5;
-           // player.color[0] += 0.05f;
+            //player.color[0] += 0.07f;
         }
     if (g.key_states[XK_a])
-        if (!player.stop_a)
+        if (!player.stop_a) {
             player.tempx -= 5;
+            //player.color[0] += 0.07f;
+        }
     if (g.key_states[XK_s])
-        if (!player.stop_s)
+        if (!player.stop_s) {
             player.tempy -= 5;
+            //player.color[0] += 0.07f;
+        }
     if (g.key_states[XK_d])
-        if (!player.stop_d)
+        if (!player.stop_d) {
             player.tempx += 5;
+            //player.color[0] += 0.07f;
+        }
 }
 /*----------------------------------------------------*/
