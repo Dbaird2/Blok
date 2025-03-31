@@ -80,7 +80,8 @@ Entity enemies[30] = {
 //Enemy Direction
 
 //Draw Enemy Rectangle
-void SeanDrawRect(float x, float y, float width, float height, float r, float g, float b) {
+void SeanDrawRect(float x, float y, float width, float height,
+                    float r, float g, float b) {
     glColor3f(r, g, b);
     glBegin(GL_QUADS);
     glVertex2f(x, y);                   
@@ -91,7 +92,7 @@ void SeanDrawRect(float x, float y, float width, float height, float r, float g,
 }
 
 //Enemy Movement
-void SeanEnemiesVertical(int start, int end, int yBoundary) {
+void SeanEnemiesVertical(int start, int end, int yBoundary, Entity enemies[]) {
     for (int i = start; i < end; i++) {
         enemies[i].y += enemies[i].dir * enemies[i].speed;
         if (enemies[i].y <= 100 || enemies[i].y >= yBoundary - 100)
@@ -99,13 +100,14 @@ void SeanEnemiesVertical(int start, int end, int yBoundary) {
     }
 }
 
-void SeanEnemiesHorizontal(int start, int end, int xBoundary) {
+void SeanEnemiesHorizontal(int start, int end, int xBoundary, Entity enemies[]) {
     for (int i = start; i < end; i++) {
         enemies[i].x += enemies[i].dir * enemies[i].speed;
         if (enemies[i].x <= 100 || enemies[i].x >= xBoundary - 100)
             enemies[i].dir *= -1;
     }
 }
+
 
 
 
@@ -132,7 +134,6 @@ void drawDeathCounter(int deathCount) {
     r.bot = 20;        
     r.left = 10;       
     r.center = 0;
-
     ggprint8b(&r, 16, 0xff0000ff, "Deaths:");
     ggprint8b(&r, 16, 0xff0000ff, "%d", deathCount);
 }
@@ -149,8 +150,8 @@ void seanrungame() {
         // Draw Player Box
         drawDeathCounter(deathcounter);
         drawPlayerBox();
-        SeanEnemiesVertical(0, 2, g.yres);
-        SeanEnemiesHorizontal(2, 4, g.xres);
+        SeanEnemiesVertical(0, 2, g.yres, enemies);
+        SeanEnemiesHorizontal(2, 4, g.xres, enemies);
         for (int i = 0; i < 4; i++) {
             if (SeanCheckCollision(enemies[i])) {
                 //cout << "Collision detected with enemy " << i << "!\n";
