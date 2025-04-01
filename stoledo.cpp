@@ -97,7 +97,7 @@ void SeanDrawRect(float x, float y, float width, float height,
 void SeanEnemiesVertical(int start, int end, int yBoundary, int margin, Entity enemies[]) {
     for (int i = start; i < end; i++) {
         enemies[i].y += enemies[i].dir * enemies[i].speed;
-        if (enemies[i].y <= margin || enemies[i].y >= yBoundary - margin)
+        if (enemies[i].y <= margin || enemies[i].y >= yBoundary)
             enemies[i].dir *= -1;
     }
 }

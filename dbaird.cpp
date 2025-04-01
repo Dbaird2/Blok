@@ -22,11 +22,11 @@
  * for size do player.width, player.height
  */
 using namespace std;
-#include <algorithm>
-#include <cstring>
-#include <iostream>
+//#include <algorithm>
+//#include <cstring>
+//#include <iostream>
 #include <random>
-#include <GL/glx.h>
+//#include <GL/glx.h>
 #include "fonts.h"
 #include "Global.h"
 #include "dbairdheader.h"
@@ -34,12 +34,30 @@ using namespace std;
 
 /*---------------------------------------------------------------------------*/
 Entity dason_goal = {360, 490, 50, 15, 0, 0};
-
-Entity dason_enemies[10] = {
-    {600.0, 30.0, 20.0, 20.0, 30.0, 1},
-    {630.0, 30.0, 20.0, 20.0, 30.0, 1},
-    {540.0, 30.0, 20.0, 20.0, 30.0, 1},
-    {570.0, 30.0, 20.0, 20.0, 30.0, 1}
+int enemy_size = 17;
+vector<vector<double>> color_vector(enemy_size, vector<double>(2));
+Entity dason_enemies[20] = {
+    /* Bottom Vertical Enemies */
+    {650.0, 100.0, 20.0, 20.0, 10.0, 1},
+    {550.0, 100.0, 20.0, 20.0, 10.0, 1},
+    {600.0, 100.0, 20.0, 20.0, 10.0, -1},
+    {500.0, 100.0, 20.0, 20.0, 10.0, -1},
+    /* Top Vertical Enemies */
+    {650.0, 300.0, 20.0, 20.0, 10.0, -1},
+    {550.0, 300.0, 20.0, 20.0, 10.0, -1},
+    {500.0, 250.0, 20.0, 20.0, 10.0, 1},
+    {600.0, 250.0, 20.0, 20.0, 10.0, 1},
+    /* Right Horizontal Enemies */
+    {800, 420, 20, 20, 10, 1},
+    {800, 370, 20, 20, 10, 1},
+    {800, 320, 20, 20, 10, 1},
+    {800, 270, 20, 20, 10, 1},
+    {800, 220, 20, 20, 10, 1},
+    {800, 170, 20, 20, 10, 1},
+    {800, 120, 20, 20, 10, 1},
+    {800, 70, 20, 20, 10, 1},
+    /* Single Vertical Bottom Left */
+    {795, 20, 20, 20, 10, 1}
 };
 
 /* --------------- MAP WALL STRUCTURES --------------------------------------*/
@@ -78,6 +96,19 @@ int growing_height[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
 int growing_width[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5,5};
 int growing_x[10] = {40, 350, 110, 200, 320, 440, 160, 230, 410, 200};
 int growing_y[10] = {40, 15, 80, 300, 220, 340, 60, 450, 250, 200};
+
+void getRandomColors(vector<vector<double>>& vec)
+{
+    srand(time(NULL));
+    for (auto& row: vec) {
+        // Red
+        row[0] = (double)rand()/(double)RAND_MAX*1.0f;
+        // Green
+        row[1] = (double)rand()/(double)RAND_MAX*1.0f;
+        // Blue
+        row[2] = (double)rand()/(double)RAND_MAX*1.0f;
+    }
+}
 
 void dasonEndCredit(void)
 {
@@ -175,6 +206,7 @@ void renderDeathCount()
 
 void init_dasonMazePlayer() 
 {
+    getRandomColors(color_vector);
     /* GROWING BOX ENEMIES */
     dasonLoadStruct(growing_box, growing_height, growing_width, 
             growing_x, growing_y, 10);
@@ -182,7 +214,7 @@ void init_dasonMazePlayer()
     dasonLoadStruct(dason_grid, dason_height, dason_width, 
             dason_x, dason_y, DASON_GRID_SIZE);
     player.tempx = 530;
-    player.tempy = 5;
+    player.tempy = 10;
     player.width = 5;
     player.height = 5;
 }
@@ -190,10 +222,10 @@ void init_dasonMazePlayer()
 void dasonMazeRender()
 {
 
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < enemy_size; i++)
         SeanDrawRect(dason_enemies[i].x, dason_enemies[i].y, 
                 dason_enemies[i].width, dason_enemies[i].height, 
-                1.0f, 0, 0);
+                color_vector[i][0], color_vector[i][1], color_vector[i][2]);
 
     dasonDrawGrowingBoxes(growing_box, 10);
     dasonDrawWalls(dason_grid, DASON_GRID_SIZE);
@@ -324,17 +356,17 @@ void growingBoxPhysics(int size, Grid grid[])
                 && (p->pos[0] >= box_right - x_offset)) {
             p->death_count++;
             if (p->pos[1] <= box_top + y_offset/4) {
-                p->tempy = 5;
+                p->tempy = 10;
                 p->tempx = 530;
             } else if (p->pos[1] >= box_bot - y_offset/10) {
-                p->tempy = 5;
+                p->tempy = 510;
                 p->tempx = 530;
             } else if (p->pos[0] <= box_right) {
                 p->tempx = 530;
-                p->tempy = 5;
+                p->tempy = 10;
             } else if (p->pos[0] >= box_left) {
                 p->tempx = 530;
-                p->tempy = 5;
+                p->tempy = 10;
             }
         } 
 
@@ -344,34 +376,39 @@ void growingBoxPhysics(int size, Grid grid[])
                 && (p->pos[0] <= box_right + x_offset)) {
             p->death_count++;
             if (p->pos[1] >= box_top - y_offset/4) {
-                p->tempy = 5;
+                p->tempy = 10;
                 p->tempx = 530;
             } else if (p->pos[1] <= box_bot+y_offset/10) {
-                p->tempy = 5;
+                p->tempy = 10;
                 p->tempx = 530;
             } else if (p->pos[0] >= box_right) {
                 p->tempx = 530;
-                p->tempy = 5;
+                p->tempy = 10;
             } else if (p->pos[0] <= box_left) {
                 p->tempx = 530;
-                p->tempy = 5;
+                p->tempy = 10;
             }
         }
     }
 }
 
-//SEAN ADDED THIS JUST SO IT COULD COMPILE
-int edge1 = 100;
-//THEN I ADDED EDGE AS A PARAMETER FOR THE FUNCTION BELOW NOTHING ELSE
+int lower[2] = {55, 250};
+int upper[2] = {215, 350};
+int hright = 1620;
+int hleft = 720;
+
 void dasonPhysics(int wall_size, int growing_size, 
         int growing_enemy_check, Grid grid[])
 {
     if (g.game_state == 6) {
-        SeanEnemiesVertical(0, 4, 200, edge1, dason_enemies);
-        for (int i = 0; i < 4; i++) {
+        SeanEnemiesVertical(0, 4, upper[0], lower[0], dason_enemies);
+        SeanEnemiesVertical(4, 8, upper[1], lower[1], dason_enemies);
+        SeanEnemiesHorizontal(8, enemy_size-1, hright, hleft, dason_enemies);
+        SeanEnemiesVertical(enemy_size-1, enemy_size, 200, 5, dason_enemies);
+        for (int i = 0; i < enemy_size; i++) {
             if (SeanCheckCollision(dason_enemies[i])) {
                 player.death_count++;
-                player.tempy = 5;
+                player.tempy = 10;
                 player.tempx = 530;
             }
         }
@@ -484,15 +521,15 @@ void makeStartScreen()
     }
     if (g.game_state == 6) {
         /*
-        float imageAspect = 
-            static_cast<float>(ren.dasonLevelBackgroundImage->width) 
-            / ren.dasonLevelBackgroundImage->height;
+           float imageAspect = 
+           static_cast<float>(ren.dasonLevelBackgroundImage->width) 
+           / ren.dasonLevelBackgroundImage->height;
 
         // Adjust width/height based on aspect ratio
         if (screenAspect > imageAspect) {
-            quadWidth = g.yres * imageAspect;
+        quadWidth = g.yres * imageAspect;
         } else {
-            quadHeight = g.xres / imageAspect;
+        quadHeight = g.xres / imageAspect;
         }
 
         // Center the image in the viewport
@@ -505,7 +542,7 @@ void makeStartScreen()
         glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset-30);
         glTexCoord2f(0.0, 0.0); glVertex2f(xOffset, yOffset + quadHeight+30); 
         glTexCoord2f(1.0, 0.0); glVertex2f(xOffset + quadWidth, 
-                yOffset + quadHeight+30); 
+        yOffset + quadHeight+30); 
         glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset-30);
 
         glEnd();
@@ -611,7 +648,6 @@ void drawBoxes()
 /*----------------------------------------------------*/
 
 /*----------------------------------------------------*/
-/* DRAW PLAYER BOX */
 void drawPlayerBox() 
 {
     if (player.color[0] >= 1.0f && player.big == 0) {

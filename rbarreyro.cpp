@@ -109,8 +109,8 @@ void RB_CheckCoinCollection() {
     RB_Entity playerBounds = {
         player.pos[0] - player.width/2,
         player.pos[1] - player.height/2,
-        player.width,
-        player.height,
+        (float)player.width,
+        (float)player.height,
         0.0f,
         true
     };
