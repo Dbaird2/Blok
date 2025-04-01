@@ -67,6 +67,8 @@ void seanEndCredit(void) {
 //Goal
 Entity goal = {800, 250, 25, 25, 0, 0};
 
+//Margin
+int edge = 100;
 
 //Enemies
 Entity enemies[30] = {
@@ -92,21 +94,22 @@ void SeanDrawRect(float x, float y, float width, float height,
 }
 
 //Enemy Movement
-void SeanEnemiesVertical(int start, int end, int yBoundary, Entity enemies[]) {
+void SeanEnemiesVertical(int start, int end, int yBoundary, int margin, Entity enemies[]) {
     for (int i = start; i < end; i++) {
         enemies[i].y += enemies[i].dir * enemies[i].speed;
-        if (enemies[i].y <= 100 || enemies[i].y >= yBoundary - 100)
+        if (enemies[i].y <= margin || enemies[i].y >= yBoundary - margin)
             enemies[i].dir *= -1;
     }
 }
 
-void SeanEnemiesHorizontal(int start, int end, int xBoundary, Entity enemies[]) {
+void SeanEnemiesHorizontal(int start, int end, int xBoundary, int margin, Entity enemies[]) {
     for (int i = start; i < end; i++) {
         enemies[i].x += enemies[i].dir * enemies[i].speed;
-        if (enemies[i].x <= 100 || enemies[i].x >= xBoundary - 100)
+        if (enemies[i].x <= margin || enemies[i].x >= xBoundary - margin)
             enemies[i].dir *= -1;
     }
 }
+
 
 
 
@@ -150,8 +153,8 @@ void seanrungame() {
         // Draw Player Box
         drawDeathCounter(deathcounter);
         drawPlayerBox();
-        SeanEnemiesVertical(0, 2, g.yres, enemies);
-        SeanEnemiesHorizontal(2, 4, g.xres, enemies);
+        SeanEnemiesVertical(0, 2, g.yres, edge, enemies);
+        SeanEnemiesHorizontal(2, 4, g.xres, edge, enemies);
         for (int i = 0; i < 4; i++) {
             if (SeanCheckCollision(enemies[i])) {
                 //cout << "Collision detected with enemy " << i << "!\n";

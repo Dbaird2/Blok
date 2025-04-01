@@ -360,12 +360,14 @@ void growingBoxPhysics(int size, Grid grid[])
     }
 }
 
-
+//SEAN ADDED THIS JUST SO IT COULD COMPILE
+int edge1 = 100;
+//THEN I ADDED EDGE AS A PARAMETER FOR THE FUNCTION BELOW NOTHING ELSE
 void dasonPhysics(int wall_size, int growing_size, 
         int growing_enemy_check, Grid grid[])
 {
     if (g.game_state == 6) {
-        SeanEnemiesVertical(0, 4, 200, dason_enemies);
+        SeanEnemiesVertical(0, 4, 200, edge1, dason_enemies);
         for (int i = 0; i < 4; i++) {
             if (SeanCheckCollision(dason_enemies[i])) {
                 player.death_count++;
