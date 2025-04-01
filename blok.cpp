@@ -194,7 +194,7 @@ public:
         void set_title() {
                 //Set the window title bar.
                 XMapWindow(dpy, win);
-                XStoreName(dpy, win, "CS335 - OpenGL Animation Template Under XWindows");
+                XStoreName(dpy, win, "World's Easiest Game, Blok");
         }
         void setup_screen_res(const int w, const int h) {
                 g.xres = w;
