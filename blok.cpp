@@ -53,7 +53,7 @@ MenuBox boxes[MAX_BOXES];
 Player player;
 Image img[2] = {
     "./background.png",
-    "./wip.png"
+    "./capybara.gif"
 };
 void init_opengl(void);
 void physics(void);
