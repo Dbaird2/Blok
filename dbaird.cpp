@@ -33,9 +33,9 @@ using namespace std;
 #include "stoledoheader.h"
 
 /*---------------------------------------------------------------------------*/
-Entity dason_goal = {500, 490, 60, 60, 0, 0};
+Entity dason_goal = {360, 490, 50, 15, 0, 0};
 
-Entity dason_enemies[20] = {
+Entity dason_enemies[10] = {
     {600.0, 30.0, 20.0, 20.0, 30.0, 1},
     {630.0, 30.0, 20.0, 20.0, 30.0, 1},
     {540.0, 30.0, 20.0, 20.0, 30.0, 1},
@@ -90,13 +90,13 @@ void dasonEndCredit(void)
 
 void quadDraw(int width, int height) 
 {
-        glBegin(GL_QUADS);
-        glVertex2f(-width, -height);
-        glVertex2f(-width,  height);
-        glVertex2f( width,  height);
-        glVertex2f( width, -height);
-        glEnd();
-        glPopMatrix();
+    glBegin(GL_QUADS);
+    glVertex2f(-width, -height);
+    glVertex2f(-width,  height);
+    glVertex2f( width,  height);
+    glVertex2f( width, -height);
+    glEnd();
+    glPopMatrix();
 }
 
 int b = 0;
@@ -189,8 +189,6 @@ void init_dasonMazePlayer()
 
 void dasonMazeRender()
 {
-    SeanDrawRect(dason_goal.x, dason_goal.y , 
-            dason_goal.width, dason_goal.height, 0.0f, 1.0f, 0.0f);
 
     for (int i = 0; i < 4; i++)
         SeanDrawRect(dason_enemies[i].x, dason_enemies[i].y, 
@@ -200,8 +198,12 @@ void dasonMazeRender()
     dasonDrawGrowingBoxes(growing_box, 10);
     dasonDrawWalls(dason_grid, DASON_GRID_SIZE);
     renderDeathCount(); 
+    SeanDrawRect(dason_goal.x, dason_goal.y, 
+            dason_goal.width, dason_goal.height, 0, 1, 0);
     if (g.key_states[XK_q]) {
-        std::fill(walls, walls + 100, Wall());
+        // Part of Algorithm library
+        // It will reset all of walls back to Constructor values
+        fill(walls, walls + 100, Wall());
         player.death_count = 0;
         g.game_state = 2;
     }
@@ -316,51 +318,47 @@ void growingBoxPhysics(int size, Grid grid[])
         int box_left = box_x - box_w;
         int box_right = box_x + box_w;
 
-        //if (bounceOffset < 0) {
-            if ((p->pos[1] >= box_top - y_offset)
-                    && (p->pos[1] <= box_bot + y_offset)
-                    && (p->pos[0] <= box_left + x_offset) 
-                    && (p->pos[0] >= box_right - x_offset)) {
-                p->death_count++;
-                if (p->pos[1] <= box_top + y_offset/4) {
-                    p->tempy = 5;
-                    p->tempx = 530;
-                } else if (p->pos[1] >= box_bot - y_offset/10) {
-                    p->tempy = 5;
-                    p->tempx = 530;
-                } else if (p->pos[0] <= box_right) {
-                    p->tempx = 530;
-                    p->tempy = 5;
-                } else if (p->pos[0] >= box_left) {
-                    p->tempx = 530;
-                    p->tempy = 5;
-                }
-            } 
+        if ((p->pos[1] >= box_top - y_offset)
+                && (p->pos[1] <= box_bot + y_offset)
+                && (p->pos[0] <= box_left + x_offset) 
+                && (p->pos[0] >= box_right - x_offset)) {
+            p->death_count++;
+            if (p->pos[1] <= box_top + y_offset/4) {
+                p->tempy = 5;
+                p->tempx = 530;
+            } else if (p->pos[1] >= box_bot - y_offset/10) {
+                p->tempy = 5;
+                p->tempx = 530;
+            } else if (p->pos[0] <= box_right) {
+                p->tempx = 530;
+                p->tempy = 5;
+            } else if (p->pos[0] >= box_left) {
+                p->tempx = 530;
+                p->tempy = 5;
+            }
+        } 
 
-        //} else {
-            if ((p->pos[1] <= box_top + y_offset)
-                    && (p->pos[1] >= box_bot - y_offset)
-                    && (p->pos[0] >= box_left - x_offset) 
-                    && (p->pos[0] <= box_right + x_offset)) {
-                p->death_count++;
-                if (p->pos[1] >= box_top - y_offset/4) {
-                    p->tempy = 5;
-                    p->tempx = 530;
-                } else if (p->pos[1] <= box_bot+y_offset/10) {
-                    p->tempy = 5;
-                    p->tempx = 530;
-                } else if (p->pos[0] >= box_right) {
-                    p->tempx = 530;
-                    p->tempy = 5;
-                } else if (p->pos[0] <= box_left) {
-                    p->tempx = 530;
-                    p->tempy = 5;
-                }
-            //} 
+        if ((p->pos[1] <= box_top + y_offset)
+                && (p->pos[1] >= box_bot - y_offset)
+                && (p->pos[0] >= box_left - x_offset) 
+                && (p->pos[0] <= box_right + x_offset)) {
+            p->death_count++;
+            if (p->pos[1] >= box_top - y_offset/4) {
+                p->tempy = 5;
+                p->tempx = 530;
+            } else if (p->pos[1] <= box_bot+y_offset/10) {
+                p->tempy = 5;
+                p->tempx = 530;
+            } else if (p->pos[0] >= box_right) {
+                p->tempx = 530;
+                p->tempy = 5;
+            } else if (p->pos[0] <= box_left) {
+                p->tempx = 530;
+                p->tempy = 5;
+            }
         }
     }
 }
-
 
 
 void dasonPhysics(int wall_size, int growing_size, 
@@ -375,8 +373,11 @@ void dasonPhysics(int wall_size, int growing_size,
                 player.tempx = 530;
             }
         }
-        if (SeanCheckCollision(dason_goal)) 
-            g.game_state = 0;
+        if (SeanCheckCollision(dason_goal)) {
+            fill(walls, walls + 100, Wall());
+            player.death_count = 0;
+            g.game_state = 2;
+        }
     }
 
     glClear(GL_COLOR_BUFFER_BIT);
@@ -650,25 +651,25 @@ void handleKeyRelease(XKeyEvent *event)
 void processMovement() 
 {
     if ((g.key_states[XK_w] || g.key_states[XK_s]
-            || g.key_states[XK_a] || g.key_states[XK_d])
-       && player.color[0] < 1.05f ) {
+                || g.key_states[XK_a] || g.key_states[XK_d])
+            && player.color[0] < 1.05f ) {
         player.color[0] += 0.05f;
     } else if (player.color[0] > -0.05f) {
         player.color[0] -= 0.05f;
     }
-    if (g.key_states[XK_w])
+    if (g.key_states[XK_w] && player.tempy < g.yres)
         if (!player.stop_w) {
             player.tempy += 5;
         }
-    if (g.key_states[XK_a])
+    if (g.key_states[XK_a] && player.tempx > 0)
         if (!player.stop_a) {
             player.tempx -= 5;
         }
-    if (g.key_states[XK_s])
+    if (g.key_states[XK_s] && player.tempy > 0)
         if (!player.stop_s) {
             player.tempy -= 5;
         }
-    if (g.key_states[XK_d])
+    if (g.key_states[XK_d] && player.tempx < g.xres)
         if (!player.stop_d) {
             player.tempx += 5;
         }
