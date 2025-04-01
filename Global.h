@@ -6,7 +6,6 @@
 
 class MenuBox {
     public:
-        int id;
         int width;
         int height;
         float pos[2];
@@ -56,7 +55,7 @@ extern Wall growing_boxes[];
 
 class Player {
     public:
-        int id;
+        int big;
         int death_count;
         int stop_w; int stop_a; int stop_s; int stop_d;
         int tempx;
@@ -78,9 +77,10 @@ class Player {
             width = 15;
             height = 15;
             //vel[0] = vel[1] = 0.0f;
-            color[0] = 0.5f;
+            big = 0;
+            color[0] = 0.0f;
             color[1] = 0.0f;
-            color[2] = 0.5f;
+            color[2] = 0.0f;
         }
         Player(int w, int h) 
         {

@@ -33,40 +33,39 @@ using namespace std;
 #include "stoledoheader.h"
 
 /*---------------------------------------------------------------------------*/
+Entity dason_goal = {500, 490, 60, 60, 0, 0};
+
 Entity dason_enemies[20] = {
-    {530.0, 15.0, 20.0, 20.0, 30.0, 1},
-    {300.0, 200.0, 20.0, 20.0, 30.0, -1},
-    {300.0, 200.0, 20.0, 20.0, 30.0, 1},
-    {500.0, 200.0, 20.0, 20.0, 30.0, -1}
+    {600.0, 30.0, 20.0, 20.0, 30.0, 1},
+    {630.0, 30.0, 20.0, 20.0, 30.0, 1},
+    {540.0, 30.0, 20.0, 20.0, 30.0, 1},
+    {570.0, 30.0, 20.0, 20.0, 30.0, 1}
 };
 
 /* --------------- MAP WALL STRUCTURES --------------------------------------*/
 #define DASON_GRID_SIZE 58
 Grid dason_grid[DASON_GRID_SIZE];
-int dason_height[58] = {5
-    , 5, 20, 5, 60, 5, 60, 5, 45, 50, 250, 5, 5, 
-    250,
+int dason_height[58] = {
+    5, 5, 20, 5, 60, 5, 60, 5, 45, 50, 250, 5, 5, 250,
     115, 5, 130, 5, 90, 5, 5, 5, 80, 5, 60/**/, 5, 5,
     60, 65, 5, 60, 70, 5, 90, 5, 60, 50, 5, 5, 50, 5, 5,
     60, /**/100, 30, 200, 5, 30, 40, 5, 200, /**/
     40, 40, 40, 40, 40, 40, 40};
-int dason_width[58] = {250
-    , 175, 5, 200, 5, 75, 5, 50, 5, 5, 5, 250, 175,
-    5,
+int dason_width[58] = {
+    250, 175, 5, 200, 5, 75, 5, 50, 5, 5, 5, 250, 175, 5,
     5, 95, 5, 20, 5, 120, 30, 25, 5, 20, 5/**/, 30, 90, 5,
     5, 35, 5, 5, 90, 5, 50, 5, 5, 15, 45, 5, 45, 60, 5,
     /**/5, 100, 5, 90, 95, 5, 60, 20, /**/
     5, 5, 5, 5, 5, 5, 5};
-int dason_x[58] = {250
-    , 725, 555, 485, 290, 220, 250, 205, 195, 150, 5, 
-    660,
+int dason_x[58] = {
+    250, 725, 555, 485, 290, 220, 250, 205, 195, 150, 5, 660,
     185, 895, 105, 200, 55, 80, 335, 220, 400, 35, 375, 360,
     105/**/, 70, 100, 160, 195, 265, 335, 235, 150, 295, 350,
     375, 410, 395, 425, 465, 425, 440, 445, /**/495, 590, 720,
     625, 595, 670, 725, 805, /**/
     635, 600, 565, 530, 495, 460, 425};
-int dason_y[58] = {5
-    , 5, 30, 45, 110, 175, 70, 135, 55, 90, 260, 495, 495,
+int dason_y[58] = {
+    5, 5, 30, 45, 110, 175, 70, 135, 55, 90, 260, 495, 495,
     250, 155, 220, 170, 160, 180, 270, 95, 335, 180, 265,
     365/**/, 385, 430, 335, 370, 310, 335, 385, 460, 405, 430,
     370, 290, 335, 210, 100, 150, 370, 275, /**/ 270, 140,
@@ -87,6 +86,17 @@ void dasonEndCredit(void)
     title.left = 10;
     title.center = 0;
     ggprint8b(&title, 16, 0x00ffffff, "Author 3: Dason Baird");
+}
+
+void quadDraw(int width, int height) 
+{
+        glBegin(GL_QUADS);
+        glVertex2f(-width, -height);
+        glVertex2f(-width,  height);
+        glVertex2f( width,  height);
+        glVertex2f( width, -height);
+        glEnd();
+        glPopMatrix();
 }
 
 int b = 0;
@@ -131,24 +141,19 @@ void dasonMenuButtonPress(int x, int y)
                 if (j == 0) {
                     // CAROLINE
                     g.game_state = 7;
-                    //glDeleteTextures(1, &ren.backgroundTexture);
                 } else if (j == 1) {
                     // SEAN
                     g.game_state = 4;
-                    //glDeleteTextures(1, &ren.backgroundTexture);
                 } else if (j == 2) {
                     // CARLOS
                     g.game_state = 3;
-                    //glDeleteTextures(1, &ren.backgroundTexture);
                 } else if (j == 3) {
                     // DASON
                     g.game_state = 6;
-                    //glDeleteTextures(1, &ren.backgroundTexture);
                     init_dasonMazePlayer();
                 } else if (j == 4) {
                     // RJ
                     g.game_state = 5;
-                    //glDeleteTextures(1, &ren.backgroundTexture);
                 } else if (j == 5) {
                     g.game_state = 1;
                     b = 0;
@@ -184,10 +189,14 @@ void init_dasonMazePlayer()
 
 void dasonMazeRender()
 {
+    SeanDrawRect(dason_goal.x, dason_goal.y , 
+            dason_goal.width, dason_goal.height, 0.0f, 1.0f, 0.0f);
+
     for (int i = 0; i < 4; i++)
         SeanDrawRect(dason_enemies[i].x, dason_enemies[i].y, 
                 dason_enemies[i].width, dason_enemies[i].height, 
-                0, rand() % 256, 0);
+                1.0f, 0, 0);
+
     dasonDrawGrowingBoxes(growing_box, 10);
     dasonDrawWalls(dason_grid, DASON_GRID_SIZE);
     renderDeathCount(); 
@@ -254,13 +263,7 @@ void dasonDrawGrowingBoxes(Grid grid[], int size)
         int width = b->width;
         int height = b->height;
         glTranslatef(b->pos[0], b->pos[1], 0.0f);
-        glBegin(GL_QUADS);
-        glVertex2f(-width, -height);
-        glVertex2f(-width,  height);
-        glVertex2f( width,  height);
-        glVertex2f( width, -height);
-        glEnd();
-        glPopMatrix();
+        quadDraw(width, height);
     }
 }
 
@@ -286,13 +289,7 @@ void dasonDrawWalls(Grid grid[], int size)
         int width = w->width;
         int height = w->height;
         glTranslatef(w->pos[0], w->pos[1], 0.0f);
-        glBegin(GL_QUADS);
-        glVertex2f(-width, -height);
-        glVertex2f(-width,  height);
-        glVertex2f( width,  height);
-        glVertex2f( width, -height);
-        glEnd();
-        glPopMatrix();
+        quadDraw(width, height);
     }
 }
 
@@ -370,7 +367,7 @@ void dasonPhysics(int wall_size, int growing_size,
         int growing_enemy_check, Grid grid[])
 {
     if (g.game_state == 6) {
-        //SeanEnemiesVertical(0, 4, g.yres);
+        SeanEnemiesVertical(0, 4, 200, dason_enemies);
         for (int i = 0; i < 4; i++) {
             if (SeanCheckCollision(dason_enemies[i])) {
                 player.death_count++;
@@ -378,7 +375,8 @@ void dasonPhysics(int wall_size, int growing_size,
                 player.tempx = 530;
             }
         }
-
+        if (SeanCheckCollision(dason_goal)) 
+            g.game_state = 0;
     }
 
     glClear(GL_COLOR_BUFFER_BIT);
@@ -526,7 +524,6 @@ void drawBoxes()
             MenuBox *box = &boxes[i];
 
             Rect rect;
-            //glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
             glPushMatrix();
             box->color[0] = 1.0f;
             box->color[1] = 0.0f;
@@ -534,13 +531,7 @@ void drawBoxes()
             glColor3f(1.0f, 0.0f, 0.0f);
             glDisable(GL_BLEND);
             glTranslatef(box->pos[0], box->pos[1], 0.0f);
-            glBegin(GL_QUADS);
-            glVertex2f(-box->width, -box->height);
-            glVertex2f(-box->width,  box->height);
-            glVertex2f( box->width, box->height);
-            glVertex2f( box->width, -box->height);
-            glEnd();
-            glPopMatrix();
+            quadDraw(box->width, box->height);
 
             rect.bot = box->pos[1]-7;
             rect.center = 0;
@@ -579,14 +570,7 @@ void drawBoxes()
             glDisable(GL_BLEND);
             glColor3fv(box->color);
             glTranslatef(box->pos[0], box->pos[1], 0.0f);
-            glBegin(GL_QUADS);
-            glVertex2f(-box->width, -box->height);
-            glVertex2f(-box->width,  box->height);
-            glVertex2f( box->width, box->height);
-            glVertex2f( box->width, -box->height);
-            glEnd();
-            glPopMatrix();
-
+            quadDraw(box->width, box->height);
             rect.bot = box->pos[1]-7;
             rect.center = 0;
             switch (i)
@@ -626,13 +610,15 @@ void drawBoxes()
 /* DRAW PLAYER BOX */
 void drawPlayerBox() 
 {
-    /*if (player.color[0] > 0.95f) {
-        player.height = 10;
-        player.width = 10;
-    } else {
-        player.height = 5;
-        player.width = 5;
-    }*/
+    if (player.color[0] >= 1.0f && player.big == 0) {
+        player.height = player.height + 5;
+        player.width = player.width + 5;
+        player.big = 1;
+    } else if (player.big == 1 && player.color[0] < 0.7f) {
+        player.height = player.height - 5;
+        player.width = player.width - 5;
+        player.big = 0;
+    }
     player.pos[0] = player.tempx;
     player.pos[1] = player.tempy;
     Player *player_box = &player;
@@ -641,13 +627,7 @@ void drawPlayerBox()
     glPushMatrix();
     glColor3fv(player_box->color);
     glTranslatef(player_box->pos[0], player_box->pos[1], 0.0f);
-    glBegin(GL_QUADS);
-    glVertex2f(-width, -height);
-    glVertex2f(-width,  height);
-    glVertex2f( width,  height);
-    glVertex2f( width, -height);
-    glEnd();
-    glPopMatrix();
+    quadDraw(width, height);
 }
 /*----------------------------------------------------*/
 
@@ -669,30 +649,28 @@ void handleKeyRelease(XKeyEvent *event)
 
 void processMovement() 
 {
-    if ((!g.key_states[XK_w] || !g.key_states[XK_s]
-            || !g.key_states[XK_a] || !g.key_states[XK_d])
-       && player.color[0] > -0.05 ) {
-        //player.color[0] -= 0.05f;
+    if ((g.key_states[XK_w] || g.key_states[XK_s]
+            || g.key_states[XK_a] || g.key_states[XK_d])
+       && player.color[0] < 1.05f ) {
+        player.color[0] += 0.05f;
+    } else if (player.color[0] > -0.05f) {
+        player.color[0] -= 0.05f;
     }
     if (g.key_states[XK_w])
         if (!player.stop_w) {
             player.tempy += 5;
-            //player.color[0] += 0.07f;
         }
     if (g.key_states[XK_a])
         if (!player.stop_a) {
             player.tempx -= 5;
-            //player.color[0] += 0.07f;
         }
     if (g.key_states[XK_s])
         if (!player.stop_s) {
             player.tempy -= 5;
-            //player.color[0] += 0.07f;
         }
     if (g.key_states[XK_d])
         if (!player.stop_d) {
             player.tempx += 5;
-            //player.color[0] += 0.07f;
         }
 }
 /*----------------------------------------------------*/
