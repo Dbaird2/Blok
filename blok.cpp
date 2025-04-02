@@ -293,8 +293,9 @@ void check_mouse(XEvent *e)
                 // MAIN MENU OVER GAME START   
             }
             if(e->xbutton.button == 7) {
-				carolineDisplayWinScreen();
-            }
+				//carolineDisplayWinScreen();
+            	carolineDrawCircle();
+			}
 
             /*for (int i = 0; i < 10; i++) {
               spd = 0;
@@ -438,8 +439,8 @@ void render()
         drawCircles();
     }
     if(g.game_state == 7) {
-        //carolineDrawCircle();
-    	carolineDisplayWinScreen();
+        carolineDrawCircle();
+    	//carolineDisplayWinScreen();
 	}
     seanrungame();
     rbarreyroRunGame();

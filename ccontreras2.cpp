@@ -20,6 +20,8 @@ using namespace std;
 #include </usr/include/AL/alut.h>
 #endif 
 
+
+
 ALuint alBuffer;
 ALuint alSource;
 
@@ -99,7 +101,7 @@ class Circle {
 		float cY;
 		float r;
 		float circleSegments;
-		Circle(){
+		Circle() {
 			cX = 100.0f;
 			cY = 100.0f;
 			r = 10.0f;
