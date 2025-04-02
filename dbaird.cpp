@@ -520,7 +520,7 @@ void makeStartScreen()
         glPopMatrix();
     }
     if (g.game_state == 6) {
-        /*
+       /* 
            float imageAspect = 
            static_cast<float>(ren.dasonLevelBackgroundImage->width) 
            / ren.dasonLevelBackgroundImage->height;
@@ -546,7 +546,8 @@ void makeStartScreen()
         glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset-30);
 
         glEnd();
-        glPopMatrix();*/
+        glPopMatrix();
+        */
     }
 }
 
