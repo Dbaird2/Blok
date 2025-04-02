@@ -21,7 +21,6 @@ void carlosEndCredit (void)
     ggprint8b(&credit, 16, 0x00ff0000, "Author 2: Carlos Moreno");
 }
 
-
 void drawTriangles ()
 {
     // Draw the triangles
