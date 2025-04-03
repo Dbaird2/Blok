@@ -64,13 +64,13 @@ Entity dason_enemies[20] = {
 #define DASON_GRID_SIZE 58
 Grid dason_grid[DASON_GRID_SIZE];
 int dason_height[58] = {
-    5, 5, 20, 5, 60, 5, 60, 5, 45, 50, 250, 5, 5, 250,
+    5, 5, 25, 5, 60, 5, 60, 5, 45, 50, 250, 5, 5, 250,
     115, 5, 130, 5, 90, 5, 5, 5, 80, 5, 60/**/, 5, 5,
     60, 65, 5, 60, 70, 5, 90, 5, 60, 50, 5, 5, 50, 5, 5,
     60, /**/100, 30, 200, 5, 30, 40, 5, 200, /**/
     40, 40, 40, 40, 40, 40, 40};
 int dason_width[58] = {
-    250, 175, 5, 200, 5, 75, 5, 50, 5, 5, 5, 250, 175, 5,
+    250, 170, 5, 200, 5, 75, 5, 50, 5, 5, 5, 250, 175, 5,
     5, 95, 5, 20, 5, 120, 30, 25, 5, 20, 5/**/, 30, 90, 5,
     5, 35, 5, 5, 90, 5, 50, 5, 5, 15, 45, 5, 45, 60, 5,
     /**/5, 100, 5, 90, 95, 5, 60, 20, /**/
@@ -83,7 +83,7 @@ int dason_x[58] = {
     625, 595, 670, 725, 805, /**/
     635, 600, 565, 530, 495, 460, 425};
 int dason_y[58] = {
-    5, 5, 30, 45, 110, 175, 70, 135, 55, 90, 260, 495, 495,
+    5, 5, 25, 45, 110, 175, 70, 135, 55, 90, 260, 495, 495,
     250, 155, 220, 170, 160, 180, 270, 95, 335, 180, 265,
     365/**/, 385, 430, 335, 370, 310, 335, 385, 460, 405, 430,
     370, 290, 335, 210, 100, 150, 370, 275, /**/ 270, 140,
@@ -358,15 +358,19 @@ void growingBoxPhysics(int size, Grid grid[])
             if (p->pos[1] <= box_top + y_offset/4) {
                 p->tempy = 10;
                 p->tempx = 530;
+                return;
             } else if (p->pos[1] >= box_bot - y_offset/10) {
-                p->tempy = 510;
+                p->tempy = 10;
                 p->tempx = 530;
+                return;
             } else if (p->pos[0] <= box_right) {
                 p->tempx = 530;
                 p->tempy = 10;
+                return;
             } else if (p->pos[0] >= box_left) {
                 p->tempx = 530;
                 p->tempy = 10;
+                return;
             }
         } 
 
@@ -378,15 +382,19 @@ void growingBoxPhysics(int size, Grid grid[])
             if (p->pos[1] >= box_top - y_offset/4) {
                 p->tempy = 10;
                 p->tempx = 530;
+                return;
             } else if (p->pos[1] <= box_bot+y_offset/10) {
                 p->tempy = 10;
                 p->tempx = 530;
+                return;
             } else if (p->pos[0] >= box_right) {
                 p->tempx = 530;
                 p->tempy = 10;
+                return;
             } else if (p->pos[0] <= box_left) {
                 p->tempx = 530;
                 p->tempy = 10;
+                return;
             }
         }
     }
@@ -430,7 +438,7 @@ void dasonPhysics(int wall_size, int growing_size,
 
         int x_offset = p->width;
         int y_offset = p->height;
-        int box_top = w->pos[1] + w->height /*- p->height*/;
+        int box_top = w->pos[1] + w->height;
         int box_bot = w->pos[1] - w->height;
         int box_left = w->pos[0] - w->width;
         int box_right = w->pos[0] + w->width;
@@ -693,7 +701,7 @@ void processMovement()
     if ((g.key_states[XK_w] || g.key_states[XK_s]
                 || g.key_states[XK_a] || g.key_states[XK_d])
             && player.color[0] < 1.05f ) {
-        player.color[0] += 0.05f;
+        player.color[0] += 0.02f;
     } else if (player.color[0] > -0.05f) {
         player.color[0] -= 0.05f;
     }
