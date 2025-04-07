@@ -21,7 +21,7 @@ void dasonEndCredit();
 void drawBoxes();
 void dasonMenuButtonPress(int x, int y);
 void dasonRenderBackground();
-void drawPlayerBox();
+void drawPlayerBox(int hard_mode);
 void handleKeyPress(XKeyEvent *event);
 void handleKeyRelease(XKeyEvent *event);
 void processMovement();

@@ -248,7 +248,7 @@ void seanrungame() {
         }
         // Draw Player Box
         drawDeathCounter(deathcounter);
-        drawPlayerBox();
+        drawPlayerBox(0);
         SeanEnemiesVertical(0, 2, g.yres, edge, enemies);
         SeanEnemiesHorizontal(2, 4, g.xres, edge, enemies);
         UpdateProjectiles();

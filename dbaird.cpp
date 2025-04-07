@@ -21,12 +21,14 @@
  * If you want to change it's position change player.tempx or player.tempy
  * for size do player.width, player.height
  */
+/* CURRENT BUGS 
+ * WALL CORNERS IF THIN MAY CAUSE THE PLAYER TO BE PUSHED THROUGH IT
+ * WALL START ALSO HAVE THIS ISSUE AND CAN PUSH YOU UNDER THE MAP
+ */
 using namespace std;
 //#include <algorithm>
-//#include <cstring>
-//#include <iostream>
 #include <random>
-//#include <GL/glx.h>
+#include <cstdio>
 #include "fonts.h"
 #include "Global.h"
 #include "dbairdheader.h"
@@ -64,7 +66,7 @@ Entity dason_enemies[20] = {
 #define DASON_GRID_SIZE 58
 Grid dason_grid[DASON_GRID_SIZE];
 int dason_height[58] = {
-    5, 5, 25, 5, 60, 5, 60, 5, 45, 50, 250, 5, 5, 250,
+    10, 10, /*25*/25, 5,/*60*/ 65, 5,/*60*/ 65, 5, /*45*/50, 50, 250, 5, 5, 250,
     115, 5, 130, 5, 90, 5, 5, 5, 80, 5, 60/**/, 5, 5,
     60, 65, 5, 60, 70, 5, 90, 5, 60, 50, 5, 5, 50, 5, 5,
     60, /**/100, 30, 200, 5, 30, 40, 5, 200, /**/
@@ -83,7 +85,7 @@ int dason_x[58] = {
     625, 595, 670, 725, 805, /**/
     635, 600, 565, 530, 495, 460, 425};
 int dason_y[58] = {
-    5, 5, 25, 45, 110, 175, 70, 135, 55, 90, 260, 495, 495,
+    0, 0, 25, 45, 110, 175, 70, 135, 55, 90, 260, 495, 495,
     250, 155, 220, 170, 160, 180, 270, 95, 335, 180, 265,
     365/**/, 385, 430, 335, 370, 310, 335, 385, 460, 405, 430,
     370, 290, 335, 210, 100, 150, 370, 275, /**/ 270, 140,
@@ -338,6 +340,7 @@ void growingBoxPhysics(int size, Grid grid[])
         int box_h = grid[i].height;
         int box_w = grid[i].width;
 
+
         float bounceOffset = sin(g.grow_animation) * g.bounceHeight;
         grid[i].width += bounceOffset+sin(g.grow_animation)*0.1f*8.0;
         grid[i].height += bounceOffset+sin(g.grow_animation)*0.1f*8.0;
@@ -355,47 +358,16 @@ void growingBoxPhysics(int size, Grid grid[])
                 && (p->pos[0] <= box_left + x_offset) 
                 && (p->pos[0] >= box_right - x_offset)) {
             p->death_count++;
-            if (p->pos[1] <= box_top + y_offset/4) {
-                p->tempy = 10;
-                p->tempx = 530;
-                return;
-            } else if (p->pos[1] >= box_bot - y_offset/10) {
-                p->tempy = 10;
-                p->tempx = 530;
-                return;
-            } else if (p->pos[0] <= box_right) {
-                p->tempx = 530;
-                p->tempy = 10;
-                return;
-            } else if (p->pos[0] >= box_left) {
-                p->tempx = 530;
-                p->tempy = 10;
-                return;
-            }
-        } 
-
+            p->tempy = 10;
+            p->tempx = 530;
+        }
         if ((p->pos[1] <= box_top + y_offset)
                 && (p->pos[1] >= box_bot - y_offset)
                 && (p->pos[0] >= box_left - x_offset) 
                 && (p->pos[0] <= box_right + x_offset)) {
             p->death_count++;
-            if (p->pos[1] >= box_top - y_offset/4) {
-                p->tempy = 10;
-                p->tempx = 530;
-                return;
-            } else if (p->pos[1] <= box_bot+y_offset/10) {
-                p->tempy = 10;
-                p->tempx = 530;
-                return;
-            } else if (p->pos[0] >= box_right) {
-                p->tempx = 530;
-                p->tempy = 10;
-                return;
-            } else if (p->pos[0] <= box_left) {
-                p->tempx = 530;
-                p->tempy = 10;
-                return;
-            }
+            p->tempy = 10;
+            p->tempx = 530;
         }
     }
 }
@@ -431,10 +403,10 @@ void dasonPhysics(int wall_size, int growing_size,
 
     if (growing_enemy_check) 
         growingBoxPhysics(growing_size, grid);
-    for (int i = 0; i < wall_size; i++) {
+    int i;
+    for (i = 0; i < wall_size; i++) {
         Wall *w = &walls[i];
         Player *p = &player;
-
 
         int x_offset = p->width;
         int y_offset = p->height;
@@ -447,15 +419,28 @@ void dasonPhysics(int wall_size, int growing_size,
                 && (p->pos[1] >= box_bot - y_offset)
                 && (p->pos[0] >= box_left - x_offset) 
                 && (p->pos[0] <= box_right + x_offset)) {
-            if (p->pos[1] >= box_top - y_offset/4) 
+            if (p->pos[1] >= box_top - y_offset/4) {
                 p->tempy += 5;
-            else if (p->pos[1] <= box_bot+y_offset/10) 
+                player.stop_w = 1;
+            }
+            else if (p->pos[1] <= box_bot+y_offset/10) {
                 p->tempy -= 5;
-            else if (p->pos[0] >= box_right) 
+            player.stop_s = 1;
+            }
+            else if (p->pos[0] >= box_right) {
                 p->tempx += 5;
-            else if (p->pos[0] <= box_left) 
+            player.stop_a = i;
+            }
+            else if (p->pos[0] <= box_left) {
                 p->tempx -= 5;
-        } 
+            player.stop_d = 1;
+            }
+        } else {
+            player.stop_w = 0;
+            player.stop_d = 0;
+            player.stop_s = 0;
+            player.stop_a = 0;
+        }
     }
 }
 /*--------------------------------------------------------------------------*/
@@ -657,16 +642,18 @@ void drawBoxes()
 /*----------------------------------------------------*/
 
 /*----------------------------------------------------*/
-void drawPlayerBox() 
+void drawPlayerBox(int hard_mode) 
 {
-    if (player.color[0] >= 1.0f && player.big == 0) {
-        player.height = player.height + 5;
-        player.width = player.width + 5;
-        player.big = 1;
-    } else if (player.big == 1 && player.color[0] < 0.7f) {
-        player.height = player.height - 5;
-        player.width = player.width - 5;
-        player.big = 0;
+    if (hard_mode) {
+        if (player.color[0] >= 1.0f && player.big == 0) {
+            player.height = player.height + 5;
+            player.width = player.width + 5;
+            player.big = 1;
+        } else if (player.big == 1 && player.color[0] < 0.7f) {
+            player.height = player.height - 5;
+            player.width = player.width - 5;
+            player.big = 0;
+        }
     }
     player.pos[0] = player.tempx;
     player.pos[1] = player.tempy;
@@ -709,11 +696,11 @@ void processMovement()
         if (!player.stop_w) {
             player.tempy += 5;
         }
-    if (g.key_states[XK_a] && player.tempx > 0)
+    if (g.key_states[XK_a] && player.tempx > 5)
         if (!player.stop_a) {
             player.tempx -= 5;
         }
-    if (g.key_states[XK_s] && player.tempy > 0)
+    if (g.key_states[XK_s] && player.tempy > 5)
         if (!player.stop_s) {
             player.tempy -= 5;
         }

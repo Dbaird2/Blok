@@ -170,7 +170,7 @@ void rbarreyroRunGame() {
         RB_CheckCoinCollection();
 
         // Draw elements
-        drawPlayerBox();
+        drawPlayerBox(0);
 
         // Draw goal
         RB_DrawColoredRect(Russ_goal.x, Russ_goal.y, Russ_goal.width, Russ_goal.height, 0, 1, 0);
