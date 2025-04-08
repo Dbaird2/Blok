@@ -33,5 +33,6 @@ void dasonDrawGrowingBoxes(Grid grid[], int size);
 void dasonDrawWalls(Grid grid[], int size);
 void dasonPhysics(int n, int l, int check, Grid grid[]);
 void dasonMazeRender();
+void dasonTimer(int y, int x, float time_out);
 
 #endif

@@ -65,6 +65,8 @@ int check_keys(XEvent *e);
 
 int n = 0;
 float spd = 0;
+int started = 0;
+
 class X11_wrapper {
     private:
         //X Windows variables
@@ -339,7 +341,7 @@ void init_opengl(void)
 
 void physics(void)
 {
-    if (g.game_state == 6)
+    if (g.game_state == 6) 
         dasonPhysics(58, 10, 1, growing_box);
     //return 0;
 }
@@ -351,10 +353,12 @@ void render()
     glClear(GL_COLOR_BUFFER_BIT);
     if (g.game_state == 6) {
 
+        //dasonTimer(490, 790, 180.0);
         makeStartScreen();
         dasonMazeRender();
     }
     if (g.game_state > 2)  {
+        //dasonTimer(490, 790, 180.0);
         drawPlayerBox(0);
 #ifdef MAP_HELP
         if ( i % 10  == 0) {

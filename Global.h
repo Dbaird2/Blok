@@ -133,7 +133,7 @@ class Global {
             /* The number of boxes to produce using game_state 
              * Will move to Menu Box */
             menu_box_amt[0] = {2};
-            menu_box_amt[1] = {6};
+            menu_box_amt[1] = {7};
             /* WINDOW SIZE */
             xres = 900;
             yres = 500;

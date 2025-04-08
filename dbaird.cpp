@@ -27,7 +27,11 @@
  */
 using namespace std;
 //#include <algorithm>
+#include <iomanip>
+#include <sstream>
 #include <random>
+#include <omp.h>
+#include <chrono>
 #include <cstdio>
 #include "fonts.h"
 #include "Global.h"
@@ -99,6 +103,16 @@ int growing_width[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5,5};
 int growing_x[10] = {40, 350, 110, 200, 320, 440, 160, 230, 410, 200};
 int growing_y[10] = {40, 15, 80, 300, 220, 340, 60, 450, 250, 200};
 
+using _clock        = std::chrono::steady_clock;
+using _elapsed      = std::chrono::duration<double>;
+using _time         = std::chrono::time_point<_clock, _elapsed>;
+
+inline time_t current_time_t()
+{
+    return chrono::system_clock::to_time_t(chrono::system_clock::now());
+}
+auto t1 = _clock::now();
+
 void getRandomColors(vector<vector<double>>& vec)
 {
     srand(time(NULL));
@@ -110,6 +124,34 @@ void getRandomColors(vector<vector<double>>& vec)
         // Blue
         row[2] = (double)rand()/(double)RAND_MAX*1.0f;
     }
+}
+
+void dasonTimerOut() 
+{
+    player.death_count++;
+    player.tempx = 530;
+    player.tempy = 10;
+}
+
+void dasonTimer(int y, int x, float time_out)
+{
+    _elapsed diff = _clock::now() - t1;
+    Rect title;
+    title.bot = y;
+    title.left = x;
+    title.center = 0;
+    ggprint8b(&title, 0, 0x00ffd700, "Timer %.0fs", diff.count());
+    if (diff.count() > time_out) {
+        dasonTimerOut();
+        t1 = _clock::now();
+    }
+    /*
+    Rect title;
+    title.bot = y;
+    title.left = x;
+    title.center = 0;
+    ggprint8b(&title, 0, 0x00ff0000, "Timer %.0fs", diff.count());
+    */
 }
 
 void dasonEndCredit(void)
@@ -160,7 +202,7 @@ void dasonMenuButtonPress(int x, int y)
         /* Difficulty button Collision Detection */
     } else if (g.game_state == 2) {
         player.stop_w = 0;
-        for (int j = 0; j < g.menu_box_amt[g.game_state-1]; j++) {
+        for (int j = 0; j <= g.menu_box_amt[g.game_state-1]; j++) {
             MenuBox *c = &boxes[j];
             float cx = c->pos[0];
             float cy = c->pos[1];
@@ -187,9 +229,11 @@ void dasonMenuButtonPress(int x, int y)
                 } else if (j == 4) {
                     // RJ
                     g.game_state = 5;
-                } else if (j == 5) {
+                } else if (j == 6) {
                     g.game_state = 1;
                     b = 0;
+                } else if (j == 5) {
+                    g.game_state = rand() % 6 + 2;
                 }
             }
         }
@@ -208,6 +252,7 @@ void renderDeathCount()
 
 void init_dasonMazePlayer() 
 {
+    t1 = _clock::now();
     getRandomColors(color_vector);
     /* GROWING BOX ENEMIES */
     dasonLoadStruct(growing_box, growing_height, growing_width, 
@@ -241,6 +286,7 @@ void dasonMazeRender()
         player.death_count = 0;
         g.game_state = 2;
     }
+    dasonTimer(490, 840, 180.0);
 }
 
 void defineBox() 
@@ -331,6 +377,7 @@ void dasonDrawWalls(Grid grid[], int size)
 
 void growingBoxPhysics(int size, Grid grid[]) 
 {
+    //cout << diff.count() << endl;
     if (size < 0) 
         return;
     for (int i = 0; i < size; i++) {
@@ -429,7 +476,7 @@ void dasonPhysics(int wall_size, int growing_size,
             }
             else if (p->pos[0] >= box_right) {
                 p->tempx += 5;
-            player.stop_a = i;
+            player.stop_a = 1;
             }
             else if (p->pos[0] <= box_left) {
                 p->tempx -= 5;
@@ -591,7 +638,7 @@ void drawBoxes()
         }
         g.animationTime += 0.3f;
     } else if (g.game_state == 2) {
-        for (int i = 0; i < g.menu_box_amt[g.game_state-1]; i++) {
+        for (int i = 0; i <= g.menu_box_amt[g.game_state-1]; i++) {
             MenuBox *box = &boxes[i];
 
             if (i < g.menu_box_amt[g.game_state-1] -1) {
@@ -610,9 +657,13 @@ void drawBoxes()
             rect.center = 0;
             switch (i)
             {
-                case 5:
+                case 6:
                     rect.left = box->pos[0] -17;
                     ggprint8b(&rect, 0, 0x00000000, "Back");
+                    break;
+                case 5:
+                    rect.left = box->pos[0] -40;
+                    ggprint8b(&rect, 0, 0x00ffffff, "Random Level");
                     break;
                 case 4:
                     rect.left = box->pos[0] -25;
@@ -710,3 +761,4 @@ void processMovement()
         }
 }
 /*----------------------------------------------------*/
+
