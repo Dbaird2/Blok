@@ -21,16 +21,12 @@
  * If you want to change it's position change player.tempx or player.tempy
  * for size do player.width, player.height
  */
-/* CURRENT BUGS 
- * WALL CORNERS IF THIN MAY CAUSE THE PLAYER TO BE PUSHED THROUGH IT
- * WALL START ALSO HAVE THIS ISSUE AND CAN PUSH YOU UNDER THE MAP
- */
 using namespace std;
 //#include <algorithm>
 #include <iomanip>
-#include <sstream>
+//#include <sstream>
 #include <random>
-#include <omp.h>
+//#include <omp.h>
 #include <chrono>
 #include <cstdio>
 #include "fonts.h"
@@ -135,6 +131,10 @@ void dasonTimerOut()
 
 void dasonTimer(int y, int x, float time_out)
 {
+    if (player.dead == 1) {
+        t1 = _clock::now();
+        player.dead = 0;
+    }
     _elapsed diff = _clock::now() - t1;
     Rect title;
     title.bot = y;
@@ -145,13 +145,15 @@ void dasonTimer(int y, int x, float time_out)
         dasonTimerOut();
         t1 = _clock::now();
     }
-    /*
-    Rect title;
-    title.bot = y;
-    title.left = x;
-    title.center = 0;
-    ggprint8b(&title, 0, 0x00ff0000, "Timer %.0fs", diff.count());
-    */
+}
+
+void dasonPlayerDeath()
+{
+    player.tempx = 530;
+    player.tempy = 10;
+    player.death_count++;
+    player.dead = 1;
+
 }
 
 void dasonEndCredit(void)
@@ -404,17 +406,23 @@ void growingBoxPhysics(int size, Grid grid[])
                 && (p->pos[1] <= box_bot + y_offset)
                 && (p->pos[0] <= box_left + x_offset) 
                 && (p->pos[0] >= box_right - x_offset)) {
+            /*
             p->death_count++;
             p->tempy = 10;
             p->tempx = 530;
+            */
+                dasonPlayerDeath();
         }
         if ((p->pos[1] <= box_top + y_offset)
                 && (p->pos[1] >= box_bot - y_offset)
                 && (p->pos[0] >= box_left - x_offset) 
                 && (p->pos[0] <= box_right + x_offset)) {
+                dasonPlayerDeath();
+                /*
             p->death_count++;
             p->tempy = 10;
             p->tempx = 530;
+            */
         }
     }
 }
@@ -434,9 +442,7 @@ void dasonPhysics(int wall_size, int growing_size,
         SeanEnemiesVertical(enemy_size-1, enemy_size, 200, 5, dason_enemies);
         for (int i = 0; i < enemy_size; i++) {
             if (SeanCheckCollision(dason_enemies[i])) {
-                player.death_count++;
-                player.tempy = 10;
-                player.tempx = 530;
+                dasonPlayerDeath();
             }
         }
         if (SeanCheckCollision(dason_goal)) {
@@ -472,15 +478,15 @@ void dasonPhysics(int wall_size, int growing_size,
             }
             else if (p->pos[1] <= box_bot+y_offset/10) {
                 p->tempy -= 5;
-            player.stop_s = 1;
+                player.stop_s = 1;
             }
             else if (p->pos[0] >= box_right) {
                 p->tempx += 5;
-            player.stop_a = 1;
+                player.stop_a = 1;
             }
             else if (p->pos[0] <= box_left) {
                 p->tempx -= 5;
-            player.stop_d = 1;
+                player.stop_d = 1;
             }
         } else {
             player.stop_w = 0;
@@ -560,7 +566,7 @@ void makeStartScreen()
         glPopMatrix();
     }
     if (g.game_state == 6) {
-       /* 
+        /* 
            float imageAspect = 
            static_cast<float>(ren.dasonLevelBackgroundImage->width) 
            / ren.dasonLevelBackgroundImage->height;

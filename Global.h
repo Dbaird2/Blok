@@ -56,7 +56,7 @@ extern Wall growing_boxes[];
 class Player {
     public:
         int big;
-        int death_count;
+        int death_count, dead;
         int stop_w; int stop_a; int stop_s; int stop_d;
         int tempx;
         int tempy;
@@ -71,6 +71,7 @@ class Player {
         Player() 
         {
             death_count = 0;
+            dead = 0;
             stop_w = stop_a = stop_s = stop_d = 0;
             tempx = 400;
             tempy = 200;
