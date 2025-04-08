@@ -108,12 +108,13 @@ bool CheckProjectileCollision(Projectile &p) {
 void DrawProjectiles() {
     for (int i = 0; i < MAX_PROJECTILES; ++i) {
         if (projectiles[i].active) {
-            SeanDrawRect(projectiles[i+3].x, projectiles[i+3].y,
-                         projectiles[i+3].width, projectiles[i+3].height,
-                            .0f, 1.0f, 0.0f); // Yellow projectile
+            SeanDrawRect(projectiles[i].x, projectiles[i].y,
+                         projectiles[i].width, projectiles[i].height,
+                         0.0f, .0f, 1.0f); // Yellow projectile
         }
     }
 }
+
 
 void FireProjectileAtPlayer(Entity &enemy) {
     for (int i = 0; i < MAX_PROJECTILES; ++i) {
@@ -138,6 +139,10 @@ void FireProjectileAtPlayer(Entity &enemy) {
 
 
 void DrawTriangleEnemy(Entity &e) {
+    printf("TRIANGLE: (%.1f, %.1f) -> (%.1f, %.1f) -> (%.1f, %.1f)\n",
+        e.x, e.y,
+        e.x + e.width, e.y,
+        e.x + e.width / 2, e.y + e.height);
     glColor3f(0.0, 0.0, 1.0);
     glBegin(GL_TRIANGLES);
     glVertex2f(e.x, e.y);
@@ -145,6 +150,7 @@ void DrawTriangleEnemy(Entity &e) {
     glVertex2f(e.x + e.width / 2, e.y + e.height);
     glEnd();
 }
+
 
 //End Credit
 void seanEndCredit(void) {
@@ -178,7 +184,9 @@ Entity enemies[30] = {
 
 //Draw Enemy Rectangle
 void SeanDrawRect(float x, float y, float width, float height,
-                    float r, float g, float b) {
+                  float r, float g, float b) {
+    printf("RECT: x=%.1f y=%.1f w=%.1f h=%.1f color=(%.1f, %.1f, %.1f)\n",
+           x, y, width, height, r, g, b);
     glColor3f(r, g, b);
     glBegin(GL_QUADS);
     glVertex2f(x, y);                   
@@ -187,7 +195,6 @@ void SeanDrawRect(float x, float y, float width, float height,
     glVertex2f(x, y + height);
     glEnd();
 }
-
 //Enemy Movement
 void SeanEnemiesVertical(int start, int end, int yBoundary, int margin, Entity enemies[]) {
     for (int i = start; i < end; i++) {
@@ -255,6 +262,9 @@ void seanrungame() {
         DrawProjectiles();
         for (int i = 0; i < 2; ++i) {
         DrawTriangleEnemy(triangleEnemies[i]);
+        SeanDrawRect(goal.x, goal.y, goal.width, goal.height, 0, 1, 0);
+        for (int i = 0; i < 4; i++)
+        SeanDrawRect(enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height,1, 0, 0);
         }
 
 
@@ -266,25 +276,19 @@ void seanrungame() {
             FireProjectileAtPlayer(triangleEnemies[i]);
         }
         fireCooldown = 0;
-    }
-}
-
-        
-}
-
+        }
+        }
+        }
 
         for (int i = 0; i < 4; i++) {
-            if (SeanCheckCollision(enemies[i])) {
+        if (SeanCheckCollision(enemies[i])) {
         player.tempx = 50;
         player.tempy = 250; 
         deathcounter++;
         triangleShootingCooldownFrames = 180; // RESET COOLDOWN
-}
+        }
 
         }
-        SeanDrawRect(goal.x, goal.y, goal.width, goal.height, 0, 1, 0);
-        for (int i = 0; i < 4; i++)
-        SeanDrawRect(enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height,1, 0, 0);
         
          if (SeanCheckCollision(goal)) {
             cout << "You Win!" << endl;
@@ -297,10 +301,10 @@ void seanrungame() {
         player.tempy = 250;
         deathcounter++;
         triangleShootingCooldownFrames = 180; // RESET COOLDOWN
-}
+        }
         if (triangleShootingCooldownFrames > 0) {
-    triangleShootingCooldownFrames--;
-    }
+        triangleShootingCooldownFrames--;
+        }
 
         }
 }
