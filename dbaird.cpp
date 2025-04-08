@@ -147,10 +147,10 @@ void dasonTimer(int y, int x, float time_out)
     }
 }
 
-void dasonPlayerDeath()
+void dasonPlayerDeath(int x_spawn, int y_spawn)
 {
-    player.tempx = 530;
-    player.tempy = 10;
+    player.tempx = x_spawn;
+    player.tempy = y_spawn;
     player.death_count++;
     player.dead = 1;
 
@@ -411,13 +411,13 @@ void growingBoxPhysics(int size, Grid grid[])
             p->tempy = 10;
             p->tempx = 530;
             */
-                dasonPlayerDeath();
+                dasonPlayerDeath(530, 10);
         }
         if ((p->pos[1] <= box_top + y_offset)
                 && (p->pos[1] >= box_bot - y_offset)
                 && (p->pos[0] >= box_left - x_offset) 
                 && (p->pos[0] <= box_right + x_offset)) {
-                dasonPlayerDeath();
+                dasonPlayerDeath(530, 10);
                 /*
             p->death_count++;
             p->tempy = 10;
@@ -442,7 +442,7 @@ void dasonPhysics(int wall_size, int growing_size,
         SeanEnemiesVertical(enemy_size-1, enemy_size, 200, 5, dason_enemies);
         for (int i = 0; i < enemy_size; i++) {
             if (SeanCheckCollision(dason_enemies[i])) {
-                dasonPlayerDeath();
+                dasonPlayerDeath(530, 10);
             }
         }
         if (SeanCheckCollision(dason_goal)) {
