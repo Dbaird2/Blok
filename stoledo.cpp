@@ -139,10 +139,12 @@ void FireProjectileAtPlayer(Entity &enemy) {
 
 
 void DrawTriangleEnemy(Entity &e) {
+    /*
     printf("TRIANGLE: (%.1f, %.1f) -> (%.1f, %.1f) -> (%.1f, %.1f)\n",
         e.x, e.y,
         e.x + e.width, e.y,
         e.x + e.width / 2, e.y + e.height);
+        */
     glColor3f(0.0, 0.0, 1.0);
     glBegin(GL_TRIANGLES);
     glVertex2f(e.x, e.y);
@@ -185,8 +187,9 @@ Entity enemies[30] = {
 //Draw Enemy Rectangle
 void SeanDrawRect(float x, float y, float width, float height,
                   float r, float g, float b) {
-    printf("RECT: x=%.1f y=%.1f w=%.1f h=%.1f color=(%.1f, %.1f, %.1f)\n",
+   /* printf("RECT: x=%.1f y=%.1f w=%.1f h=%.1f color=(%.1f, %.1f, %.1f)\n",
            x, y, width, height, r, g, b);
+           */
     glColor3f(r, g, b);
     glBegin(GL_QUADS);
     glVertex2f(x, y);                   
@@ -247,6 +250,7 @@ int triangleShootingCooldownFrames = 0; // in frames (3 seconds = 180 at 60 FPS)
 void seanrungame() {
     //initAudio("background.wav");
     static bool initialized = false;
+    cout << "seanrungame" << endl;
     if (g.game_state == 4) {
         if (!initialized) {
             player.tempx = 50;

@@ -80,8 +80,8 @@ class Player {
             //vel[0] = vel[1] = 0.0f;
             big = 0;
             color[0] = 0.0f;
-            color[1] = 0.0f;
-            color[2] = 0.0f;
+            color[1] = 0.5f;
+            color[2] = 0.5f;
         }
         Player(int w, int h) 
         {

@@ -136,12 +136,14 @@ void dasonTimer(int y, int x, float time_out)
         player.dead = 0;
     }
     _elapsed diff = _clock::now() - t1;
+
+    float time = time_out - diff.count();
     Rect title;
     title.bot = y;
     title.left = x;
     title.center = 0;
-    ggprint8b(&title, 0, 0x00ffd700, "Timer %.0fs", diff.count());
-    if (diff.count() > time_out) {
+    ggprint8b(&title, 0, 0x00ffd700, "Timer %.0fs", time);
+    if (time <= 0) {
         dasonTimerOut();
         t1 = _clock::now();
     }
@@ -245,7 +247,7 @@ void dasonMenuButtonPress(int x, int y)
 void renderDeathCount()
 {
     Rect title;
-    title.bot = 0;
+    title.bot = 490;
     title.left = 0;
     title.center = 0;
     ggprint8b(&title, 0, 0x00ff0000, "Death count: %i", player.death_count);
@@ -406,23 +408,13 @@ void growingBoxPhysics(int size, Grid grid[])
                 && (p->pos[1] <= box_bot + y_offset)
                 && (p->pos[0] <= box_left + x_offset) 
                 && (p->pos[0] >= box_right - x_offset)) {
-            /*
-            p->death_count++;
-            p->tempy = 10;
-            p->tempx = 530;
-            */
-                dasonPlayerDeath(530, 10);
+            dasonPlayerDeath(530, 10);
         }
         if ((p->pos[1] <= box_top + y_offset)
                 && (p->pos[1] >= box_bot - y_offset)
                 && (p->pos[0] >= box_left - x_offset) 
                 && (p->pos[0] <= box_right + x_offset)) {
-                dasonPlayerDeath(530, 10);
-                /*
-            p->death_count++;
-            p->tempy = 10;
-            p->tempx = 530;
-            */
+            dasonPlayerDeath(530, 10);
         }
     }
 }
@@ -566,21 +558,20 @@ void makeStartScreen()
         glPopMatrix();
     }
     if (g.game_state == 6) {
-        /* 
-           float imageAspect = 
-           static_cast<float>(ren.dasonLevelBackgroundImage->width) 
-           / ren.dasonLevelBackgroundImage->height;
+        float imageAspect = 
+            static_cast<float>(ren.dasonLevelBackgroundImage->width) 
+            / ren.dasonLevelBackgroundImage->height;
 
         // Adjust width/height based on aspect ratio
         if (screenAspect > imageAspect) {
-        quadWidth = g.yres * imageAspect;
+            quadWidth = g.yres * imageAspect;
         } else {
-        quadHeight = g.xres / imageAspect;
+            quadHeight = g.xres / imageAspect;
         }
 
         // Center the image in the viewport
-        float xOffset = (g.xres - quadWidth) / 2.0;
-        float yOffset = (g.yres - quadHeight) / 2.0;
+        float xOffset = (g.xres - quadWidth*1.3) / 2.0;
+        float yOffset = (g.yres - quadHeight*1.1) / 2.0;
 
         glBindTexture(GL_TEXTURE_2D, ren.dasonLevelBackgroundTexture);
         glColor3f(1.0f, 1.0f, 1.0f);
@@ -588,12 +579,11 @@ void makeStartScreen()
         glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset-30);
         glTexCoord2f(0.0, 0.0); glVertex2f(xOffset, yOffset + quadHeight+30); 
         glTexCoord2f(1.0, 0.0); glVertex2f(xOffset + quadWidth, 
-        yOffset + quadHeight+30); 
+                yOffset + quadHeight+30); 
         glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset-30);
 
         glEnd();
         glPopMatrix();
-        */
     }
 }
 

@@ -1,11 +1,25 @@
 Ending Death Screen                                                                            
-Ending Success Screen       -- Caroline
-Button to show controls (WASD, Credits, Quit) -- Carlos                                       
+-------------------------------------------------------------------------------                                      
+Ending Success Screen                                                   -- Caroline
+-------------------------------------------------------------------------------                                      
+Button to show controls (WASD, Credits, Quit)                           -- Carlos                                       
+-------------------------------------------------------------------------------                                      
 Enemies types (can be multiple people)                                                       
-Coin grabbing                                                                 
-Death Mechanic to keep track of deaths of a certain level                                      
-Function to reset all reused arrays for maps when quitting, won, switching level
+-------------------------------------------------------------------------------                                      
+Coin grabbing                                                           -- RJ  
+-------------------------------------------------------------------------------                                      
+Death Mechanic to keep track of deaths of a certain level               -- Done
+-------------------------------------------------------------------------------                                      
+Function to reset all reused arrays for maps when quitting, winning, switching
+    level or properly reset when exiting. Can use fill from algorithm import
+                                            Class, Size of objects, constructor
+                                Example: fill(walls, walls + 100, Wall());
+-------------------------------------------------------------------------------                                      
 Audio for Levels                                                                                
-Time Tracking
-(Yours) Level (can be multiple people)         -- Dason
-(optional) have the player get bigger when red due to constant movement
+-------------------------------------------------------------------------------                                      
+Timer                                                                   -- Done
+-------------------------------------------------------------------------------                                      
+(Yours) Map Level (can be multiple people)         
+-------------------------------------------------------------------------------                                      
+(optional) have the player get bigger when red due to constant movement -- Done
+-------------------------------------------------------------------------------                                      

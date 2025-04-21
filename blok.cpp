@@ -55,7 +55,7 @@ MenuBox boxes[MAX_BOXES];
 Player player;
 Image img[2] = {
     "./background.png",
-    "./capybara.gif"
+    "./minecraft_image.png"
 };
 void init_opengl(void);
 void physics(void);
@@ -380,7 +380,8 @@ void render()
         carolineDrawCircle();
         //carolineDisplayWinScreen();
     }
-    seanrungame();
+    if (g.game_state == 4)
+        seanrungame();
     rbarreyroRunGame();
 
     if (g.credit == 1) {
