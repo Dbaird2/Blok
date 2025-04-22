@@ -222,13 +222,10 @@ void dasonMenuButtonPress(int x, int y)
                 if (j == 0) {
                     // CAROLINE
                     g.game_state = 7;
-<<<<<<< HEAD
                 	carolineLevel();
 				} else if (j == 1) {
-=======
                     //carolineLevel();
                 } else if (j == 1) {
->>>>>>> eaf7e1f (Stuff)
                     // SEAN
                     g.game_state = 4;
                 } else if (j == 2) {

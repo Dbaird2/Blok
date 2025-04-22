@@ -378,11 +378,8 @@ void render()
         drawCircles();
     }
     if(g.game_state == 7) {
-<<<<<<< HEAD
         carolineRender();
-=======
         //carolineRender();
->>>>>>> eaf7e1f (Stuff)
         //carolineDisplayWinScreen();
     }
     if (g.game_state == 4)
