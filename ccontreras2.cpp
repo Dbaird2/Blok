@@ -12,17 +12,25 @@
 #include <AL/alut.h>
 #include "caroline.h"
 #include <vector>
+#include "dbairdheader.h"
 using namespace std;
+
+//====================4.22.25 Making Walls==========================
+#define CAROLINE_GRID_SIZE 1
+
+Grid caroWalls[CAROLINE_GRID_SIZE];
+int caro_height[1] = {10};
+int caro_width[1] = {500};
+int caro_x[1] = {10};
+int caro_y[1] = {10};
+
+//==================================================================
 
 #ifdef USE_OPENAL_SOUND
 #include </usr/include/AL/alut.h>
 #endif 
-
-
-
 ALuint alBuffer;
 ALuint alSource;
-
 #ifdef USE_OPENAL_SOUND
 
 void initSound()
@@ -156,4 +164,21 @@ void carolineEndCredit (void)
 	title.left = 10;
 	title.center = 0;
 	ggprint8b(&title, 16, 0x00ff0000, "Author 4: Caroline Contreras");
+}
+
+void carolinePhysics(void) {
+	dasonPhysics(1, 0, 0, NULL);
+}
+
+void carolineRender(void) {
+	carolineDrawCircle();
+	dasonDrawWalls(caroWalls, CAROLINE_GRID_SIZE);
+	
+}
+
+void carolineLevel(void) {
+	dasonLoadStruct(caroWalls, caro_height, caro_width,
+			caro_x, caro_y, CAROLINE_GRID_SIZE);
+	player.width = 45;
+	player.height = 15;
 }

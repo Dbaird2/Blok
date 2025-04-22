@@ -15,6 +15,8 @@ void cleanupSound();
 void carolineDrawCircle();
 void carolineEndCredit (void);
 void carolineDisplayWinScreen();
-
+void carolinePhysics(void);
+void carolineRender(void);
+void carolineLevel(void);
 
 #endif
