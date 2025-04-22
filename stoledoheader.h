@@ -19,7 +19,7 @@ extern Entity goal;
 
 
 
-
+void seanLevel();
 void seanrungame();
 void updateEnemies();
 void SeanEnemiesVertical(int start, int end, int yBoundary, int margin, Entity enemies[]);

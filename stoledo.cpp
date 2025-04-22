@@ -24,6 +24,7 @@ using namespace std;
 #include <AL/alc.h>
 #include <AL/alut.h>
 #include "stoledoheader.h"
+#include <chrono>
 
 //Music
 /* ALuint buffer, source;
@@ -48,6 +49,19 @@ void cleanupAudio() {
     alDeleteBuffers(1, &buffer);
     alutExit();
 } */
+//Wall
+Grid sean_grid[1];
+int sean_width[1] = {40};
+int sean_height[1] = {40};
+int seanxpos[1] = {40};
+int seanypos[1] = {40};
+
+void seanLevel()
+{
+    dasonLoadStruct(sean_grid, sean_height, sean_width, seanxpos, seanypos, 1);
+}
+
+
 //Margin
 float edge = 100.0f;
 
@@ -58,6 +72,16 @@ struct Projectile {
     float width, height;
     bool active;
 };
+using _clock        = std::chrono::steady_clock;
+using _elapsed      = std::chrono::duration<double>;
+using _time         = std::chrono::time_point<_clock, _elapsed>;
+
+inline time_t current_time_t()
+{
+    return chrono::system_clock::to_time_t(chrono::system_clock::now());
+}
+
+
 const int MAX_PROJECTILES = 100;
 Projectile projectiles[MAX_PROJECTILES];
 Entity triangleEnemies[2] = {
@@ -88,6 +112,7 @@ void UpdateProjectiles() {
         }
     }
 }
+
 bool CheckProjectileCollision(Projectile &p) {
     float playerLeft = player.pos[0] - player.width / 2;
     float playerRight = player.pos[0] + player.width / 2;
@@ -216,9 +241,6 @@ void SeanEnemiesHorizontal(int start, int end, int xBoundary, int margin, Entity
 }
 
 
-
-
-
 //Collision
 bool SeanCheckCollision(Entity &enemy) {
     float playerLeft = player.pos[0] - player.width / 2;
@@ -236,7 +258,6 @@ bool SeanCheckCollision(Entity &enemy) {
             playerTop < enemyBottom &&
             playerBottom > enemyTop);
 }
-
 void drawDeathCounter(int deathCount) {
     Rect r;
     r.bot = 20;        
@@ -249,8 +270,9 @@ int deathcounter = 0;
 int triangleShootingCooldownFrames = 0; // in frames (3 seconds = 180 at 60 FPS)
 void seanrungame() {
     //initAudio("background.wav");
+    dasonTimer(490, 840, 60);
     static bool initialized = false;
-    cout << "seanrungame" << endl;
+    //cout << "seanrungame" << endl;
     if (g.game_state == 4) {
         if (!initialized) {
             player.tempx = 50;
@@ -270,6 +292,8 @@ void seanrungame() {
         for (int i = 0; i < 4; i++)
         SeanDrawRect(enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height,1, 0, 0);
         }
+        dasonDrawWalls(sean_grid, 1);
+        
 
 
     // Fire projectile every few frames
@@ -311,6 +335,11 @@ void seanrungame() {
         }
 
         }
+
+
+
+
+        
 }
 
         
