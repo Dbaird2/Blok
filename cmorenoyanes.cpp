@@ -21,14 +21,19 @@ void carlosEndCredit (void)
     ggprint8b(&credit, 16, 0x00ff0000, "Author 2: Carlos Moreno");
 }
 
-/*void renderInstructions()
+void renderInstructions()
 {
     Rect title;
-    title.bot = 0;
-    title.left = 490;
+    title.bot = 450;
+    title.left = 800;
     title.center = 0;
-    ggprint8b(&title, 0, 0x00ff0000, ");
-}*/
+    ggprint8b(&title, 16, 0x00000000, "A - Move Left");
+    ggprint8b(&title, 16, 0x00000000, "W - Move Up");
+    ggprint8b(&title, 16, 0x00000000, "S - Move Down");
+    ggprint8b(&title, 16, 0x00000000, "D - Move Right");
+    ggprint8b(&title, 16, 0x00000000, "C - Credits");
+    ggprint8b(&title, 16, 0x00000000, "Q - Quit Level");
+}
 
 void drawTriangles ()
 {
@@ -113,10 +118,10 @@ void drawCircles ()
     glPopMatrix();
 }
 
-/*void carlosRunGame()
+void renderCarlosLevel()
 {
     drawCircles();
     drawTriangles();
 
-}*/
+}
 

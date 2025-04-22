@@ -114,6 +114,7 @@ class Global {
         int menu_box_amt[4];
         int game_state;
         int credit;
+        int instructions;
         bool key_states[256];
         int xres, yres;
         int vsync;
@@ -126,6 +127,7 @@ class Global {
             key_states[256] = {false};
             //gravity = -0.5f;
             credit = 0;
+            instructions = 0;
             vsync = 1;
             game_state = 1;
             grow_animation = 0.0f;

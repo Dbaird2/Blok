@@ -3,6 +3,6 @@
 
 #include "Global.h"
 
-void drawTriangles();
-void drawCircles();
+void renderCarlosLevel();
+void renderInstructions();
 #endif

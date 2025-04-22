@@ -290,6 +290,9 @@ int check_keys(XEvent *e)
             case XK_c:
                 g.credit = !g.credit;
                 break;
+            case XK_i:
+                g.instructions = !g.instructions;
+                break;
             case XK_l:
                 g.game_state = 6;
                 init_dasonMazePlayer();
@@ -373,8 +376,7 @@ void render()
         drawBoxes();
     }
     if (g.game_state == 3) {
-        drawTriangles();
-        drawCircles();
+        renderCarlosLevel();
     }
     if(g.game_state == 7) {
         carolineDrawCircle();
@@ -390,6 +392,10 @@ void render()
         carolineEndCredit();
         rjEndCredit();
         seanEndCredit();
+    }
+
+    if (g.instructions == 1) {
+        renderInstructions();
     }
 }
 
