@@ -1,7 +1,6 @@
 //Caroline Contreras
 //Spring 2025
 //3350 Project
-//Date: 3/16/25
 
 #include <iostream>
 #include "functions.h"
@@ -15,7 +14,6 @@
 #include <vector>
 using namespace std;
 
-//=========================================================
 #ifdef USE_OPENAL_SOUND
 #include </usr/include/AL/alut.h>
 #endif 
@@ -63,7 +61,6 @@ void initSound()
 	#endif //USE_OPENAL_SOUND
 }
 
-//void Sound::cleanupSound()
 void cleanupSound(ALuint alSource, ALuint alBuffer)
 {
         //First delete the source.
@@ -83,7 +80,6 @@ void cleanupSound(ALuint alSource, ALuint alBuffer)
         alcCloseDevice(Device);
 }
 
-//void Sound::playSound(ALuint source)
 void playSound(ALuint alSource)
 {
 #ifdef USE_OPENAL_SOUND
@@ -135,8 +131,21 @@ void carolineDrawCircle() {
 	glPopMatrix();
 }
 
+//===========================================================
+// Code below should display the win screen for when the 
+// the player beats all levels
+//===========================================================
 void carolineDisplayWinScreen() {
-
+	ren.backgroundImage = &img[2];
+	glGenTextures(1, &ren.backgroundTexture);
+	int w = ren.backgroundImage->width;
+	int h = ren.backgroundImage->height;
+	glBindTexture(GL_TEXTURE_2D, ren.backgroundTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
+			GL_RGB, GL_UNSIGNED_BYTE, ren.backgroundImage->data);
+//	playSound(alSource);
 }
 
 //below is my function for my end credit
