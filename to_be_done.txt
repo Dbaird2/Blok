@@ -2,7 +2,7 @@ Ending Death Screen
 -------------------------------------------------------------------------------                                      
 Ending Success Screen                                                   -- Caroline
 -------------------------------------------------------------------------------                                      
-Button to show controls (WASD, Credits, Quit)                           -- Carlos                                       
+Button to show controls (WASD, Credits(C), Quit(Q))                           -- Carlos                                       
 -------------------------------------------------------------------------------                                      
 Enemies types (can be multiple people)                                                       
 -------------------------------------------------------------------------------                                      

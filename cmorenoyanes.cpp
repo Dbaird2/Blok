@@ -21,6 +21,15 @@ void carlosEndCredit (void)
     ggprint8b(&credit, 16, 0x00ff0000, "Author 2: Carlos Moreno");
 }
 
+/*void renderInstructions()
+{
+    Rect title;
+    title.bot = 0;
+    title.left = 490;
+    title.center = 0;
+    ggprint8b(&title, 0, 0x00ff0000, ");
+}*/
+
 void drawTriangles ()
 {
     // Draw the triangles
