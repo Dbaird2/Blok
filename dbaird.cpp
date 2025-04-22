@@ -124,14 +124,14 @@ void getRandomColors(vector<vector<double>>& vec)
     }
 }
 
-void dasonTimerOut() 
+void dasonTimerOut(int spawn_y, int spawn_x) 
 {
     player.death_count++;
-    player.tempx = 530;
-    player.tempy = 10;
+    player.tempx = spawn_x;
+    player.tempy = spawn_y;
 }
 
-void dasonTimer(int y, int x, float time_out)
+void dasonTimer(int spawn_y, int spawn_x, int y, int x, float time_out)
 {
     if (player.dead == 1) {
         t1 = _clock::now();
@@ -146,7 +146,7 @@ void dasonTimer(int y, int x, float time_out)
     title.center = 0;
     ggprint8b(&title, 0, 0x00ffd700, "Timer %.02fs", time);
     if (time <= 0) {
-        dasonTimerOut();
+        dasonTimerOut(spawn_x, spawn_y);
         t1 = _clock::now();
     }
 }
@@ -296,7 +296,7 @@ void dasonMazeRender()
         player.death_count = 0;
         g.game_state = 2;
     }
-    dasonTimer(490, 840, 180.0);
+    dasonTimer(10, 530, 490, 840, 180.0);
 }
 
 void defineBox() 

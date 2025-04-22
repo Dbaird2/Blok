@@ -337,7 +337,7 @@ void init_opengl(void)
     initialize_fonts();
 
     dasonMazeLevelBackground();
-    dasonRenderBackground();
+    //dasonRenderBackground();
 }
 
 
@@ -380,6 +380,7 @@ void render()
     }
     // DRAW ALL BOXES
     if ((g.game_state == 1) || (g.game_state == 2)) {
+        dasonRenderBackground();
         makeStartScreen();
         drawBoxes();
     }
