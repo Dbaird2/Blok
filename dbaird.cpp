@@ -65,32 +65,34 @@ Entity dason_enemies[20] = {
 /* --------------- MAP WALL STRUCTURES --------------------------------------*/
 #define DASON_GRID_SIZE 58
 Grid dason_grid[DASON_GRID_SIZE];
-int dason_height[58] = {
+int dason_height[DASON_GRID_SIZE] = {
     10, 10, /*25*/25, 5,/*60*/ 65, 5,/*60*/ 65, 5, /*45*/50, 50, 250, 5, 5, 250,
     115, 5, 130, 5, 90, 5, 5, 5, 80, 5, 60/**/, 5, 5,
     60, 65, 5, 60, 70, 5, 90, 5, 60, 50, 5, 5, 50, 5, 5,
     60, /**/100, 30, 200, 5, 30, 40, 5, 200, /**/
     40, 40, 40, 40, 40, 40, 40};
-int dason_width[58] = {
+int dason_width[DASON_GRID_SIZE] = {
     250, 170, 5, 200, 5, 75, 5, 50, 5, 5, 5, 250, 175, 5,
     5, 95, 5, 20, 5, 120, 30, 25, 5, 20, 5/**/, 30, 90, 5,
     5, 35, 5, 5, 90, 5, 50, 5, 5, 15, 45, 5, 45, 60, 5,
     /**/5, 100, 5, 90, 95, 5, 60, 20, /**/
     5, 5, 5, 5, 5, 5, 5};
-int dason_x[58] = {
+int dason_x[DASON_GRID_SIZE] = {
     250, 725, 555, 485, 290, 220, 250, 205, 195, 150, 5, 660,
     185, 895, 105, 200, 55, 80, 335, 220, 400, 35, 375, 360,
     105/**/, 70, 100, 160, 195, 265, 335, 235, 150, 295, 350,
     375, 410, 395, 425, 465, 425, 440, 445, /**/495, 590, 720,
     625, 595, 670, 725, 805, /**/
     635, 600, 565, 530, 495, 460, 425};
-int dason_y[58] = {
+int dason_y[DASON_GRID_SIZE] = {
     0, 0, 25, 45, 110, 175, 70, 135, 55, 90, 260, 495, 495,
     250, 155, 220, 170, 160, 180, 270, 95, 335, 180, 265,
     365/**/, 385, 430, 335, 370, 310, 335, 385, 460, 405, 430,
     370, 290, 335, 210, 100, 150, 370, 275, /**/ 270, 140,
     210, 245, 345, 415, 450, 255, /**/
     415, 415, 415, 415, 415, 415, 415};
+// Vertical: H:250 x:5 y:260
+// Horizontal: 
 /*---------------------------------------------------------------------------*/
 
 //Grid growing_box[10];
@@ -142,7 +144,7 @@ void dasonTimer(int y, int x, float time_out)
     title.bot = y;
     title.left = x;
     title.center = 0;
-    ggprint8b(&title, 0, 0x00ffd700, "Timer %.0fs", time);
+    ggprint8b(&title, 0, 0x00ffd700, "Timer %.02fs", time);
     if (time <= 0) {
         dasonTimerOut();
         t1 = _clock::now();
@@ -220,8 +222,13 @@ void dasonMenuButtonPress(int x, int y)
                 if (j == 0) {
                     // CAROLINE
                     g.game_state = 7;
+<<<<<<< HEAD
                 	carolineLevel();
 				} else if (j == 1) {
+=======
+                    //carolineLevel();
+                } else if (j == 1) {
+>>>>>>> eaf7e1f (Stuff)
                     // SEAN
                     g.game_state = 4;
                 } else if (j == 2) {
@@ -445,12 +452,11 @@ void dasonPhysics(int wall_size, int growing_size,
         }
     }
 
-    glClear(GL_COLOR_BUFFER_BIT);
+    //glClear(GL_COLOR_BUFFER_BIT);
 
     if (growing_enemy_check) 
         growingBoxPhysics(growing_size, grid);
-    int i;
-    for (i = 0; i < wall_size; i++) {
+    for (int i = 0; i < wall_size; i++) {
         Wall *w = &walls[i];
         Player *p = &player;
 
