@@ -33,7 +33,7 @@ using namespace std;
 #include "Global.h"
 #include "dbairdheader.h"
 #include "stoledoheader.h"
-
+#include "caroline.h"
 /*---------------------------------------------------------------------------*/
 Entity dason_goal = {360, 490, 50, 15, 0, 0};
 int enemy_size = 17;
@@ -220,7 +220,8 @@ void dasonMenuButtonPress(int x, int y)
                 if (j == 0) {
                     // CAROLINE
                     g.game_state = 7;
-                } else if (j == 1) {
+                	carolineLevel();
+				} else if (j == 1) {
                     // SEAN
                     g.game_state = 4;
                 } else if (j == 2) {

@@ -230,7 +230,6 @@ void check_mouse(XEvent *e)
             }
             if(e->xbutton.button == 7) {
                 //carolineDisplayWinScreen();
-                carolineDrawCircle();
             }
 
             /*for (int i = 0; i < 10; i++) {
@@ -344,6 +343,8 @@ void physics(void)
     if (g.game_state == 6) 
         dasonPhysics(58, 10, 1, growing_box);
     //return 0;
+	if (g.game_state == 7)
+		carolinePhysics();
 }
 int i = 0;
 void render()
@@ -377,7 +378,7 @@ void render()
         drawCircles();
     }
     if(g.game_state == 7) {
-        carolineDrawCircle();
+        carolineRender();
         //carolineDisplayWinScreen();
     }
     if (g.game_state == 4)
