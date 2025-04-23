@@ -270,7 +270,7 @@ int deathcounter = 0;
 int triangleShootingCooldownFrames = 0; // in frames (3 seconds = 180 at 60 FPS)
 void seanrungame() {
     //initAudio("background.wav");
-    dasonTimer(490, 840, 60);
+    //dasonTimer(490, 840, 60);
     static bool initialized = false;
     //cout << "seanrungame" << endl;
     if (g.game_state == 4) {
