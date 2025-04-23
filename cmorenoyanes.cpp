@@ -125,3 +125,12 @@ void renderCarlosLevel()
 
 }
 
+void carlosPhysics()
+{
+
+}
+
+void carlosMaze()
+{
+
+}

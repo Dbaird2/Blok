@@ -34,6 +34,7 @@ using namespace std;
 #include "dbairdheader.h"
 #include "stoledoheader.h"
 #include "caroline.h"
+#include "cmorenoyanesheader.h"
 /*---------------------------------------------------------------------------*/
 Entity dason_goal = {360, 490, 50, 15, 0, 0};
 int enemy_size = 17;
@@ -231,6 +232,7 @@ void dasonMenuButtonPress(int x, int y)
                 } else if (j == 2) {
                     // CARLOS
                     g.game_state = 3;
+                    carlosMaze();
                 } else if (j == 3) {
                     // DASON
                     g.game_state = 6;

@@ -5,4 +5,6 @@
 
 void renderCarlosLevel();
 void renderInstructions();
+void carlosPhysics();
+void carlosMaze();
 #endif
