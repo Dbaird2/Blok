@@ -125,14 +125,14 @@ void getRandomColors(vector<vector<double>>& vec)
     }
 }
 
-void dasonTimerOut() 
+void dasonTimerOut(int spawn_y, int spawn_x) 
 {
     player.death_count++;
-    player.tempx = 530;
-    player.tempy = 10;
+    player.tempx = spawn_x;
+    player.tempy = spawn_y;
 }
 
-void dasonTimer(int y, int x, float time_out)
+void dasonTimer(int spawn_y, int spawn_x, int y, int x, float time_out)
 {
     if (player.dead == 1) {
         t1 = _clock::now();
@@ -147,7 +147,7 @@ void dasonTimer(int y, int x, float time_out)
     title.center = 0;
     ggprint8b(&title, 0, 0x00ffd700, "Timer %.02fs", time);
     if (time <= 0) {
-        dasonTimerOut();
+        dasonTimerOut(spawn_x, spawn_y);
         t1 = _clock::now();
     }
 }
@@ -229,6 +229,7 @@ void dasonMenuButtonPress(int x, int y)
                 } else if (j == 1) {
                     // SEAN
                     g.game_state = 4;
+                    seanLevel();
                 } else if (j == 2) {
                     // CARLOS
                     g.game_state = 3;
@@ -297,7 +298,7 @@ void dasonMazeRender()
         player.death_count = 0;
         g.game_state = 2;
     }
-    dasonTimer(490, 840, 180.0);
+    dasonTimer(10, 530, 490, 840, 180.0);
 }
 
 void defineBox() 
@@ -508,7 +509,6 @@ void dasonRenderBackground()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
             GL_RGB, GL_UNSIGNED_BYTE, ren.backgroundImage->data);
-
 }
 void dasonMazeLevelBackground() 
 {

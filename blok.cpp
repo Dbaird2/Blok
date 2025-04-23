@@ -353,7 +353,14 @@ void physics(void)
 }
 int i = 0;
 void render()
-{
+{   
+    Rect r;
+	glClear(GL_COLOR_BUFFER_BIT);
+	//
+	r.bot = g.yres - 20;
+	r.left = 10;
+	r.center = 0;
+    ggprint8b(&r, 16, 0x00ffff00, "vsync: %s", ((g.vsync)?"ON":"OFF"));
 
     //clear the window
     glClear(GL_COLOR_BUFFER_BIT);
@@ -375,6 +382,7 @@ void render()
     }
     // DRAW ALL BOXES
     if ((g.game_state == 1) || (g.game_state == 2)) {
+        //dasonRenderBackground();
         makeStartScreen();
         drawBoxes();
     }
