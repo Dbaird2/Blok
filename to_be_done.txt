@@ -2,7 +2,7 @@ Ending Death Screen
 -------------------------------------------------------------------------------                                      
 Ending Success Screen                                                   -- Caroline
 -------------------------------------------------------------------------------                                      
-Button to show controls (WASD, Credits(C), Quit(Q))                           -- Carlos                                       
+Button to show controls (WASD, Credits(C), Quit(Q))                     -- Carlos                                       
 -------------------------------------------------------------------------------                                      
 Enemies types (can be multiple people)                                                       
 -------------------------------------------------------------------------------                                      
@@ -23,3 +23,4 @@ Timer                                                                   -- Done
 -------------------------------------------------------------------------------                                      
 (optional) have the player get bigger when red due to constant movement -- Done
 -------------------------------------------------------------------------------                                      
+Animated Intoduction (Important)
