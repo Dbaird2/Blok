@@ -322,12 +322,9 @@ void init_opengl(void)
 
 void physics(void)
 {
-<<<<<<< HEAD
 	if (g.game_state == 3)
 		carlosPhysics();
-=======
     processMovement();
->>>>>>> 21e18ce (coin stuff)
     if (g.game_state == 6) 
         dasonPhysics(58, 10, 1, growing_box);
     //return 0;
