@@ -378,7 +378,6 @@ void render()
         i++;
 #endif
     }
-<<<<<<< HEAD
     // DRAW ALL BOXES
     if ((g.game_state == 1) || (g.game_state == 2)) {
         //dasonRenderBackground();
@@ -394,10 +393,8 @@ void render()
     }
     if (g.game_state == 4)
         seanrungame();
-=======
     rbarreyroRunGame();
 
->>>>>>> d571eb018d50175728173ee56aee3dce489361c5
     if (g.credit == 1) {
         dasonEndCredit();
         carlosEndCredit();
