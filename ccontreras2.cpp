@@ -15,14 +15,16 @@
 #include "dbairdheader.h"
 using namespace std;
 
+//GOALS: Make walls, fix sound in code, and finish win screen 
+
 //====================4.22.25 Making Walls==========================
-#define CAROLINE_GRID_SIZE 1
+#define CAROLINE_GRID_SIZE 5
 
 Grid caroWalls[CAROLINE_GRID_SIZE];
-int caro_height[1] = {10};
-int caro_width[1] = {500};
-int caro_x[1] = {10};
-int caro_y[1] = {10};
+int caro_height[5] = {10, 490, 490, 10, 10};
+int caro_width[5] = {890, 10, 10, 890, 300};
+int caro_x[5] = {10, 10, 890, 890, 420};
+int caro_y[5] = {10, 10, 10, 490, 60};
 
 //==================================================================
 
@@ -64,8 +66,6 @@ void initSound()
 		printf("ERROR: setting source\n");
 		return;
 	}
-
-
 	#endif //USE_OPENAL_SOUND
 }
 
@@ -96,7 +96,6 @@ void playSound(ALuint alSource)
 }
 #endif //USE_OPENAL_SOUND
 //=========================================================
-
 
 const float PI = 3.14159265358979323846f;
 class Circle {
@@ -153,7 +152,7 @@ void carolineDisplayWinScreen() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
 			GL_RGB, GL_UNSIGNED_BYTE, ren.backgroundImage->data);
-//	playSound(alSource);
+	//playSound(alSource);
 }
 
 //below is my function for my end credit
@@ -167,7 +166,7 @@ void carolineEndCredit (void)
 }
 
 void carolinePhysics(void) {
-	dasonPhysics(1, 0, 0, NULL);
+	dasonPhysics(CAROLINE_GRID_SIZE, 0, 0, NULL);
 }
 
 void carolineRender(void) {

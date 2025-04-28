@@ -390,7 +390,6 @@ void render()
     }
     if(g.game_state == 7) {
         carolineRender();
-        //carolineRender();
         //carolineDisplayWinScreen();
     }
     if (g.game_state == 4)
