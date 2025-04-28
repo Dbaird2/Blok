@@ -396,8 +396,6 @@ void render()
     }
     if (g.game_state == 4)
         seanrungame();
-    rbarreyroRunGame();
-
     if (g.credit == 1) {
         dasonEndCredit();
         carlosEndCredit();
@@ -405,6 +403,7 @@ void render()
         rjEndCredit();
         seanEndCredit();
     }
+    rbarreyroRunGame();
 
     if (g.instructions == 1) {
         renderInstructions();

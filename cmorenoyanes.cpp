@@ -7,8 +7,20 @@
 #include "fonts.h"
 #include "cmorenoyanesheader.h"
 #include <math.h>
-
+#include "dbairdheader.h"
 using namespace std;
+
+/*==============================================================*/
+#define CARLOS_GRID_SIZE 4
+
+Grid carlos_walls[CARLOS_GRID_SIZE];
+int wall_height[4] = {500, 10, 500, 10};
+int wall_width[4] = {10, 890, 10, 700};
+int wall_coordinate_x[4] = {10, 10, 890, 100};
+int wall_coordinate_y[4] = {10, 490, 10, 10};
+
+/*==============================================================*/
+
 float circleOffset = 0.0f;
 bool direction = true;
 
@@ -122,15 +134,16 @@ void renderCarlosLevel()
 {
     drawCircles();
     drawTriangles();
-
+    dasonDrawWalls(carlos_walls, CARLOS_GRID_SIZE);
 }
 
 void carlosPhysics()
 {
-
+    dasonPhysics(1, 0, 0, NULL);
 }
 
 void carlosMaze()
 {
-
+    dasonLoadStruct(carlos_walls, wall_height, wall_width, wall_coordinate_x,
+                        wall_coordinate_y, CARLOS_GRID_SIZE);
 }
