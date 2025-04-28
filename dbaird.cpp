@@ -32,6 +32,7 @@ using namespace std;
 #include "fonts.h"
 #include "Global.h"
 #include "dbairdheader.h"
+#include "rbarreyroheader.h"
 #include "stoledoheader.h"
 #include "caroline.h"
 #include "cmorenoyanesheader.h"
@@ -93,7 +94,8 @@ int dason_y[DASON_GRID_SIZE] = {
     210, 245, 345, 415, 450, 255, /**/
     415, 415, 415, 415, 415, 415, 415};
 // Vertical: H:250 x:5 y:260
-// Horizontal: 
+static vector<Coin> dasonCoins;
+int dasonCollectedCoins = 0;
 /*---------------------------------------------------------------------------*/
 
 //Grid growing_box[10];
@@ -145,7 +147,7 @@ void dasonTimer(int spawn_y, int spawn_x, int y, int x, float time_out)
     title.bot = y;
     title.left = x;
     title.center = 0;
-    ggprint8b(&title, 0, 0x00ffd700, "Timer %.02fs", time);
+    ggprint8b(&title, 0, 0x00ffd700, "Timer %.2fs", time);
     if (time <= 0) {
         dasonTimerOut(spawn_x, spawn_y);
         t1 = _clock::now();
@@ -224,12 +226,10 @@ void dasonMenuButtonPress(int x, int y)
                     // CAROLINE
                     g.game_state = 7;
                 	carolineLevel();
-				} else if (j == 1) {
-                    //carolineLevel();
                 } else if (j == 1) {
                     // SEAN
                     g.game_state = 4;
-                    seanLevel();
+                     seanLevel();;
                 } else if (j == 2) {
                     // CARLOS
                     g.game_state = 3;
@@ -272,6 +272,13 @@ void init_dasonMazePlayer()
     /* WALLS */
     dasonLoadStruct(dason_grid, dason_height, dason_width, 
             dason_x, dason_y, DASON_GRID_SIZE);
+    for (int i = 0; i < 8; i++) {
+        float theta= (2.0f * M_PI / 8) * i;
+        float cx = 400.0f + cosf(theta) * 200.0f;
+        float cy = 300.0f + sinf(theta) * 150.0f;
+        dasonCoins.push_back({cx, cy, false, cy, 
+                20.0f, 2.0f + i * 0.2f, theta, 10});
+    }
     player.tempx = 530;
     player.tempy = 10;
     player.width = 5;
@@ -285,12 +292,12 @@ void dasonMazeRender()
         SeanDrawRect(dason_enemies[i].x, dason_enemies[i].y, 
                 dason_enemies[i].width, dason_enemies[i].height, 
                 color_vector[i][0], color_vector[i][1], color_vector[i][2]);
+    SeanDrawRect(dason_goal.x, dason_goal.y, 
+            dason_goal.width, dason_goal.height, 0, 1, 0);
 
     dasonDrawGrowingBoxes(growing_box, 10);
     dasonDrawWalls(dason_grid, DASON_GRID_SIZE);
     renderDeathCount(); 
-    SeanDrawRect(dason_goal.x, dason_goal.y, 
-            dason_goal.width, dason_goal.height, 0, 1, 0);
     if (g.key_states[XK_q]) {
         // Part of Algorithm library
         // It will reset all of walls back to Constructor values
@@ -298,7 +305,8 @@ void dasonMazeRender()
         player.death_count = 0;
         g.game_state = 2;
     }
-    dasonTimer(10, 530, 490, 840, 180.0);
+    RB_DrawCoins(dasonCoins);
+    dasonTimer(10, 530, 490, 835, 180.0);
 }
 
 void defineBox() 
@@ -450,6 +458,8 @@ void dasonPhysics(int wall_size, int growing_size,
             player.death_count = 0;
             g.game_state = 2;
         }
+        RB_UpdateCoins(dasonCoins);
+        RB_CheckCoinCollection(dasonCoins);
     }
 
     //glClear(GL_COLOR_BUFFER_BIT);
@@ -738,29 +748,32 @@ void handleKeyRelease(XKeyEvent *event)
 
 void processMovement() 
 {
-    if ((g.key_states[XK_w] || g.key_states[XK_s]
-                || g.key_states[XK_a] || g.key_states[XK_d])
-            && player.color[0] < 1.05f ) {
-        player.color[0] += 0.02f;
-    } else if (player.color[0] > -0.05f) {
-        player.color[0] -= 0.05f;
+    if (g.game_state > 2) {
+        if ((g.key_states[XK_w] || g.key_states[XK_s]
+                    || g.key_states[XK_a] || g.key_states[XK_d])
+                && player.color[0] < 1.05f ) {
+            player.color[0] += 0.02f;
+        } else if (player.color[0] > -0.05f) {
+            player.color[0] -= 0.05f;
+        }
+        if (g.key_states[XK_w] && player.tempy < g.yres)
+            if (!player.stop_w) {
+                player.tempy += 5;
+            }
+        if (g.key_states[XK_a] && player.tempx > 5)
+            if (!player.stop_a) {
+                player.tempx -= 5;
+            }
+        if (g.key_states[XK_s] && player.tempy > 5)
+            if (!player.stop_s) {
+                player.tempy -= 5;
+            }
+        if (g.key_states[XK_d] && player.tempx < g.xres)
+            if (!player.stop_d) {
+                player.tempx += 5;
+            }
     }
-    if (g.key_states[XK_w] && player.tempy < g.yres)
-        if (!player.stop_w) {
-            player.tempy += 5;
-        }
-    if (g.key_states[XK_a] && player.tempx > 5)
-        if (!player.stop_a) {
-            player.tempx -= 5;
-        }
-    if (g.key_states[XK_s] && player.tempy > 5)
-        if (!player.stop_s) {
-            player.tempy -= 5;
-        }
-    if (g.key_states[XK_d] && player.tempx < g.xres)
-        if (!player.stop_d) {
-            player.tempx += 5;
-        }
 }
 /*----------------------------------------------------*/
+
 

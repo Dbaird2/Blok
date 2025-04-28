@@ -116,7 +116,7 @@ void RB_DrawEnemies() {
 }
 
 // Update coins (animation)
-void RB_UpdateCoins() {
+void RB_UpdateCoins(vector<Coin> coins) {
     for (auto& c : coins) {
         if (c.collected) continue;
         c.y = c.baseY + sinf(gAnimTime * c.frequency) * c.amplitude;
@@ -125,7 +125,7 @@ void RB_UpdateCoins() {
 }
 
 // Draw coins with rotation
-void RB_DrawCoins() {
+void RB_DrawCoins(vector<Coin> coins) {
     for (auto& c : coins) {
         if (c.collected) continue;
         glPushMatrix();
@@ -143,7 +143,7 @@ void RB_DrawCoins() {
 }
 
 // Check coin collection
-void RB_CheckCoinCollection() {
+void RB_CheckCoinCollection(vector<Coin> coins) {
     RB_Entity pb = {
         player.pos[0] - static_cast<float>(player.width) / 2.0f,
         player.pos[1] - static_cast<float>(player.height) / 2.0f,
@@ -176,8 +176,8 @@ void rbarreyroRunGame() {
     gAnimTime += 0.016f;
 
     RB_UpdateEnemies();
-    RB_UpdateCoins();
-    RB_CheckCoinCollection();
+    RB_UpdateCoins(coins);
+    RB_CheckCoinCollection(coins);
 
     // draw goal
     RB_DrawColoredRect(
@@ -187,7 +187,7 @@ void rbarreyroRunGame() {
     );
 
     RB_DrawEnemies();
-    RB_DrawCoins();
+    RB_DrawCoins(coins);
 
     Rect r = {0}; r.bot = g.yres - 30; r.left = 20; r.center = 0;
     ggprint8b(&r, 16, 0x00FF00, "Score: %d", collectedCoins);

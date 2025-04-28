@@ -8,8 +8,22 @@
 #include <cmath>
 #include <unistd.h>
 #include <iostream>
+#include <vector>
 #include "Global.h"
+using namespace std;
 
+// Coin structure: pulsating & rotating collectible
+struct Coin {
+    float x, y;
+    bool collected;
+    // animation parameters
+    float baseY;
+    float amplitude;
+    float frequency;
+    float angle;
+    int value;
+};
+//extern vector<Coin> coins;
 // Forward declarations
 struct RB_Entity;
 struct Enemy;
@@ -29,9 +43,9 @@ bool RB_CheckEntityCollision(const RB_Entity& a,
 // Updated enemy & coin logic
 void RB_UpdateEnemies();
 void RB_DrawEnemies();
-void RB_UpdateCoins();
-void RB_DrawCoins();
-void RB_CheckCoinCollection();
+void RB_UpdateCoins(vector<Coin> coins);
+void RB_DrawCoins(vector<Coin> coins);
+void RB_CheckCoinCollection(vector<Coin> coins);
 
 // Entity structure
 struct RB_Entity {
@@ -55,16 +69,5 @@ struct Enemy {
     float detectionRadius;
 };
 
-// Coin structure: pulsating & rotating collectible
-struct Coin {
-    float x, y;
-    bool collected;
-    // animation parameters
-    float baseY;
-    float amplitude;
-    float frequency;
-    float angle;
-    int value;
-};
 
 #endif // RBARREYRO_HEADER_H

@@ -161,11 +161,8 @@ class X11_wrapper {
 
 int main()
 {
-    //pthread_t p_thread[2];
     init_opengl();
-    //int value = 0;
     int done = 0;
-    //omp_set_num_threads(2);
     //main game loop
     while (!done) {
         //look for external events such as keyboard, mouse.
@@ -175,26 +172,9 @@ int main()
                         check_mouse(&e);
                         done = check_keys(&e);
         }
-                processMovement();
-                /*
-#pragma omp parallel
-        {
-#pragma omp single nowait
-            {
-#pragma omp critical
-            {
-            */
-                //pthread_create(&p_thread[0], nullptr, physics, (void *)&value);
-                    physics();
-                    /*
-            }
-
-            }
-        }
-        */
+        physics();
         render();
         x11.swapBuffers();
-        //pthread_join(p_thread[0], nullptr);
     }
     cleanup_fonts();
     return 0;
@@ -229,7 +209,6 @@ void check_mouse(XEvent *e)
                 // MAIN MENU OVER GAME START   
             }
             if(e->xbutton.button == 7) {
-                //carolineDisplayWinScreen();
             }
 
             /*for (int i = 0; i < 10; i++) {
@@ -345,6 +324,7 @@ void physics(void)
 {
 	if (g.game_state == 3)
 		carlosPhysics();
+    processMovement();
     if (g.game_state == 6) 
         dasonPhysics(58, 10, 1, growing_box);
     //return 0;
@@ -362,13 +342,31 @@ void render()
 	r.center = 0;
     ggprint8b(&r, 16, 0x00ffff00, "vsync: %s", ((g.vsync)?"ON":"OFF"));
 
-    //clear the window
-    glClear(GL_COLOR_BUFFER_BIT);
+    if (g.game_state == 0) {
+        
+    }
+    // DRAW ALL BOXES
+    if ((g.game_state == 1) || (g.game_state == 2)) {
+        //dasonRenderBackground();
+        makeStartScreen();
+        drawBoxes();
+    }
+    if (g.game_state == 3) {
+        renderCarlosLevel();
+    }
+    if (g.game_state == 4)
+        seanrungame();
+
     if (g.game_state == 6) {
 
         //dasonTimer(490, 790, 180.0);
         makeStartScreen();
         dasonMazeRender();
+    }
+    if(g.game_state == 7) {
+        carolineRender();
+        //carolineRender();
+        //carolineDisplayWinScreen();
     }
     if (g.game_state > 2)  {
         //dasonTimer(490, 790, 180.0);
@@ -380,6 +378,7 @@ void render()
         i++;
 #endif
     }
+<<<<<<< HEAD
     // DRAW ALL BOXES
     if ((g.game_state == 1) || (g.game_state == 2)) {
         //dasonRenderBackground();
@@ -396,6 +395,10 @@ void render()
     }
     if (g.game_state == 4)
         seanrungame();
+=======
+    rbarreyroRunGame();
+
+>>>>>>> d571eb018d50175728173ee56aee3dce489361c5
     if (g.credit == 1) {
         dasonEndCredit();
         carlosEndCredit();

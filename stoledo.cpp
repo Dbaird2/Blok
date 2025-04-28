@@ -50,16 +50,43 @@ void cleanupAudio() {
     alutExit();
 } */
 //Wall
-Grid sean_grid[1];
-int sean_width[1] = {40};
-int sean_height[1] = {40};
-int seanxpos[1] = {40};
-int seanypos[1] = {40};
+#define SEAN_GRID_SIZE 4
+Grid sean_grid[SEAN_GRID_SIZE];
+
+int sean_height[SEAN_GRID_SIZE] = {
+    5,
+    5,
+    g.yres / 2,
+    g.yres / 2
+};
+
+int sean_width[SEAN_GRID_SIZE] = {
+    g.xres / 2,
+    g.xres / 2,
+    5,
+    5
+};
+
+int seanxpos[SEAN_GRID_SIZE] = {
+    g.xres / 2,
+    g.xres / 2,
+    5,
+    g.xres - 5
+};
+
+int seanypos[SEAN_GRID_SIZE] = {
+    g.yres - 5,
+    5,
+    g.yres / 2,
+    g.yres / 2
+};
+
 
 void seanLevel()
 {
-    dasonLoadStruct(sean_grid, sean_height, sean_width, seanxpos, seanypos, 1);
+    dasonLoadStruct(sean_grid, sean_height, sean_width, seanxpos, seanypos, SEAN_GRID_SIZE);
 }
+
 
 
 //Margin
@@ -260,12 +287,13 @@ bool SeanCheckCollision(Entity &enemy) {
 }
 void drawDeathCounter(int deathCount) {
     Rect r;
-    r.bot = 20;        
-    r.left = 10;       
+    r.bot = 50;        
+    r.left = 100;       
     r.center = 0;
     ggprint8b(&r, 16, 0xff0000ff, "Deaths:");
     ggprint8b(&r, 16, 0xff0000ff, "%d", deathCount);
 }
+
 int deathcounter = 0;
 int triangleShootingCooldownFrames = 0; // in frames (3 seconds = 180 at 60 FPS)
 void seanrungame() {
@@ -292,7 +320,9 @@ void seanrungame() {
         for (int i = 0; i < 4; i++)
         SeanDrawRect(enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height,1, 0, 0);
         }
-        dasonDrawWalls(sean_grid, 1);
+        dasonDrawWalls(sean_grid, SEAN_GRID_SIZE);
+        dasonPhysics(SEAN_GRID_SIZE, 0, 0, NULL);
+
         
 
 
