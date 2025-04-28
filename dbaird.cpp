@@ -228,8 +228,6 @@ void dasonMenuButtonPress(int x, int y)
                 	carolineLevel();
 					//carolineDisplayWinScreen();
 				} else if (j == 1) {
-                    //carolineLevel();
-                } else if (j == 1) {
                     // SEAN
                     g.game_state = 4;
                      seanLevel();;
