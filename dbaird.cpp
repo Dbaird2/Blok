@@ -37,6 +37,7 @@ using namespace std;
 #include "caroline.h"
 #include "cmorenoyanesheader.h"
 /*---------------------------------------------------------------------------*/
+Teleportal portals[4];
 Entity dason_goal = {360, 490, 50, 15, 0, 0};
 int enemy_size = 17;
 vector<vector<double>> color_vector(enemy_size, vector<double>(2));
@@ -281,6 +282,23 @@ void init_dasonMazePlayer()
         dasonCoins.push_back({cx, cy, false, cy, 
                 20.0f, 2.0f + i * 0.2f, theta, 10});
     }
+    // portal id, PI, cX, cY, r, segments;
+    for (int i = 0; i < 4; i++) {
+        portals[i].r = 5.0f;
+    }
+    portals[0].cX = 660;
+    portals[0].cY = 310; 
+    portals[1].cX = 750;
+    portals[1].cY = 30; 
+    portals[2].cX = 470;
+    portals[2].cY = 20; 
+    portals[3].portal_id = 2; 
+    portals[3].cX = 300;
+    portals[3].cY = 20; 
+    portals[2].portal_id = 2; 
+
+    
+
     player.tempx = 530;
     player.tempy = 10;
     player.width = 5;
@@ -299,6 +317,7 @@ void dasonMazeRender()
 
     dasonDrawGrowingBoxes(growing_box, 10);
     dasonDrawWalls(dason_grid, DASON_GRID_SIZE);
+    carolineDrawCircle(portals, 4);
     renderDeathCount(); 
     if (g.key_states[XK_q]) {
         // Part of Algorithm library
@@ -462,6 +481,7 @@ void dasonPhysics(int wall_size, int growing_size,
         }
         RB_UpdateCoins(dasonCoins);
         RB_CheckCoinCollection(dasonCoins);
+        isCircleCollidingWithSquare(portals, 4);
     }
 
     //glClear(GL_COLOR_BUFFER_BIT);
