@@ -53,9 +53,10 @@ Grid growing_box[15];
 ImageRenderer ren;
 MenuBox boxes[MAX_BOXES];
 Player player;
-Image img[2] = {
+Image img[3] = {
     "./background.png",
     "./minecraft_image.png"
+	"./winScreen.png"
 };
 void init_opengl(void);
 void physics(void);
