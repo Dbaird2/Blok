@@ -106,8 +106,16 @@ int russypos[RUSS_GRID_SIZE] = {
     g.yres - 5, 0, 0, 0
 };
 
+<<<<<<< HEAD
 void russLevel() {
     dasonLoadStruct(russ_grid, russ_height, russ_width, russxpos, russypos, RUSS_GRID_SIZE);
+=======
+
+void russLevel()
+{
+    dasonLoadStruct(russ_grid, russ_height, russ_width, 
+            russxpos, russypos, RUSS_GRID_SIZE);
+>>>>>>> d0c8382 (changed line size for knr)
     dasonDrawWalls(russ_grid, RUSS_GRID_SIZE);
     dasonPhysics(RUSS_GRID_SIZE, 0, 0, NULL);
 }

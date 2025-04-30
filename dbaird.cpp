@@ -287,7 +287,7 @@ void init_dasonMazePlayer()
         portals[i].r = 5.0f;
     }
     portals[0].cX = 660;
-    portals[0].cY = 310; 
+    portals[0].cY = 295; 
     portals[1].cX = 750;
     portals[1].cY = 30; 
     portals[2].cX = 470;

@@ -33,7 +33,8 @@ void initAudio(const char* filename) {
     buffer = alutCreateBufferFromFile(filename); // Load audio file
 
     if (buffer == AL_NONE) {
-        cerr << "Error loading sound file: " << alutGetErrorString(alutGetError()) << endl;
+        cerr << "Error loading sound file: " << 
+        alutGetErrorString(alutGetError()) << endl;
         return;
     }
 
@@ -84,7 +85,8 @@ int seanypos[SEAN_GRID_SIZE] = {
 
 void seanLevel()
 {
-    dasonLoadStruct(sean_grid, sean_height, sean_width, seanxpos, seanypos, SEAN_GRID_SIZE);
+    dasonLoadStruct(sean_grid, sean_height, sean_width, 
+            seanxpos, seanypos, SEAN_GRID_SIZE);
 }
 
 
@@ -251,7 +253,8 @@ void SeanDrawRect(float x, float y, float width, float height,
     glEnd();
 }
 //Enemy Movement
-void SeanEnemiesVertical(int start, int end, int yBoundary, int margin, Entity enemies[]) {
+void SeanEnemiesVertical(int start, int end, 
+        int yBoundary, int margin, Entity enemies[]) {
     for (int i = start; i < end; i++) {
         enemies[i].y += enemies[i].dir * enemies[i].speed;
         if (enemies[i].y <= margin || enemies[i].y >= yBoundary)
@@ -259,7 +262,8 @@ void SeanEnemiesVertical(int start, int end, int yBoundary, int margin, Entity e
     }
 }
 
-void SeanEnemiesHorizontal(int start, int end, int xBoundary, int margin, Entity enemies[]) {
+void SeanEnemiesHorizontal(int start, int end, 
+        int xBoundary, int margin, Entity enemies[]) {
     for (int i = start; i < end; i++) {
         enemies[i].x += enemies[i].dir * enemies[i].speed;
         if (enemies[i].x <= margin || enemies[i].x >= xBoundary - margin)
@@ -295,7 +299,8 @@ void drawDeathCounter(int deathCount) {
 }
 
 int deathcounter = 0;
-int triangleShootingCooldownFrames = 0; // in frames (3 seconds = 180 at 60 FPS)
+// in frames (3 seconds = 180 at 60 FPS)
+int triangleShootingCooldownFrames = 0; 
 void seanrungame() {
     //initAudio("background.wav");
     //dasonTimer(490, 840, 60);
@@ -318,7 +323,8 @@ void seanrungame() {
         DrawTriangleEnemy(triangleEnemies[i]);
         SeanDrawRect(goal.x, goal.y, goal.width, goal.height, 0, 1, 0);
         for (int i = 0; i < 4; i++)
-        SeanDrawRect(enemies[i].x, enemies[i].y, enemies[i].width, enemies[i].height,1, 0, 0);
+        SeanDrawRect(enemies[i].x, enemies[i].y, enemies[i].width, 
+                enemies[i].height,1, 0, 0);
         }
         dasonDrawWalls(sean_grid, SEAN_GRID_SIZE);
         dasonPhysics(SEAN_GRID_SIZE, 0, 0, NULL);
@@ -353,7 +359,8 @@ void seanrungame() {
             g.game_state = 0 ;
          }
         for (int i = 0; i < MAX_PROJECTILES; ++i) {
-        if (projectiles[i].active && CheckProjectileCollision(projectiles[i])) {
+        if (projectiles[i].active && 
+                CheckProjectileCollision(projectiles[i])) {
         projectiles[i].active = false;
         player.tempx = 50;
         player.tempy = 250;

@@ -108,11 +108,11 @@ void carolineDrawCircle(Teleportal portal[], int array_size) {
                                  //to make a circle
         glVertex2f(0.0f, 0.0f); // Center of the circle
         for (int j = 0; j <= portal[i].circleSegments; ++j) {
-            float angle = 2.0f * portal[i].PI * float(j) / float(portal[i].circleSegments);
+            float angle = 2.0f * portal[i].PI * 
+                float(j) / float(portal[i].circleSegments);
             float x = portal[i].r * cos(angle);
             float y = portal[i].r * sin(angle);
             glVertex2f(x, y);
-            //		cout << "angle " << angle << "x " << x << "y " << y << endl;
         }
 	glEnd();
 	glPopMatrix();
@@ -123,8 +123,10 @@ void carolineDrawCircle(Teleportal portal[], int array_size) {
 bool isCircleCollidingWithSquare(Teleportal portal[], int array_size) {
     bool check = false;
     for (int i = 0; i < array_size; i++) {
-        float closestX = max(player.pos[0], min(portal[i].cX, player.pos[0] + player.width));
-        float closestY = max(player.pos[1], min(portal[i].cY, player.pos[1] + player.height));
+        float closestX = max(player.pos[0], 
+                min(portal[i].cX, player.pos[0] + player.width));
+        float closestY = max(player.pos[1], 
+                min(portal[i].cY, player.pos[1] + player.height));
 
         float dx = portal[i].cX - closestX;
         float dy = portal[i].cY - closestY;

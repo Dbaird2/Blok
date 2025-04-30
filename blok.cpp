@@ -76,7 +76,8 @@ class X11_wrapper {
         Window win;
         GLXContext glc;
         X11_wrapper() {
-            GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
+            GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, 
+                GLX_DOUBLEBUFFER, None };
             //GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, None };
             XSetWindowAttributes swa;
             setup_screen_res(g.xres, g.yres);
