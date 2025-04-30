@@ -9,7 +9,7 @@
 #include <GL/glut.h>
 #include "Global.h"
 
-class Circle {
+class Teleportal {
     public:
         float PI;
         float cX;
@@ -17,7 +17,7 @@ class Circle {
         float r;
         int portal_id;
         float circleSegments;
-        Circle() {
+        Teleportal() {
             portal_id = 1;
             PI = 3.14159265358979323846f;
             cX = 100.0f;
@@ -25,18 +25,18 @@ class Circle {
             r = 10.0f;
             circleSegments = 20;
         }
-        Circle(float circleX, float circleY, float rad, int cirSegments) {
+        Teleportal(float circleX, float circleY, float rad, int cirSegments) {
             cX = circleX;
             cY = circleY;
             r = rad;
             circleSegments = cirSegments;
         }
 };
-bool isCircleCollidingWithSquare(Circle circle1[], int size);
+bool isCircleCollidingWithSquare(Teleportal portals[], int size);
 void initSound();
 void cleanupSound();
 //void playSound(ALuint source);
-void carolineDrawCircle(float pos_x, float pos_y);
+void carolineDrawCircle(Teleportal portal[], int isze);
 void carolineEndCredit (void);
 void carolineDisplayWinScreen();
 void carolinePhysics(void);

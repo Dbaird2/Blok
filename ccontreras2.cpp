@@ -97,21 +97,20 @@ void playSound(ALuint alSource)
 #endif //USE_OPENAL_SOUND
 //=========================================================
 
-Circle circle1[2];
-void carolineDrawCircle(float pos_x, float pos_y, Circle circle1[], int array_size) {
-    circle1[1].cX = 300;
+Teleportal portal[2];
+void carolineDrawCircle(Teleportal portal[], int array_size) {
     for (int i = 0; i < array_size; i++) {
         glPushMatrix();
         glColor3f(0.5f, 0.5f, 0.5f);
-        glTranslatef(circle1[i].cX, circle1[i].cY, 0.0f);
+        glTranslatef(portal[i].cX, portal[i].cY, 0.0f);
 
         glBegin(GL_TRIANGLE_FAN);//basically uses a bunch of triangles 
                                  //to make a circle
         glVertex2f(0.0f, 0.0f); // Center of the circle
-        for (int j = 0; j <= circle1[i].circleSegments; ++j) {
-            float angle = 2.0f * circle1[i].PI * float(j) / float(circle1[i].circleSegments);
-            float x = circle1[i].r * cos(angle);
-            float y = circle1[i].r * sin(angle);
+        for (int j = 0; j <= portal[i].circleSegments; ++j) {
+            float angle = 2.0f * portal[i].PI * float(j) / float(portal[i].circleSegments);
+            float x = portal[i].r * cos(angle);
+            float y = portal[i].r * sin(angle);
             glVertex2f(x, y);
             //		cout << "angle " << angle << "x " << x << "y " << y << endl;
         }
@@ -121,23 +120,23 @@ void carolineDrawCircle(float pos_x, float pos_y, Circle circle1[], int array_si
 }
 
 
-bool isCircleCollidingWithSquare(Circle circle1[], int array_size) {
+bool isCircleCollidingWithSquare(Teleportal portal[], int array_size) {
     bool check = false;
     for (int i = 0; i < array_size; i++) {
-        float closestX = max(player.pos[0], min(circle1[i].cX, player.pos[0] + player.width));
-        float closestY = max(player.pos[1], min(circle1[i].cY, player.pos[1] + player.height));
+        float closestX = max(player.pos[0], min(portal[i].cX, player.pos[0] + player.width));
+        float closestY = max(player.pos[1], min(portal[i].cY, player.pos[1] + player.height));
 
-        float dx = circle1[i].cX - closestX;
-        float dy = circle1[i].cY - closestY;
-        int port_val = circle1[i].portal_id;
+        float dx = portal[i].cX - closestX;
+        float dy = portal[i].cY - closestY;
+        int port_val = portal[i].portal_id;
         int save_i = i;
 
-        if ((dx * dx + dy * dy) <= (circle1[i].r * circle1[i].r)) {
+        if ((dx * dx + dy * dy) <= (portal[i].r * portal[i].r)) {
             check = true;
             for (int j = 0; j < array_size; j++) {
-                if (save_i != j && port_val == circle1[j].portal_id) {
-                    player.tempx = circle1[j].cX;
-                    player.tempy = circle1[j].cY + circle1[j].r + 5;
+                if (save_i != j && port_val == portal[j].portal_id) {
+                    player.tempx = portal[j].cX;
+                    player.tempy = portal[j].cY + portal[j].r + player.height;
                     break;
                 }
             }
@@ -175,12 +174,11 @@ void carolineEndCredit (void)
 
 void carolinePhysics(void) {
 	dasonPhysics(CAROLINE_GRID_SIZE, 0, 0, NULL);
-    if (isCircleCollidingWithSquare(circle1, 2)) 
-        cout<< "Hit circle\n";
+    isCircleCollidingWithSquare(portal, 2);
 }
 
 void carolineRender(void) {
-	carolineDrawCircle(g.xres/2, g.yres/2, circle1, 2);
+	carolineDrawCircle(portal, 2);
 	dasonDrawWalls(caroWalls, CAROLINE_GRID_SIZE);
 	
 }
