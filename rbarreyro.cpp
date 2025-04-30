@@ -12,24 +12,20 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <AL/alut.h>
-#define RUSS_GRID_SIZE 4
+#define RUSS_GRID_SIZE 12
 
-
-// Constants & globals
 const int NUM_ENEMIES = 4;
 const int NUM_COINS   = 8;
 const float GOAL_X    = 800.0f;
 const float GOAL_Y    = 250.0f;
 
-static float gAnimTime = 0.0f; // global animation timer
+static float gAnimTime = 0.0f;
 
-// Make globals static to avoid multiple-definition linker errors
 static RB_Entity Russ_goal = {GOAL_X, GOAL_Y, 25, 25, 0.0f, true};
 static std::vector<Enemy> enemies;
 static std::vector<Coin> coins;
 static int collectedCoins = 0;
 
-// End Credit
 void rjEndCredit() {
     Rect title = {0};
     title.bot = 82;
@@ -38,29 +34,31 @@ void rjEndCredit() {
     ggprint8b(&title, 16, 0x00ff0000, "Author: Russell Barreyro");
 }
 
-// Initialize Level: spawn enemies & coins
 void RB_InitializeLevel() {
     collectedCoins = 0;
     enemies.clear();
     coins.clear();
 
-    // Spawn enemies with varied behaviors
     enemies = {
-        {{200, 200, 20, 20, 2.0f, true}, CHASER, 0,0,0, 150.0f},
-        {{600, 100, 20, 20, 2.5f, true}, CHASER, 0,0,0, 200.0f},
-        {{400,300,15,15,0.0f,true}, ORBITER, 400.0f,300.0f, 0.0f, 0.0f},
-        {{700,350,15,15,0.0f,true}, ORBITER, 700.0f,350.0f, 3.14f, 0.0f}
+        {{150, 150, 20, 20, 2.0f, true}, CHASER, 0,0,0, 160.0f},
+        {{650, 120, 20, 20, 2.5f, true}, CHASER, 0,0,0, 190.0f},
+        {{400, 250, 15, 15, 0.0f, true}, ORBITER, 400.0f, 250.0f, 0.0f, 0.0f},
+        {{700, 400, 15, 15, 0.0f, true}, ORBITER, 700.0f, 400.0f, 3.14f, 0.0f}
+    };
+
+    // Maze-based coin placement
+    float mazeCoins[NUM_COINS][2] = {
+        {100, 100}, {180, 220}, {260, 340}, {340, 220},
+        {420, 100}, {500, 220}, {580, 340}, {660, 220}
     };
 
     for (int i = 0; i < NUM_COINS; ++i) {
-        float theta = (2.0f * M_PI / NUM_COINS) * i;
-        float cx = 400.0f + cosf(theta) * 200.0f;
-        float cy = 300.0f + sinf(theta) * 150.0f;
-        coins.push_back({cx, cy, false, cy, 20.0f, 2.0f + i*0.2f, theta, 10});
+        float x = mazeCoins[i][0];
+        float y = mazeCoins[i][1];
+        coins.push_back({x, y, false, y, 20.0f, 2.5f + i * 0.15f, 0.0f, 10});
     }
 }
 
-// Draw utility
 void RB_DrawColoredRect(float x, float y, float w, float h,
         float r, float g, float b) {
     glColor3f(r, g, b);
@@ -75,44 +73,35 @@ void RB_DrawColoredRect(float x, float y, float w, float h,
 Grid russ_grid[RUSS_GRID_SIZE];
 
 int russ_height[RUSS_GRID_SIZE] = {
-    5,
-    5,
-    g.yres / 2,
-    g.yres / 2
+    5, 5, g.yres, g.yres,
+    100, 100, 100, 100,
+    100, 100, 100, 100
 };
 
 int russ_width[RUSS_GRID_SIZE] = {
-    g.xres / 2,
-    g.xres / 2,
-    5,
-    5
+    g.xres, g.xres, 5, 5,
+    5, 5, 100, 100,
+    100, 100, 5, 5
 };
 
 int russxpos[RUSS_GRID_SIZE] = {
-    g.xres / 2,
-    g.xres / 2,
-    5,
-    g.xres - 5
+    0, 0, 0, g.xres - 5,
+    200, 400, 250, 350,
+    450, 550, 300, 500
 };
 
 int russypos[RUSS_GRID_SIZE] = {
-    g.yres - 5,
-    5,
-    g.yres / 2,
-    g.yres / 2
+    g.yres - 5, 0, 0, 0,
+    100, 200, 300, 300,
+    300, 300, 100, 100
 };
 
-
-void russLevel()
-{
+void russLevel() {
     dasonLoadStruct(russ_grid, russ_height, russ_width, russxpos, russypos, RUSS_GRID_SIZE);
     dasonDrawWalls(russ_grid, RUSS_GRID_SIZE);
     dasonPhysics(RUSS_GRID_SIZE, 0, 0, NULL);
 }
 
-
-
-// Collision detection
 bool RB_CheckEntityCollision(const RB_Entity& a,
         const RB_Entity& b) {
     return (a.x < b.x + b.width &&
@@ -121,7 +110,6 @@ bool RB_CheckEntityCollision(const RB_Entity& a,
             a.y + a.height > b.y);
 }
 
-// Update enemy behaviors
 void RB_UpdateEnemies() {
     for (auto& e : enemies) {
         if (!e.base.isActive) continue;
@@ -141,7 +129,6 @@ void RB_UpdateEnemies() {
     }
 }
 
-// Draw enemies
 void RB_DrawEnemies() {
     for (auto& e : enemies) {
         if (!e.base.isActive) continue;
@@ -157,8 +144,7 @@ void RB_DrawEnemies() {
     }
 }
 
-// Update coins (animation)
-void RB_UpdateCoins(vector<Coin> coins) {
+void RB_UpdateCoins(std::vector<Coin>& coins) {
     for (auto& c : coins) {
         if (c.collected) continue;
         c.y = c.baseY + sinf(gAnimTime * c.frequency) * c.amplitude;
@@ -166,8 +152,7 @@ void RB_UpdateCoins(vector<Coin> coins) {
     }
 }
 
-// Draw coins with rotation
-void RB_DrawCoins(vector<Coin> coins) {
+void RB_DrawCoins(std::vector<Coin>& coins) {
     for (auto& c : coins) {
         if (c.collected) continue;
         glPushMatrix();
@@ -184,8 +169,7 @@ void RB_DrawCoins(vector<Coin> coins) {
     }
 }
 
-// Check coin collection
-void RB_CheckCoinCollection(vector<Coin> coins) {
+void RB_CheckCoinCollection(std::vector<Coin>& coins) {
     RB_Entity pb = {
         player.pos[0] - static_cast<float>(player.width) / 2.0f,
         player.pos[1] - static_cast<float>(player.height) / 2.0f,
@@ -204,7 +188,6 @@ void RB_CheckCoinCollection(vector<Coin> coins) {
     }
 }
 
-// Main loop
 void rbarreyroRunGame() {
     if (g.game_state != 5) return;
     static bool init = false;
@@ -221,12 +204,9 @@ void rbarreyroRunGame() {
     RB_UpdateCoins(coins);
     RB_CheckCoinCollection(coins);
 
-    // draw goal
-    RB_DrawColoredRect(
-            Russ_goal.x, Russ_goal.y,
-            Russ_goal.width, Russ_goal.height,
-            0.0f, 1.0f, 0.0f
-            );
+    RB_DrawColoredRect(Russ_goal.x, Russ_goal.y,
+                       Russ_goal.width, Russ_goal.height,
+                       0.0f, 1.0f, 0.0f);
 
     RB_DrawEnemies();
     RB_DrawCoins(coins);
@@ -249,8 +229,9 @@ void rbarreyroRunGame() {
         }
     }
     if (collectedCoins >= NUM_COINS * 10 &&
-            RB_CheckEntityCollision(pb, Russ_goal)) {
+        RB_CheckEntityCollision(pb, Russ_goal)) {
         std::cout << "Victory! Score: " << collectedCoins << std::endl;
         g.game_state = 2;
     }
 }
+

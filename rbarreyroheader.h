@@ -43,9 +43,9 @@ bool RB_CheckEntityCollision(const RB_Entity& a,
 // Updated enemy & coin logic
 void RB_UpdateEnemies();
 void RB_DrawEnemies();
-void RB_UpdateCoins(vector<Coin> coins);
-void RB_DrawCoins(vector<Coin> coins);
-void RB_CheckCoinCollection(vector<Coin> coins);
+void RB_UpdateCoins(std::vector<Coin>& coins);
+void RB_DrawCoins(std::vector<Coin>& coins);
+void RB_CheckCoinCollection(std::vector<Coin>& coins);
 
 // Entity structure
 struct RB_Entity {
