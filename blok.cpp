@@ -55,7 +55,7 @@ MenuBox boxes[MAX_BOXES];
 Player player;
 Image img[3] = {
     "./background.png",
-    "./minecraft_image.png"
+    "./minecraft_image.png",
 	"./winScreen.png"
 };
 void init_opengl(void);
