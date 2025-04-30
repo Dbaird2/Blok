@@ -147,7 +147,7 @@ void dasonTimer(int spawn_y, int spawn_x, int y, int x, float time_out)
     title.bot = y;
     title.left = x;
     title.center = 0;
-    ggprint8b(&title, 0, 0x00ffd700, "Timer %.2fs", time);
+    ggprint8b(&title, 0, 0x00ffd700, "Timer %.1fs", time);
     if (time <= 0) {
         dasonTimerOut(spawn_x, spawn_y);
         t1 = _clock::now();
@@ -308,7 +308,7 @@ void dasonMazeRender()
         g.game_state = 2;
     }
     RB_DrawCoins(dasonCoins);
-    dasonTimer(10, 530, 490, 835, 180.0);
+    dasonTimer(10, 530, 490, 830, 180.0);
 }
 
 void defineBox() 

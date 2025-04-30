@@ -12,7 +12,7 @@
 void initSound();
 void cleanupSound();
 //void playSound(ALuint source);
-void carolineDrawCircle();
+void carolineDrawCircle(float pos_x, float pos_y);
 void carolineEndCredit (void);
 void carolineDisplayWinScreen();
 void carolinePhysics(void);

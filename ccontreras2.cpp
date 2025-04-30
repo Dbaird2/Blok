@@ -118,11 +118,11 @@ class Circle {
 		}
 };
 
-void carolineDrawCircle() {
+void carolineDrawCircle(float pos_x, float pos_y) {
 	glPushMatrix();
 	Circle circle1;
 	glColor3f(0.5f, 0.5f, 0.5f);
-	glTranslatef(g.xres/2, g.yres/2, 0.0f);
+	glTranslatef(pos_x, pos_y, 0.0f);
 
 	glBegin(GL_TRIANGLE_FAN);//basically uses a bunch of triangles 
 							 //to make a circle
@@ -170,7 +170,7 @@ void carolinePhysics(void) {
 }
 
 void carolineRender(void) {
-	carolineDrawCircle();
+	carolineDrawCircle(g.xres/2, g.yres/2);
 	dasonDrawWalls(caroWalls, CAROLINE_GRID_SIZE);
 	
 }
