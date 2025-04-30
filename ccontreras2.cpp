@@ -97,45 +97,53 @@ void playSound(ALuint alSource)
 #endif //USE_OPENAL_SOUND
 //=========================================================
 
-const float PI = 3.14159265358979323846f;
-class Circle {
-	public: 
-		float cX;
-		float cY;
-		float r;
-		float circleSegments;
-		Circle() {
-			cX = 100.0f;
-			cY = 100.0f;
-			r = 10.0f;
-			circleSegments = 20;
-		}
-		Circle(float circleX, float circleY, float rad, int cirSegments) {
-			cX = circleX;
-			cY = circleY;
-			r = rad;
-			circleSegments = cirSegments;
-		}
-};
+Circle circle1[2];
+void carolineDrawCircle(float pos_x, float pos_y, Circle circle1[], int array_size) {
+    circle1[1].cX = 300;
+    for (int i = 0; i < array_size; i++) {
+        glPushMatrix();
+        glColor3f(0.5f, 0.5f, 0.5f);
+        glTranslatef(circle1[i].cX, circle1[i].cY, 0.0f);
 
-void carolineDrawCircle(float pos_x, float pos_y) {
-	glPushMatrix();
-	Circle circle1;
-	glColor3f(0.5f, 0.5f, 0.5f);
-	glTranslatef(pos_x, pos_y, 0.0f);
-
-	glBegin(GL_TRIANGLE_FAN);//basically uses a bunch of triangles 
-							 //to make a circle
-	glVertex2f(circle1.cX, circle1.cY); // Center of the circle
-	for (int i = 0; i <= circle1.circleSegments; ++i) {
-		float angle = 2.0f * PI * float(i) / float(circle1.circleSegments);
-		float x = circle1.r * cos(angle);
-		float y = circle1.r * sin(angle);
-		glVertex2f(circle1.cX/1.0f + x, circle1.cY/1.0f + y);
-//		cout << "angle " << angle << "x " << x << "y " << y << endl;
-	}
+        glBegin(GL_TRIANGLE_FAN);//basically uses a bunch of triangles 
+                                 //to make a circle
+        glVertex2f(0.0f, 0.0f); // Center of the circle
+        for (int j = 0; j <= circle1[i].circleSegments; ++j) {
+            float angle = 2.0f * circle1[i].PI * float(j) / float(circle1[i].circleSegments);
+            float x = circle1[i].r * cos(angle);
+            float y = circle1[i].r * sin(angle);
+            glVertex2f(x, y);
+            //		cout << "angle " << angle << "x " << x << "y " << y << endl;
+        }
 	glEnd();
 	glPopMatrix();
+    }
+}
+
+
+bool isCircleCollidingWithSquare(Circle circle1[], int array_size) {
+    bool check = false;
+    for (int i = 0; i < array_size; i++) {
+        float closestX = max(player.pos[0], min(circle1[i].cX, player.pos[0] + player.width));
+        float closestY = max(player.pos[1], min(circle1[i].cY, player.pos[1] + player.height));
+
+        float dx = circle1[i].cX - closestX;
+        float dy = circle1[i].cY - closestY;
+        int port_val = circle1[i].portal_id;
+        int save_i = i;
+
+        if ((dx * dx + dy * dy) <= (circle1[i].r * circle1[i].r)) {
+            check = true;
+            for (int j = 0; j < array_size; j++) {
+                if (save_i != j && port_val == circle1[j].portal_id) {
+                    player.tempx = circle1[j].cX;
+                    player.tempy = circle1[j].cY + circle1[j].r + 5;
+                    break;
+                }
+            }
+        }
+    }
+    return check;
 }
 
 //===========================================================
@@ -167,10 +175,12 @@ void carolineEndCredit (void)
 
 void carolinePhysics(void) {
 	dasonPhysics(CAROLINE_GRID_SIZE, 0, 0, NULL);
+    if (isCircleCollidingWithSquare(circle1, 2)) 
+        cout<< "Hit circle\n";
 }
 
 void carolineRender(void) {
-	carolineDrawCircle(g.xres/2, g.yres/2);
+	carolineDrawCircle(g.xres/2, g.yres/2, circle1, 2);
 	dasonDrawWalls(caroWalls, CAROLINE_GRID_SIZE);
 	
 }
