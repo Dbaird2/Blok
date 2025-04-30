@@ -242,6 +242,7 @@ void dasonMenuButtonPress(int x, int y)
                 } else if (j == 4) {
                     // RJ
                     g.game_state = 5;
+                    russLevel();
                 } else if (j == 6) {
                     g.game_state = 1;
                     b = 0;

@@ -12,6 +12,8 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <AL/alut.h>
+#define RUSS_GRID_SIZE 4
+
 
 // Constants & globals
 const int NUM_ENEMIES = 4;
@@ -60,19 +62,59 @@ void RB_InitializeLevel() {
 
 // Draw utility
 void RB_DrawColoredRect(float x, float y, float w, float h,
-                        float r, float g, float b) {
+        float r, float g, float b) {
     glColor3f(r, g, b);
     glBegin(GL_QUADS);
-      glVertex2f(x, y);
-      glVertex2f(x + w, y);
-      glVertex2f(x + w, y + h);
-      glVertex2f(x, y + h);
+    glVertex2f(x, y);
+    glVertex2f(x + w, y);
+    glVertex2f(x + w, y + h);
+    glVertex2f(x, y + h);
     glEnd();
 }
 
+Grid russ_grid[RUSS_GRID_SIZE];
+
+int russ_height[RUSS_GRID_SIZE] = {
+    5,
+    5,
+    g.yres / 2,
+    g.yres / 2
+};
+
+int russ_width[RUSS_GRID_SIZE] = {
+    g.xres / 2,
+    g.xres / 2,
+    5,
+    5
+};
+
+int russxpos[RUSS_GRID_SIZE] = {
+    g.xres / 2,
+    g.xres / 2,
+    5,
+    g.xres - 5
+};
+
+int russypos[RUSS_GRID_SIZE] = {
+    g.yres - 5,
+    5,
+    g.yres / 2,
+    g.yres / 2
+};
+
+
+void russLevel()
+{
+    dasonLoadStruct(russ_grid, russ_height, russ_width, russxpos, russypos, RUSS_GRID_SIZE);
+    dasonDrawWalls(russ_grid, RUSS_GRID_SIZE);
+    dasonPhysics(RUSS_GRID_SIZE, 0, 0, NULL);
+}
+
+
+
 // Collision detection
 bool RB_CheckEntityCollision(const RB_Entity& a,
-                             const RB_Entity& b) {
+        const RB_Entity& b) {
     return (a.x < b.x + b.width &&
             a.x + a.width > b.x &&
             a.y < b.y + b.height &&
@@ -105,12 +147,12 @@ void RB_DrawEnemies() {
         if (!e.base.isActive) continue;
         if (e.type == CHASER) {
             RB_DrawColoredRect(e.base.x, e.base.y,
-                               e.base.width, e.base.height,
-                               1.0f, 0.0f, 0.0f);
+                    e.base.width, e.base.height,
+                    1.0f, 0.0f, 0.0f);
         } else {
             RB_DrawColoredRect(e.base.x, e.base.y,
-                               e.base.width, e.base.height,
-                               0.5f, 0.0f, 0.5f);
+                    e.base.width, e.base.height,
+                    0.5f, 0.0f, 0.5f);
         }
     }
 }
@@ -133,10 +175,10 @@ void RB_DrawCoins(vector<Coin> coins) {
         glRotatef(c.angle * 180.0f / M_PI, 0.0f, 0.0f, 1.0f);
         glColor3f(1.0f, 0.85f, 0.0f);
         glBegin(GL_TRIANGLE_FAN);
-          for (int a = 0; a < 360; a += 30) {
-              float rad = a * M_PI / 180.0f;
-              glVertex2f(cosf(rad) * 10.0f, sinf(rad) * 10.0f);
-          }
+        for (int a = 0; a < 360; a += 30) {
+            float rad = a * M_PI / 180.0f;
+            glVertex2f(cosf(rad) * 10.0f, sinf(rad) * 10.0f);
+        }
         glEnd();
         glPopMatrix();
     }
@@ -181,10 +223,10 @@ void rbarreyroRunGame() {
 
     // draw goal
     RB_DrawColoredRect(
-        Russ_goal.x, Russ_goal.y,
-        Russ_goal.width, Russ_goal.height,
-        0.0f, 1.0f, 0.0f
-    );
+            Russ_goal.x, Russ_goal.y,
+            Russ_goal.width, Russ_goal.height,
+            0.0f, 1.0f, 0.0f
+            );
 
     RB_DrawEnemies();
     RB_DrawCoins(coins);
@@ -207,7 +249,7 @@ void rbarreyroRunGame() {
         }
     }
     if (collectedCoins >= NUM_COINS * 10 &&
-        RB_CheckEntityCollision(pb, Russ_goal)) {
+            RB_CheckEntityCollision(pb, Russ_goal)) {
         std::cout << "Victory! Score: " << collectedCoins << std::endl;
         g.game_state = 2;
     }

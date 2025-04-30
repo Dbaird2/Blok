@@ -32,7 +32,7 @@ struct Coin;
 // Core game loop
 void rbarreyroRunGame();
 void rjEndCredit();
-
+void russLevel();
 // Level setup & draw utilities
 void RB_InitializeLevel();
 void RB_DrawColoredRect(float x, float y, float w, float h,
