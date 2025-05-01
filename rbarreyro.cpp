@@ -12,7 +12,7 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <AL/alut.h>
-#define RUSS_GRID_SIZE 12
+#define RUSS_GRID_SIZE 8
 
 const int NUM_ENEMIES = 4;
 const int NUM_COINS   = 8;
@@ -73,27 +73,23 @@ void RB_DrawColoredRect(float x, float y, float w, float h,
 Grid russ_grid[RUSS_GRID_SIZE];
 
 int russ_height[RUSS_GRID_SIZE] = {
-    5, 5, g.yres, g.yres,
-    100, 100, 100, 100,
-    100, 100, 100, 100
+    5, 5, 100, 100,
+    5, 5, 100, 100
 };
 
 int russ_width[RUSS_GRID_SIZE] = {
-    g.xres, g.xres, 5, 5,
-    5, 5, 100, 100,
-    100, 100, 5, 5
+    100, 100, 5, 5,
+    g.xres, g.xres, 5, 5
 };
 
 int russxpos[RUSS_GRID_SIZE] = {
-    0, 0, 0, g.xres - 5,
-    200, 400, 250, 350,
-    450, 550, 300, 500
+    250, 350, 250, 350,
+    0, 0, 0, g.xres - 5
 };
 
 int russypos[RUSS_GRID_SIZE] = {
-    g.yres - 5, 0, 0, 0,
-    100, 200, 300, 300,
-    300, 300, 100, 100
+    300, 300, 200, 200,
+    g.yres - 5, 0, 0, 0
 };
 
 void russLevel() {
@@ -196,6 +192,7 @@ void rbarreyroRunGame() {
         player.tempy = 250;
         RB_InitializeLevel();
         init = true;
+
     }
 
     gAnimTime += 0.016f;
@@ -203,10 +200,11 @@ void rbarreyroRunGame() {
     RB_UpdateEnemies();
     RB_UpdateCoins(coins);
     RB_CheckCoinCollection(coins);
+    russLevel();
 
     RB_DrawColoredRect(Russ_goal.x, Russ_goal.y,
-                       Russ_goal.width, Russ_goal.height,
-                       0.0f, 1.0f, 0.0f);
+            Russ_goal.width, Russ_goal.height,
+            0.0f, 1.0f, 0.0f);
 
     RB_DrawEnemies();
     RB_DrawCoins(coins);
@@ -229,9 +227,17 @@ void rbarreyroRunGame() {
         }
     }
     if (collectedCoins >= NUM_COINS * 10 &&
-        RB_CheckEntityCollision(pb, Russ_goal)) {
+            RB_CheckEntityCollision(pb, Russ_goal)) {
         std::cout << "Victory! Score: " << collectedCoins << std::endl;
         g.game_state = 2;
     }
 }
 
+void check_quit(XEvent *e){
+    if (e->type == KeyPress) {
+        KeySym key = XLookupKeysym(&e->xkey, 0);
+        if (key == XK_q && g.game_state == 5) {
+            g.game_state = 2;
+        }
+    }
+}
