@@ -8,6 +8,8 @@
 #include "fonts.h"
 #include "dbairdheader.h"
 #include "rbarreyroheader.h"
+#include "caroline.h"
+#include "cmorenoyanesheader.h"
 #include "Global.h"
 #include <AL/al.h>
 #include <AL/alc.h>
@@ -34,11 +36,23 @@ void rjEndCredit() {
     ggprint8b(&title, 16, 0x00ff0000, "Author: Russell Barreyro");
 }
 
+void DrawDeathCounter(int DeathCount) {
+    Rect r;
+    r.bot = 50;        
+    r.left = 100;       
+    r.center = 0;
+    ggprint8b(&r, 16, 0xff0000ff, "Deaths:");
+    ggprint8b(&r, 16, 0xff0000ff, "%d", DeathCount);
+}
+
+int Deathcounter = 0;
+
 void RB_InitializeLevel() {
     collectedCoins = 0;
     enemies.clear();
     coins.clear();
-
+    DrawDeathCounter(Deathcounter);
+    
     enemies = {
         {{150, 150, 20, 20, 2.0f, true}, CHASER, 0,0,0, 160.0f},
         {{650, 120, 20, 20, 2.5f, true}, CHASER, 0,0,0, 190.0f},
@@ -46,7 +60,7 @@ void RB_InitializeLevel() {
         {{700, 400, 15, 15, 0.0f, true}, ORBITER, 700.0f, 400.0f, 3.14f, 0.0f}
     };
 
-    // Maze-based coin placement
+    // coin placement
     float mazeCoins[NUM_COINS][2] = {
         {100, 100}, {180, 220}, {260, 340}, {340, 220},
         {420, 100}, {500, 220}, {580, 340}, {660, 220}
@@ -104,6 +118,8 @@ bool RB_CheckEntityCollision(const RB_Entity& a,
             a.x + a.width > b.x &&
             a.y < b.y + b.height &&
             a.y + a.height > b.y);
+
+        Deathcounter++;
 }
 
 void RB_UpdateEnemies() {
@@ -241,3 +257,4 @@ void check_quit(XEvent *e){
         }
     }
 }
+
