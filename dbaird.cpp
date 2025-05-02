@@ -105,6 +105,16 @@ int growing_width[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5,5};
 int growing_x[10] = {40, 350, 110, 200, 320, 440, 160, 230, 410, 200};
 int growing_y[10] = {40, 15, 80, 300, 220, 340, 60, 450, 250, 200};
 
+/* ANIMATED INTRO VARIABLES/OBJECTS */
+#define INTRO_GRID_SIZE 6
+Entity intro_goal = {360, 490, 50, 15, 0, 0};
+int intro_height[INTRO_GRID_SIZE] = {5, 5, 250, 250};
+int intro_width[INTRO_GRID_SIZE] = {5, 5, 500, 500};
+int intro_x[INTRO_GRID_SIZE] = {5, 5, 250, 250};
+int intro_y[INTRO_GRID_SIZE] = {5, 725, 250, 250};
+
+
+
 using _clock        = std::chrono::steady_clock;
 using _elapsed      = std::chrono::duration<double>;
 using _time         = std::chrono::time_point<_clock, _elapsed>;
@@ -188,8 +198,10 @@ int b = 0;
 void init_dasonMazePlayer();
 void dasonMenuButtonPress(int x, int y) 
 {
+    if (g.game_state == 0) {
+
     /* Start/Credits button Collision Detection */
-    if (g.game_state == 1) {
+    } else if (g.game_state == 1) {
         for (int j = 0; j < g.menu_box_amt[g.game_state-1]; j++) {
             MenuBox *c = &boxes[j];
             // Colision detection
@@ -797,5 +809,6 @@ void processMovement()
     }
 }
 /*----------------------------------------------------*/
+/* START OF ANIMATED INTRO */
 
 
