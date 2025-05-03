@@ -42,5 +42,8 @@ void carolineDisplayWinScreen();
 void carolinePhysics(void);
 void carolineRender(void);
 void carolineLevel(void);
+void initIntroLevel();
+void introRender();
+void introPhysics();
 
 #endif

@@ -106,9 +106,12 @@ int russypos[RUSS_GRID_SIZE] = {
     g.yres - 5, 0, 0, 0
 };
 
+<<<<<<< HEAD
 /*void russLevel() {
     dasonLoadStruct(russ_grid, russ_height, russ_width, russxpos, russypos, RUSS_GRID_SIZE);
 }*/
+=======
+>>>>>>> 5e39da2 (animated into)
 
 void russLevel()
 {

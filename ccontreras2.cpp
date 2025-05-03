@@ -13,6 +13,9 @@
 #include "caroline.h"
 #include <vector>
 #include "dbairdheader.h"
+#include "rbarreyroheader.h"
+#include "stoledoheader.h"
+#include "cmorenoyanesheader.h"
 using namespace std;
 
 //GOALS: Make walls, fix sound in code, and finish win screen 
@@ -152,6 +155,7 @@ bool isCircleCollidingWithSquare(Teleportal portal[], int array_size) {
 // the player beats all levels
 //===========================================================
 void carolineDisplayWinScreen() {
+	/*
 	ren.backgroundImage = &img[2];
 	glGenTextures(1, &ren.backgroundTexture);
 	int w = ren.backgroundImage->width;
@@ -162,6 +166,8 @@ void carolineDisplayWinScreen() {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
 			GL_RGB, GL_UNSIGNED_BYTE, ren.backgroundImage->data);
 	//playSound(alSource);
+	//
+	*/
 }
 
 //below is my function for my end credit
@@ -190,4 +196,151 @@ void carolineLevel(void) {
 			caro_x, caro_y, CAROLINE_GRID_SIZE);
 	player.width = 45;
 	player.height = 15;
+}
+/*----------------------------------------------------*/
+/* START OF ANIMATED INTRO */
+#define NUM_COINS 3
+static vector<Coin> intro_coins;
+int collected_coins;
+int coin_score;
+Entity intro_enemies[8] = {
+    {700.0, 300.0, 20.0, 20.0, 5.0, 1},
+    {120.0, 200.0, 20.0, 20.0, 5.0, -1},
+    {200.0, 180.0, 20.0, 20.0, 5.0, 1},
+    {400.0, 50.0, 20.0, 20.0, 5.0, -1},
+    {750.0, 400.0, 20.0, 20.0, 5.0, -1},
+    {300.0, 150.0, 20.0, 20.0, 5.0, 1},
+    {765.0, 350.0, 20.0, 20.0, 5.0, 1},
+    {420.0, 35.0, 20.0, 20.0, 5.0, -1},
+};
+#define INTRO_GRID_SIZE 6
+Entity intro_goal = {750, 450, (float)player.width, (float)player.height, 0, 0};
+Grid intro_grid[INTRO_GRID_SIZE];
+int intro_height[INTRO_GRID_SIZE] = {5, 5, 250, 250};
+int intro_width[INTRO_GRID_SIZE] = {450, 450, 5, 5};
+int intro_x[INTRO_GRID_SIZE] = {450, 450, 5, 895};
+int intro_y[INTRO_GRID_SIZE] = {5, 495, 250, 250};
+
+void initIntroLevel()
+{
+    intro_coins.clear();
+    coin_score = 0;
+    collected_coins = 0;
+    float cx[3] = {420.0f, 150.0f, 765.0f};
+    float cy[3] = {35.0f, 250.0f,350.0f};
+    for (int i = 0; i < NUM_COINS; i++) {
+        float theta= (2.0f * M_PI / 8) * i;
+        intro_coins.push_back({cx[i], cy[i], false, cy[i],
+                20.0f, 2.0f + i * 0.2f, theta, 10});
+    }
+    player.tempx = 40;
+    player.tempy = 40;
+    dasonLoadStruct(intro_grid, intro_height, intro_width,
+            intro_x, intro_y, INTRO_GRID_SIZE);
+
+}
+
+void introRender()
+{
+    for (int i = 0; i < 8; i++)
+        SeanDrawRect(intro_enemies[i].x, intro_enemies[i].y,
+                intro_enemies[i].width, intro_enemies[i].height,
+                1.0f, 0.0f, 0.0f);
+
+    SeanDrawRect(intro_goal.x, intro_goal.y,
+            intro_goal.width, intro_goal.height, 0, 1, 0);
+
+    dasonDrawWalls(intro_grid, INTRO_GRID_SIZE);
+    renderDeathCount();
+    RB_DrawCoins(intro_coins);
+    dasonTimer(10, 530, 490, 830, 120.0);
+
+    g.animationTime += 0.3f;
+    Rect r;
+    r.bot = g.yres/2 + sin(g.animationTime) * 10;
+    r.left = g.xres/2 + cos(g.animationTime) * 10;
+    r.center = 0 ;
+    ggprint8b(&r, 20, 0xFF0000, "P R E S S 'F' T O S T A R T");
+
+}
+int intro_lower[2] = {55, 250};
+int intro_upper[2] = {215, 350};
+void introPhysics()
+{
+
+    //coin_score = RB_CheckCoinCollection(intro_coins, coin_score);
+    collected_coins = coin_score / 10;
+    SeanEnemiesVertical(0, 1, 330, 270, intro_enemies);
+    SeanEnemiesVertical(1, 2, 270, 150, intro_enemies);
+    SeanEnemiesVertical(2, 3, 220, 140, intro_enemies);
+    SeanEnemiesVertical(3, 4, 100, 5, intro_enemies);
+    SeanEnemiesHorizontal(4, 5, 1400, 500, intro_enemies);
+    SeanEnemiesHorizontal(5, 6, 600, 200, intro_enemies);
+    SeanEnemiesHorizontal(6, 7, 1530, 715, intro_enemies);
+    SeanEnemiesHorizontal(7, 8, 840, 370, intro_enemies);
+    for (int i = 0; i < 4; i++) {
+        Player *p = &player;
+        int x_offset = p->width;
+        int y_offset = p->height;
+        int box_top = intro_enemies[i].y + intro_enemies[i].height + 5;
+        int box_bot = intro_enemies[i].y - intro_enemies[i].height - 5;
+        int box_left = intro_enemies[i].x - intro_enemies[i].width - 5;
+        int box_right = intro_enemies[i].x + intro_enemies[i].width + 5;
+
+        if ((p->pos[1] <= box_top + y_offset)
+                && (p->pos[1] >= box_bot - y_offset)
+                && (p->pos[0] >= box_left - x_offset)
+                && (p->pos[0] <= box_right + x_offset)) {
+            if (p->pos[1] >= box_top - y_offset/4) {
+                p->tempy += 10;
+            }
+            else if (p->pos[1] <= box_bot+y_offset/10) {
+                p->tempy -= 10;
+            }
+            else if (p->pos[0] >= box_right) {
+                p->tempx += 10;
+            }
+            else if (p->pos[0] <= box_left) {
+                p->tempx -= 10;
+            }
+            if (SeanCheckCollision(intro_enemies[i])) {
+                dasonPlayerDeath(40, 40);
+                initIntroLevel();
+            }
+        }
+    }
+
+    if (SeanCheckCollision(intro_goal) &&
+            collected_coins >= NUM_COINS) {
+        player.death_count = 0;
+        initIntroLevel();
+    }
+    if (collected_coins < NUM_COINS) {
+        // COINS NOT COLLECTED
+
+        if (player.tempx < intro_coins[collected_coins].x) {
+            player.tempx += 5;
+        } else if (player.tempx > intro_coins[collected_coins].x) {
+            player.tempx -= 5;
+        }
+
+        if (player.tempy > intro_coins[collected_coins].y) {
+            player.tempy -= 5;
+        } else if (player.tempy < intro_coins[collected_coins].y) {
+            player.tempy += 5;
+        }
+
+    } else {
+        if (player.tempx < intro_goal.x) {
+            player.tempx += 5;
+        } else if (player.tempx > intro_goal.x){
+            player.tempx -= 5;
+        }
+
+        if (player.tempy < intro_goal.y) {
+            player.tempy += 5;
+        } else if (player.tempy > intro_goal.y) {
+            player.tempy -= 5;
+        }
+    }
 }
