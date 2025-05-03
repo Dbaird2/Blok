@@ -165,11 +165,7 @@ int main()
 {
     init_opengl();
     int done = 0;
-<<<<<<< HEAD
-    //initIntroLevel();
-=======
 	initIntroLevel();
->>>>>>> 5e39da2 (animated into)
     //main game loop
     while (!done) {
         //look for external events such as keyboard, mouse.
@@ -332,17 +328,14 @@ void init_opengl(void)
 
 void physics(void)
 {
-<<<<<<< HEAD
     processMovement();
     if (g.game_state == 0) {
         dasonPhysics(4, 0, 0, NULL);
     }
-=======
 	if (g.game_state == 0) {
 		introPhysics();
         dasonPhysics(58, 0, 0, NULL);
 	}
->>>>>>> 5e39da2 (animated into)
 	if (g.game_state == 3)
 		carlosPhysics();
     if (g.game_state == 6) 
@@ -363,11 +356,7 @@ void render()
     ggprint8b(&r, 16, 0x00ffff00, "vsync: %s", ((g.vsync)?"ON":"OFF"));
 
     if (g.game_state == 0) {
-<<<<<<< HEAD
-       //introRender(); 
-=======
        introRender(); 
->>>>>>> 5e39da2 (animated into)
     }
     // DRAW ALL BOXES
     if ((g.game_state == 1) || (g.game_state == 2)) {
@@ -392,11 +381,8 @@ void render()
         //carolineRender();
         //carolineDisplayWinScreen();
     }
-<<<<<<< HEAD
     if (g.game_state != 2 || g.game_state != 1)  {
-=======
     if (g.game_state > 2 || g.game_state == 0)  {
->>>>>>> 5e39da2 (animated into)
         //dasonTimer(490, 790, 180.0);
         drawPlayerBox(0);
 #ifdef MAP_HELP
@@ -435,5 +421,6 @@ void render()
     if (g.instructions == 1) {
         renderInstructions();
     }
+}
 }
 

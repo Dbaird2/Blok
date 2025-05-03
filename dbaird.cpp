@@ -107,11 +107,6 @@ int growing_width[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5,5};
 int growing_x[10] = {40, 350, 110, 200, 320, 440, 160, 230, 410, 200};
 int growing_y[10] = {40, 15, 80, 300, 220, 340, 60, 450, 250, 200};
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 5e39da2 (animated into)
 
 using _clock        = std::chrono::steady_clock;
 using _elapsed      = std::chrono::duration<double>;

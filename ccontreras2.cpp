@@ -201,8 +201,8 @@ void carolineLevel(void) {
 /* START OF ANIMATED INTRO */
 #define NUM_COINS 3
 static vector<Coin> intro_coins;
-int collected_coins;
-int coin_score;
+int coins_collected;
+int coins_score;
 Entity intro_enemies[8] = {
     {700.0, 300.0, 20.0, 20.0, 5.0, 1},
     {120.0, 200.0, 20.0, 20.0, 5.0, -1},
@@ -224,8 +224,8 @@ int intro_y[INTRO_GRID_SIZE] = {5, 495, 250, 250};
 void initIntroLevel()
 {
     intro_coins.clear();
-    coin_score = 0;
-    collected_coins = 0;
+    coins_score = 0;
+    coins_collected = 0;
     float cx[3] = {420.0f, 150.0f, 765.0f};
     float cy[3] = {35.0f, 250.0f,350.0f};
     for (int i = 0; i < NUM_COINS; i++) {
@@ -268,17 +268,17 @@ int intro_upper[2] = {215, 350};
 void introPhysics()
 {
 
-    //coin_score = RB_CheckCoinCollection(intro_coins, coin_score);
-    collected_coins = coin_score / 10;
+    coins_score = RB_CheckCoinCollection(intro_coins, coins_score);
+    coins_collected = coins_score / 10;
     SeanEnemiesVertical(0, 1, 330, 270, intro_enemies);
     SeanEnemiesVertical(1, 2, 270, 150, intro_enemies);
-    SeanEnemiesVertical(2, 3, 220, 140, intro_enemies);
-    SeanEnemiesVertical(3, 4, 100, 5, intro_enemies);
+    SeanEnemiesVertical(2, 3, 230, 140, intro_enemies);
+    SeanEnemiesVertical(3, 4, 110, 5, intro_enemies);
     SeanEnemiesHorizontal(4, 5, 1400, 500, intro_enemies);
     SeanEnemiesHorizontal(5, 6, 600, 200, intro_enemies);
     SeanEnemiesHorizontal(6, 7, 1530, 715, intro_enemies);
     SeanEnemiesHorizontal(7, 8, 840, 370, intro_enemies);
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 8; i++) {
         Player *p = &player;
         int x_offset = p->width;
         int y_offset = p->height;
@@ -311,22 +311,22 @@ void introPhysics()
     }
 
     if (SeanCheckCollision(intro_goal) &&
-            collected_coins >= NUM_COINS) {
+            coins_collected >= NUM_COINS) {
         player.death_count = 0;
         initIntroLevel();
     }
-    if (collected_coins < NUM_COINS) {
+    if (coins_collected < NUM_COINS) {
         // COINS NOT COLLECTED
 
-        if (player.tempx < intro_coins[collected_coins].x) {
+        if (player.tempx < intro_coins[coins_collected].x) {
             player.tempx += 5;
-        } else if (player.tempx > intro_coins[collected_coins].x) {
+        } else if (player.tempx > intro_coins[coins_collected].x) {
             player.tempx -= 5;
         }
 
-        if (player.tempy > intro_coins[collected_coins].y) {
+        if (player.tempy > intro_coins[coins_collected].y) {
             player.tempy -= 5;
-        } else if (player.tempy < intro_coins[collected_coins].y) {
+        } else if (player.tempy < intro_coins[coins_collected].y) {
             player.tempy += 5;
         }
 

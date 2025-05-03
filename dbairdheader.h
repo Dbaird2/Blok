@@ -35,10 +35,7 @@ void dasonPhysics(int n, int l, int check, Grid grid[]);
 void dasonMazeRender();
 void dasonTimer(int spawn_y, int spawn_x, int y, int x, float time_out);
 void dasonPlayerDeath(int x_spawn, int y_spawn);
-<<<<<<< HEAD
 void dasonKeyChecks();
-=======
 void renderDeathCount();
 
->>>>>>> 5e39da2 (animated into)
 #endif
