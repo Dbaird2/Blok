@@ -204,14 +204,14 @@ static vector<Coin> intro_coins;
 int coins_collected;
 int coins_score;
 Entity intro_enemies[8] = {
-    {700.0, 300.0, 20.0, 20.0, 5.0, 1},
-    {120.0, 200.0, 20.0, 20.0, 5.0, -1},
-    {200.0, 180.0, 20.0, 20.0, 5.0, 1},
-    {400.0, 50.0, 20.0, 20.0, 5.0, -1},
-    {750.0, 400.0, 20.0, 20.0, 5.0, -1},
-    {300.0, 150.0, 20.0, 20.0, 5.0, 1},
-    {765.0, 350.0, 20.0, 20.0, 5.0, 1},
-    {420.0, 35.0, 20.0, 20.0, 5.0, -1},
+    {700.0, 300.0, 20.0, 20.0, 7.0, 1},
+    {120.0, 250.0, 20.0, 20.0, 7.0, -1},
+    {200.0, 180.0, 20.0, 20.0, 7.0, 1},
+    {400.0, 50.0, 20.0, 20.0, 7.0, -1},
+    {750.0, 400.0, 20.0, 20.0, 7.0, -1},
+    {300.0, 150.0, 20.0, 20.0, 7.0, 1},
+    {765.0, 350.0, 20.0, 20.0, 7.0, 1},
+    {420.0, 35.0, 20.0, 20.0, 7.0, -1},
 };
 #define INTRO_GRID_SIZE 6
 Entity intro_goal = {750, 450, (float)player.width, (float)player.height, 0, 0};
@@ -260,7 +260,7 @@ void introRender()
     r.bot = g.yres/2 + sin(g.animationTime) * 10;
     r.left = g.xres/2 + cos(g.animationTime) * 10;
     r.center = 0 ;
-    ggprint8b(&r, 20, 0xFF0000, "P R E S S 'F' T O S T A R T");
+    ggprint8b(&r, 20, 0xFF0000, "P R E S S ' F ' T O S T A R T");
 
 }
 int intro_lower[2] = {55, 250};
@@ -271,7 +271,7 @@ void introPhysics()
     coins_score = RB_CheckCoinCollection(intro_coins, coins_score);
     coins_collected = coins_score / 10;
     SeanEnemiesVertical(0, 1, 330, 270, intro_enemies);
-    SeanEnemiesVertical(1, 2, 270, 150, intro_enemies);
+    SeanEnemiesVertical(1, 2, 285, 150, intro_enemies);
     SeanEnemiesVertical(2, 3, 230, 140, intro_enemies);
     SeanEnemiesVertical(3, 4, 110, 5, intro_enemies);
     SeanEnemiesHorizontal(4, 5, 1400, 500, intro_enemies);
