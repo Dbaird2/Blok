@@ -129,7 +129,7 @@ class Global {
             credit = 0;
             instructions = 0;
             vsync = 1;
-            game_state = 1;
+            game_state = 0;
             grow_animation = 0.0f;
             animationTime = 0.0f;
             bounceHeight = 0.5;

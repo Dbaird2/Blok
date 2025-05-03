@@ -95,8 +95,10 @@ int dason_y[DASON_GRID_SIZE] = {
     210, 245, 345, 415, 450, 255, /**/
     415, 415, 415, 415, 415, 415, 415};
 // Vertical: H:250 x:5 y:260
+#define NUM_COINS 3
 static vector<Coin> dasonCoins;
-int dasonCollectedCoins = 0;
+int collected_coins;
+int coin_score;
 /*---------------------------------------------------------------------------*/
 
 //Grid growing_box[10];
@@ -105,13 +107,6 @@ int growing_width[10] = {5, 5, 5, 5, 5, 5, 5, 5, 5,5};
 int growing_x[10] = {40, 350, 110, 200, 320, 440, 160, 230, 410, 200};
 int growing_y[10] = {40, 15, 80, 300, 220, 340, 60, 450, 250, 200};
 
-/* ANIMATED INTRO VARIABLES/OBJECTS */
-#define INTRO_GRID_SIZE 6
-Entity intro_goal = {360, 490, 50, 15, 0, 0};
-int intro_height[INTRO_GRID_SIZE] = {5, 5, 250, 250};
-int intro_width[INTRO_GRID_SIZE] = {5, 5, 500, 500};
-int intro_x[INTRO_GRID_SIZE] = {5, 5, 250, 250};
-int intro_y[INTRO_GRID_SIZE] = {5, 725, 250, 250};
 
 
 
@@ -130,11 +125,14 @@ void getRandomColors(vector<vector<double>>& vec)
     srand(time(NULL));
     for (auto& row: vec) {
         // Red
-        row[0] = (double)rand()/(double)RAND_MAX*1.0f;
+        //row[0] = (double)rand()/(double)RAND_MAX*1.0f;
+        row[0] = 1.0f;
         // Green
-        row[1] = (double)rand()/(double)RAND_MAX*1.0f;
+        //row[1] = (double)rand()/(double)RAND_MAX*1.0f;
+        row[1] = 0.0f;
         // Blue
-        row[2] = (double)rand()/(double)RAND_MAX*1.0f;
+        //row[2] = (double)rand()/(double)RAND_MAX*1.0f;
+        row[2] = 0.0f;
     }
 }
 
@@ -160,15 +158,13 @@ void dasonTimer(int spawn_y, int spawn_x, int y, int x, float time_out)
     title.center = 0;
     ggprint8b(&title, 0, 0x00ffd700, "Timer %.1fs", time);
     if (time <= 0) {
-        dasonTimerOut(spawn_x, spawn_y);
+        dasonTimerOut(spawn_y, spawn_x);
         t1 = _clock::now();
     }
 }
 
 void dasonPlayerDeath(int x_spawn, int y_spawn)
 {
-    player.tempx = x_spawn;
-    player.tempy = y_spawn;
     player.death_count++;
     player.dead = 1;
 
@@ -200,7 +196,7 @@ void dasonMenuButtonPress(int x, int y)
 {
     if (g.game_state == 0) {
 
-    /* Start/Credits button Collision Detection */
+        /* Start/Credits button Collision Detection */
     } else if (g.game_state == 1) {
         for (int j = 0; j < g.menu_box_amt[g.game_state-1]; j++) {
             MenuBox *c = &boxes[j];
@@ -238,12 +234,12 @@ void dasonMenuButtonPress(int x, int y)
                 if (j == 0) {
                     // CAROLINE
                     g.game_state = 7;
-                	carolineLevel();
-					//carolineDisplayWinScreen();
-				} else if (j == 1) {
+                    carolineLevel();
+                    //carolineDisplayWinScreen();
+                } else if (j == 1) {
                     // SEAN
                     g.game_state = 4;
-                     seanLevel();;
+                    seanLevel();;
                 } else if (j == 2) {
                     // CARLOS
                     g.game_state = 3;
@@ -279,6 +275,7 @@ void renderDeathCount()
 
 void init_dasonMazePlayer() 
 {
+    dasonCoins.clear();
     t1 = _clock::now();
     getRandomColors(color_vector);
     /* GROWING BOX ENEMIES */
@@ -287,11 +284,11 @@ void init_dasonMazePlayer()
     /* WALLS */
     dasonLoadStruct(dason_grid, dason_height, dason_width, 
             dason_x, dason_y, DASON_GRID_SIZE);
-    for (int i = 0; i < 8; i++) {
+    float cx[3] = {220.0f, 265.0f, 150.0f};
+    float cy[3] = {25.0f, 350.0f, 250.0f};
+    for (int i = 0; i < NUM_COINS; i++) {
         float theta= (2.0f * M_PI / 8) * i;
-        float cx = 400.0f + cosf(theta) * 200.0f;
-        float cy = 300.0f + sinf(theta) * 150.0f;
-        dasonCoins.push_back({cx, cy, false, cy, 
+        dasonCoins.push_back({cx[i], cy[i], false, cy[i], 
                 20.0f, 2.0f + i * 0.2f, theta, 10});
     }
     // portal id, PI, cX, cY, r, segments;
@@ -309,7 +306,7 @@ void init_dasonMazePlayer()
     portals[3].cY = 20; 
     portals[2].portal_id = 2; 
 
-    
+
 
     player.tempx = 530;
     player.tempy = 10;
@@ -331,15 +328,8 @@ void dasonMazeRender()
     dasonDrawWalls(dason_grid, DASON_GRID_SIZE);
     carolineDrawCircle(portals, 4);
     renderDeathCount(); 
-    if (g.key_states[XK_q]) {
-        // Part of Algorithm library
-        // It will reset all of walls back to Constructor values
-        fill(walls, walls + 100, Wall());
-        player.death_count = 0;
-        g.game_state = 2;
-    }
     RB_DrawCoins(dasonCoins);
-    dasonTimer(10, 530, 490, 830, 180.0);
+    dasonTimer(10, 530, 490, 830, 240.0);
 }
 
 void defineBox() 
@@ -458,12 +448,14 @@ void growingBoxPhysics(int size, Grid grid[])
                 && (p->pos[0] <= box_left + x_offset) 
                 && (p->pos[0] >= box_right - x_offset)) {
             dasonPlayerDeath(530, 10);
+            init_dasonMazePlayer();
         }
         if ((p->pos[1] <= box_top + y_offset)
                 && (p->pos[1] >= box_bot - y_offset)
                 && (p->pos[0] >= box_left - x_offset) 
                 && (p->pos[0] <= box_right + x_offset)) {
             dasonPlayerDeath(530, 10);
+            init_dasonMazePlayer();
         }
     }
 }
@@ -484,15 +476,19 @@ void dasonPhysics(int wall_size, int growing_size,
         for (int i = 0; i < enemy_size; i++) {
             if (SeanCheckCollision(dason_enemies[i])) {
                 dasonPlayerDeath(530, 10);
+                init_dasonMazePlayer();
             }
         }
-        if (SeanCheckCollision(dason_goal)) {
+        coin_score = RB_CheckCoinCollection(dasonCoins, coin_score);
+        collected_coins = coin_score;
+
+        if (SeanCheckCollision(dason_goal) &&
+                collected_coins >= NUM_COINS * 10 ) {
             fill(walls, walls + 100, Wall());
             player.death_count = 0;
             g.game_state = 2;
         }
         RB_UpdateCoins(dasonCoins);
-        RB_CheckCoinCollection(dasonCoins);
         isCircleCollidingWithSquare(portals, 4);
     }
 
@@ -780,8 +776,24 @@ void handleKeyRelease(XKeyEvent *event)
         g.key_states[keysym] = false;
 }
 
+void dasonKeyChecks () 
+{
+    if (g.key_states[XK_q]) {
+        // Part of Algorithm library
+        // It will reset all of walls back to Constructor values
+        fill(walls, walls + 100, Wall());
+        player.death_count = 0;
+        g.game_state = 2;
+    }
+    if (g.key_states[XK_f]) {
+        g.game_state = 1;
+    }
+
+}
+
 void processMovement() 
 {
+
     if (g.game_state > 2) {
         if ((g.key_states[XK_w] || g.key_states[XK_s]
                     || g.key_states[XK_a] || g.key_states[XK_d])
@@ -808,7 +820,3 @@ void processMovement()
             }
     }
 }
-/*----------------------------------------------------*/
-/* START OF ANIMATED INTRO */
-
-

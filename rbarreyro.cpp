@@ -106,16 +106,14 @@ int russypos[RUSS_GRID_SIZE] = {
     g.yres - 5, 0, 0, 0
 };
 
-<<<<<<< HEAD
-void russLevel() {
+/*void russLevel() {
     dasonLoadStruct(russ_grid, russ_height, russ_width, russxpos, russypos, RUSS_GRID_SIZE);
-=======
+}*/
 
 void russLevel()
 {
     dasonLoadStruct(russ_grid, russ_height, russ_width, 
             russxpos, russypos, RUSS_GRID_SIZE);
->>>>>>> d0c8382 (changed line size for knr)
     dasonDrawWalls(russ_grid, RUSS_GRID_SIZE);
     dasonPhysics(RUSS_GRID_SIZE, 0, 0, NULL);
 }
@@ -189,7 +187,7 @@ void RB_DrawCoins(std::vector<Coin>& coins) {
     }
 }
 
-void RB_CheckCoinCollection(std::vector<Coin>& coins) {
+int RB_CheckCoinCollection(std::vector<Coin>& coins, int collectedCoins) {
     RB_Entity pb = {
         player.pos[0] - static_cast<float>(player.width) / 2.0f,
         player.pos[1] - static_cast<float>(player.height) / 2.0f,
@@ -206,6 +204,7 @@ void RB_CheckCoinCollection(std::vector<Coin>& coins) {
             collectedCoins += c.value;
         }
     }
+    return collectedCoins;
 }
 
 void rbarreyroRunGame() {
@@ -223,7 +222,7 @@ void rbarreyroRunGame() {
 
     RB_UpdateEnemies();
     RB_UpdateCoins(coins);
-    RB_CheckCoinCollection(coins);
+    collectedCoins = RB_CheckCoinCollection(coins, collectedCoins);
     russLevel();
 
     RB_DrawColoredRect(Russ_goal.x, Russ_goal.y,
@@ -252,7 +251,7 @@ void rbarreyroRunGame() {
     }
     if (collectedCoins >= NUM_COINS * 10 &&
             RB_CheckEntityCollision(pb, Russ_goal)) {
-        std::cout << "Victory! Score: " << collectedCoins << std::endl;
+        //std::cout << "Victory! Score: " << collectedCoins << std::endl;
         g.game_state = 2;
     }
 }

@@ -165,6 +165,7 @@ int main()
 {
     init_opengl();
     int done = 0;
+    //initIntroLevel();
     //main game loop
     while (!done) {
         //look for external events such as keyboard, mouse.
@@ -263,6 +264,7 @@ int check_keys(XEvent *e)
         }
     }
     if (e->type == KeyPress ) {
+        dasonKeyChecks();
         int key = XLookupKeysym(&e->xkey, 0);
         switch (key) {
             case XK_Escape:
@@ -324,9 +326,12 @@ void init_opengl(void)
 
 void physics(void)
 {
+    processMovement();
+    if (g.game_state == 0) {
+        dasonPhysics(4, 0, 0, NULL);
+    }
 	if (g.game_state == 3)
 		carlosPhysics();
-    processMovement();
     if (g.game_state == 6) 
         dasonPhysics(58, 10, 1, growing_box);
     //return 0;
@@ -345,7 +350,7 @@ void render()
     ggprint8b(&r, 16, 0x00ffff00, "vsync: %s", ((g.vsync)?"ON":"OFF"));
 
     if (g.game_state == 0) {
-        
+       //introRender(); 
     }
     // DRAW ALL BOXES
     if ((g.game_state == 1) || (g.game_state == 2)) {
@@ -370,7 +375,7 @@ void render()
         //carolineRender();
         //carolineDisplayWinScreen();
     }
-    if (g.game_state > 2)  {
+    if (g.game_state != 2 || g.game_state != 1)  {
         //dasonTimer(490, 790, 180.0);
         drawPlayerBox(0);
 #ifdef MAP_HELP
