@@ -150,10 +150,6 @@ bool isCircleCollidingWithSquare(Teleportal portal[], int array_size) {
     return check;
 }
 
-//===========================================================
-// Code below should display the win screen for when the 
-// the player beats all levels
-//===========================================================
 void carolineDisplayWinScreen() {
 	/*
 	ren.backgroundImage = &img[2];
@@ -197,9 +193,10 @@ void carolineLevel(void) {
 	player.width = 45;
 	player.height = 15;
 }
-/*----------------------------------------------------*/
 /* START OF ANIMATED INTRO */
 #define NUM_COINS 3
+#define INTRO_GRID_SIZE 6
+
 static vector<Coin> intro_coins;
 int coins_collected;
 int coins_score;
@@ -213,8 +210,8 @@ Entity intro_enemies[8] = {
     {765.0, 350.0, 20.0, 20.0, 7.0, 1},
     {420.0, 35.0, 20.0, 20.0, 7.0, -1},
 };
-#define INTRO_GRID_SIZE 6
 Entity intro_goal = {750, 450, (float)player.width, (float)player.height, 0, 0};
+
 Grid intro_grid[INTRO_GRID_SIZE];
 int intro_height[INTRO_GRID_SIZE] = {5, 5, 250, 250};
 int intro_width[INTRO_GRID_SIZE] = {450, 450, 5, 5};
