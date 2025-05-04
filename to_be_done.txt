@@ -25,5 +25,5 @@ Timer                                                                   -- Done
 -------------------------------------------------------------------------------                                      
 Animated Intoduction (Important)                                        -- Done
 -------------------------------------------------------------------------------                                      
-Make a screen to show what are what (coins, portals, enemies)
+Make a screen to show what are what (coins, portals, enemies)           -- RJ
 
