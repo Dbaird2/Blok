@@ -818,3 +818,12 @@ void processMovement()
             }
     }
 }
+
+void dasonRender() 
+{
+    Rect r;
+    r.bot = g.yres/2+50;
+    r.center = 0;
+    r.left = g.xres/2;
+    ggprint8b(&r, 0, 0x000000, "Press ' i ' for information");
+}

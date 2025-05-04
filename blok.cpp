@@ -329,12 +329,9 @@ void init_opengl(void)
 void physics(void)
 {
     processMovement();
-    if (g.game_state == 0) {
-        dasonPhysics(4, 0, 0, NULL);
-    }
 	if (g.game_state == 0) {
 		introPhysics();
-        dasonPhysics(58, 0, 0, NULL);
+        dasonPhysics(4, 0, 0, NULL);
 	}
 	if (g.game_state == 3)
 		carlosPhysics();
@@ -357,6 +354,7 @@ void render()
 
     if (g.game_state == 0) {
        introRender(); 
+       dasonRender();
     }
     // DRAW ALL BOXES
     if ((g.game_state == 1) || (g.game_state == 2)) {

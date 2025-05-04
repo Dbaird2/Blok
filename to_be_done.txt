@@ -6,7 +6,7 @@ Button to show controls (WASD, Credits(C), Quit(Q))                     -- Carlo
 -------------------------------------------------------------------------------                                      
 Enemies types (can be multiple people)                                                       
 -------------------------------------------------------------------------------                                      
-Coin grabbing                                                           -- RJ  
+Coin grabbing                                                           -- Done
 -------------------------------------------------------------------------------                                      
 Death Mechanic to keep track of deaths of a certain level               -- Done
 -------------------------------------------------------------------------------                                      
@@ -23,7 +23,7 @@ Timer                                                                   -- Done
 -------------------------------------------------------------------------------                                      
 (optional) have the player get bigger when red due to constant movement -- Done
 -------------------------------------------------------------------------------                                      
-Animated Intoduction (Important)
+Animated Intoduction (Important)                                        -- Done
 -------------------------------------------------------------------------------                                      
 Make a screen to show what are what (coins, portals, enemies)
 

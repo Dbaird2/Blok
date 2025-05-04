@@ -37,5 +37,6 @@ void dasonTimer(int spawn_y, int spawn_x, int y, int x, float time_out);
 void dasonPlayerDeath(int x_spawn, int y_spawn);
 void dasonKeyChecks();
 void renderDeathCount();
+void dasonRender();
 
 #endif
