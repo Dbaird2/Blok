@@ -547,6 +547,17 @@ void dasonRenderBackground()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
             GL_RGB, GL_UNSIGNED_BYTE, ren.backgroundImage->data);
+    
+    ren.failScreenImage = &img[3];
+    glGenTextures(1, &ren.failScreenTexture);
+    int w2 = ren.failScreenImage->width;
+    int h2 = ren.failScreenImage->height;
+    glBindTexture(GL_TEXTURE_2D, ren.failScreenTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w2, h2, 0,
+                GL_RGB, GL_UNSIGNED_BYTE, ren.failScreenImage->data);
+
 }
 void dasonMazeLevelBackground() 
 {
@@ -776,12 +787,13 @@ void handleKeyRelease(XKeyEvent *event)
 
 void dasonKeyChecks () 
 {
-    if (g.key_states[XK_q]) {
+    if (g.key_states[XK_q] && g.game_state >= 3 && g.game_state <= 7) {
         // Part of Algorithm library
         // It will reset all of walls back to Constructor values
+        g.game_state = 99;
         fill(walls, walls + 100, Wall());
         player.death_count = 0;
-        g.game_state = 2;
+        //g.game_state = 2;
     }
     if (g.key_states[XK_f]) {
         g.game_state = 1;

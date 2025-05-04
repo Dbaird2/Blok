@@ -51,8 +51,47 @@ void cleanupAudio() {
     alutExit();
 } */
 //Wall
+#define SEAN2_GRID_SIZE 8
 #define SEAN_GRID_SIZE 4
 Grid sean_grid[SEAN_GRID_SIZE];
+Grid sean2_grid[SEAN2_GRID_SIZE];
+const int boxWidth = 100;  // horizontal size of top/bottom bars
+const int boxHeight = 100; // vertical size of left/right bars
+
+int sean2_height[SEAN2_GRID_SIZE] = {
+    5,        // left top bar
+    5,        // right top bar (leave gap in the middle)
+    boxHeight, boxHeight,  // verticals
+    5, 5, g.yres, g.yres
+};
+
+int gap = 10;
+int barHalf = boxWidth / 2 - gap;
+
+int sean2_width[SEAN2_GRID_SIZE] = {
+    barHalf,   // left
+    barHalf,   // right
+    5, 5,
+    g.xres, g.xres, 5, 5
+};
+
+int sean2xpos[SEAN2_GRID_SIZE] = {
+    g.xres / 2 - boxWidth / 2,             // left bar start
+    g.xres / 2 + gap,                      // right bar start
+    g.xres / 2 - boxWidth / 2,             // left vertical
+    g.xres / 2 + boxWidth / 2 - 5,         // right vertical
+    0, 0, 0, g.xres - 5
+};
+
+
+int sean2ypos[SEAN2_GRID_SIZE] = {
+    g.yres / 2 + boxHeight / 2,  // top
+    g.yres / 2 + boxHeight / 2,  // top
+    g.yres / 2,                  // verticals
+    g.yres / 2,
+    g.yres - 5, 0, 0, 0
+};
+
 
 int sean_height[SEAN_GRID_SIZE] = {
     5,
@@ -87,6 +126,8 @@ void seanLevel()
 {
     dasonLoadStruct(sean_grid, sean_height, sean_width, 
             seanxpos, seanypos, SEAN_GRID_SIZE);
+    dasonLoadStruct(sean2_grid, sean2_height, sean2_width, 
+        sean2xpos, sean2ypos, SEAN2_GRID_SIZE);        
 }
 
 
@@ -328,6 +369,8 @@ void seanrungame() {
         }
         dasonDrawWalls(sean_grid, SEAN_GRID_SIZE);
         dasonPhysics(SEAN_GRID_SIZE, 0, 0, NULL);
+        dasonDrawWalls(sean2_grid, SEAN2_GRID_SIZE);
+        dasonPhysics(SEAN2_GRID_SIZE, 0, 0, NULL);
 
         
 

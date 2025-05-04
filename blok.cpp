@@ -53,10 +53,11 @@ Grid growing_box[15];
 ImageRenderer ren;
 MenuBox boxes[MAX_BOXES];
 Player player;
-Image img[3] = {
+Image img[4] = {
     "./background.png",
     "./minecraft_image.png",
-	"./winScreen.png"
+	"./winScreen.png",
+    "./failscreen.png"
 };
 void init_opengl(void);
 void physics(void);
@@ -263,6 +264,7 @@ int check_keys(XEvent *e)
                 break;
         }
     }
+    
     if (e->type == KeyPress ) {
         dasonKeyChecks();
         int key = XLookupKeysym(&e->xkey, 0);
@@ -278,20 +280,24 @@ int check_keys(XEvent *e)
             case XK_l:
                 g.game_state = 6;
                 init_dasonMazePlayer();
-            case XK_v:
-                g.vsync ^= 1;
-                //vertical synchronization
-                //https://github.com/godotengine/godot/blob/master/platform/
-                //x11/context_gl_x11.cpp
-                static PFNGLXSWAPINTERVALEXTPROC glXSwapIntervalEXT = NULL;
-                glXSwapIntervalEXT =
-                    (PFNGLXSWAPINTERVALEXTPROC)glXGetProcAddressARB(
+                break;
+                case XK_v: {
+                    g.vsync ^= 1;
+                    static PFNGLXSWAPINTERVALEXTPROC glXSwapIntervalEXT = NULL;
+                    glXSwapIntervalEXT =
+                        (PFNGLXSWAPINTERVALEXTPROC)glXGetProcAddressARB(
                             (const GLubyte *)"glXSwapIntervalEXT");
-                GLXDrawable drawable = glXGetCurrentDrawable();
-                if (g.vsync) {
-                    glXSwapIntervalEXT(x11.dpy, drawable, 1);
-                } else {
-                    glXSwapIntervalEXT(x11.dpy, drawable, 0);
+                    GLXDrawable drawable = glXGetCurrentDrawable();
+                    if (g.vsync) {
+                        glXSwapIntervalEXT(x11.dpy, drawable, 1);
+                    } else {
+                        glXSwapIntervalEXT(x11.dpy, drawable, 0);
+                    }
+                    break;
+                }
+            case XK_Return:
+                if (g.game_state == 99) {
+                    g.game_state = 2; // return to level select
                 }
                 break;
 
@@ -351,7 +357,7 @@ void render()
 	r.left = 10;
 	r.center = 0;
     ggprint8b(&r, 16, 0x00ffff00, "vsync: %s", ((g.vsync)?"ON":"OFF"));
-
+    
     if (g.game_state == 0) {
        introRender(); 
        dasonRender();
@@ -419,6 +425,37 @@ void render()
     if (g.instructions == 1) {
         renderInstructions();
     }
+
 }
+    if (g.game_state == 99) {
+        float imageAspect = (float)ren.failScreenImage->width / ren.failScreenImage->height;
+        float screenAspect = (float)g.xres / g.yres;
+        float quadWidth = g.xres;
+        float quadHeight = g.yres;
+
+        if (screenAspect > imageAspect) {
+            quadWidth = g.yres * imageAspect;
+        } else {
+            quadHeight = g.xres / imageAspect;
+        }
+
+        float xOffset = (g.xres - quadWidth) / 2.0;
+        float yOffset = (g.yres - quadHeight) / 2.0;
+
+        glBindTexture(GL_TEXTURE_2D, ren.failScreenTexture);
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset);
+        glTexCoord2f(0.0, 0.0); glVertex2f(xOffset, yOffset + quadHeight); 
+        glTexCoord2f(1.0, 0.0); glVertex2f(xOffset + quadWidth, yOffset + quadHeight); 
+        glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset);
+        glEnd();
+        Rect r;
+        r.bot = 50;
+        r.left = g.xres / 2 - 100;
+        r.center = 0;
+        ggprint8b(&r, 16, 0x00ff00ff, "Press ENTER to return to menu");
+    }
+
 }
 

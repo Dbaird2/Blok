@@ -104,6 +104,8 @@ class ImageRenderer {
         // Maze level
         GLuint dasonLevelBackgroundTexture;
         Image *dasonLevelBackgroundImage;
+        Image *failScreenImage;
+        GLuint failScreenTexture;
 
 };
 extern ImageRenderer ren;
