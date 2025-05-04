@@ -12,6 +12,7 @@ class MenuBox {
         int height;
         float pos[2];
         float color[3];
+        float speed;
         char text[100];
         MenuBox () 
         {
@@ -62,6 +63,7 @@ class Player {
         int stop_w; int stop_a; int stop_s; int stop_d;
         int tempx;
         int tempy;
+        float speed = 5.0f;
         int width;
         int height;
         float pos[2];

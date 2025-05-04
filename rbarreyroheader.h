@@ -47,6 +47,11 @@ void RB_UpdateCoins(std::vector<Coin>& coins);
 void RB_DrawCoins(std::vector<Coin>& coins);
 int RB_CheckCoinCollection(std::vector<Coin>& coins, int collectedCoins);
 
+// Power-up system
+struct PowerUp;
+void UpdatePowerUps();
+void DrawPowerUps();
+
 // Entity structure
 struct RB_Entity {
     float x, y;

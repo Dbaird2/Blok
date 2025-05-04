@@ -14,12 +14,14 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <AL/alut.h>
-#define RUSS_GRID_SIZE 8
+#define RUSS_GRID_SIZE 20
+const int POWERUP_SIZE = 10;
 
 const int NUM_ENEMIES = 4;
-const int NUM_COINS   = 8;
+const int NUM_COINS   = 10;
 const float GOAL_X    = 800.0f;
 const float GOAL_Y    = 250.0f;
+std::vector<PowerUp> powerUps;
 
 static float gAnimTime = 0.0f;
 
@@ -47,24 +49,43 @@ void DrawDeathCounter(int DeathCount) {
 
 int Deathcounter = 0;
 
+enum PowerUpType {SPEED};
+
+struct PowerUp {
+    float x, y;
+    PowerUpType type;
+    bool active;
+    bool collected;
+
+    PowerUp(float x_, float y_, PowerUpType t, bool a)
+        : x(x_), y(y_), type(t), active(a) {}
+};
+
 void RB_InitializeLevel() {
     collectedCoins = 0;
     enemies.clear();
     coins.clear();
     DrawDeathCounter(Deathcounter);
-    
+
     enemies = {
-        {{150, 150, 20, 20, 2.0f, true}, CHASER, 0,0,0, 160.0f},
-        {{650, 120, 20, 20, 2.5f, true}, CHASER, 0,0,0, 190.0f},
+        {{150, 150, 20, 20, 2.0f, true}, CHASER, 0, 0, 0, 160.0f},
+        {{650, 120, 20, 20, 2.5f, true}, CHASER, 0, 0, 0, 190.0f},
         {{400, 250, 15, 15, 0.0f, true}, ORBITER, 400.0f, 250.0f, 0.0f, 0.0f},
-        {{700, 400, 15, 15, 0.0f, true}, ORBITER, 700.0f, 400.0f, 3.14f, 0.0f}
+        {{700, 400, 15, 15, 0.0f, true}, ORBITER, 700.0f, 400.0f, 3.14f, 0.0f},
+        {{600, 550, 25, 25, 2.0f, true}, CHASER, 0, 0, 0, 150.0f},
+        {{200, 500, 20, 20, 2.5f, true}, CHASER, 0, 0, 0, 180.0f}
     };
+
+  powerUps.push_back(PowerUp(220, 280, static_cast<PowerUpType>(0), false));
+  powerUps.push_back(PowerUp(120, 180, static_cast<PowerUpType>(0), false));
+  powerUps.push_back(PowerUp(320, 400, static_cast<PowerUpType>(0), false));
 
     // coin placement
     float mazeCoins[NUM_COINS][2] = {
         {100, 100}, {180, 220}, {260, 340}, {340, 220},
-        {420, 100}, {500, 220}, {580, 340}, {660, 220}
-    };
+        {420, 100}, {500, 220}, {580, 340}, {660, 220},
+        {150, 450}, {400, 600}
+    };    
 
     for (int i = 0; i < NUM_COINS; ++i) {
         float x = mazeCoins[i][0];
@@ -87,25 +108,20 @@ void RB_DrawColoredRect(float x, float y, float w, float h,
 Grid russ_grid[RUSS_GRID_SIZE];
 
 int russ_height[RUSS_GRID_SIZE] = {
-    5, 5, 100, 100,
-    5, 5, 100, 100
+    5, 5, 100, 100, 100, 100, 100, 100, 100, 100, 50, 100, 5, 100, 100, 50, 100, 100, 5, 5
 };
 
 int russ_width[RUSS_GRID_SIZE] = {
-    100, 100, 5, 5,
-    g.xres, g.xres, 5, 5
+    100, 100, 5, 5, 5, 5, 5, 5, 5, 5, 50, 5, 100, 5, 5, 50, 5, 5, 100, 100
 };
 
 int russxpos[RUSS_GRID_SIZE] = {
-    250, 350, 250, 350,
-    0, 0, 0, g.xres - 5
+    0, 0, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900
 };
 
 int russypos[RUSS_GRID_SIZE] = {
-    300, 300, 200, 200,
-    g.yres - 5, 0, 0, 0
+    0, 100, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950
 };
-
 
 void russLevel()
 {
@@ -117,13 +133,15 @@ void russLevel()
 
 bool RB_CheckEntityCollision(const RB_Entity& a,
         const RB_Entity& b) {
-    return (a.x < b.x + b.width &&
+
+    bool collision = (a.x < b.x + b.width &&
             a.x + a.width > b.x &&
             a.y < b.y + b.height &&
             a.y + a.height > b.y);
-
-        Deathcounter++;
+    if (collision) Deathcounter++;
+    return collision;
 }
+
 
 void RB_UpdateEnemies() {
     for (auto& e : enemies) {
@@ -204,6 +222,40 @@ int RB_CheckCoinCollection(std::vector<Coin>& coins, int collectedCoins) {
     return collectedCoins;
 }
 
+void UpdatePowerUps() {
+    RB_Entity pb = {
+        player.pos[0] - player.width/2.0f,
+        player.pos[1] - player.height/2.0f,
+        (float)player.width,
+        (float)player.height,
+        0.0f, true
+    };
+    for (auto &p : powerUps) {
+        if (p.collected) continue;
+        // collision bbox
+        RB_Entity pu = { p.x-10, p.y-10, 20.0f, 20.0f, 0.0f, true };
+        if (RB_CheckEntityCollision(pb, pu)) {
+            p.collected = true;
+            if (p.type == 0) {
+                player.speed *= 1.5f;     
+            } 
+        }
+    }
+}
+
+// ----------------------------------------------------------------------------
+// 3) Draw routine
+void DrawPowerUps() {
+    for (auto& p : powerUps) {
+        if (!p.active) continue;
+        RB_DrawColoredRect(p.x, p.y, POWERUP_SIZE, POWERUP_SIZE,
+            p.type == SPEED ? 0.0f : 0.2f,
+            p.type == SPEED ? 0.6f : 0.8f,
+            1.0f);
+    }
+}
+
+
 void rbarreyroRunGame() {
     if (g.game_state != 5) return;
     static bool init = false;
@@ -219,6 +271,8 @@ void rbarreyroRunGame() {
 
     RB_UpdateEnemies();
     RB_UpdateCoins(coins);
+    UpdatePowerUps();
+    DrawPowerUps();
     collectedCoins = RB_CheckCoinCollection(coins, collectedCoins);
     russLevel();
 
@@ -228,6 +282,7 @@ void rbarreyroRunGame() {
 
     RB_DrawEnemies();
     RB_DrawCoins(coins);
+    powerUps.clear();
 
     Rect r = {0}; r.bot = g.yres - 30; r.left = 20; r.center = 0;
     ggprint8b(&r, 16, 0x00FF00, "Score: %d", collectedCoins);
