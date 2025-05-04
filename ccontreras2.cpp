@@ -150,6 +150,7 @@ bool isCircleCollidingWithSquare(Teleportal portal[], int array_size) {
     return check;
 }
 
+<<<<<<< HEAD
 void carolineDisplayWinScreen() {
 	/*
 	ren.backgroundImage = &img[2];
@@ -157,14 +158,31 @@ void carolineDisplayWinScreen() {
 	int w = ren.backgroundImage->width;
 	int h = ren.backgroundImage->height;
 	glBindTexture(GL_TEXTURE_2D, ren.backgroundTexture);
+=======
+//===========================================================
+// Code below should display the win screen for when the 
+// the player beats all levels
+//===========================================================
+void carolineDisplayWinScreen() 
+{
+	ren[3].backgroundImage = &img[2];
+	glGenTextures(1, &ren[3].backgroundTexture);
+	int w = ren[3].backgroundImage->width;
+	int h = ren[3].backgroundImage->height;
+	glBindTexture(GL_TEXTURE_2D, ren[3].backgroundTexture);
+>>>>>>> f23625d (modularized background image makeStartScreen in dbaird)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
-			GL_RGB, GL_UNSIGNED_BYTE, ren.backgroundImage->data);
+			GL_RGB, GL_UNSIGNED_BYTE, ren[3].backgroundImage->data);
 	//playSound(alSource);
-	//
-	*/
 }
+
+void renderWinBackground() 
+{
+
+}
+
 
 //below is my function for my end credit
 void carolineEndCredit (void)

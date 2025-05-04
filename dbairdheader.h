@@ -16,7 +16,7 @@ struct Grid {
 };
 extern Grid growing_box[15];
 
-void makeStartScreen();
+void makeStartScreen(int image_number);
 void dasonEndCredit();
 void drawBoxes();
 void dasonMenuButtonPress(int x, int y);

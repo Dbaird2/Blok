@@ -50,13 +50,13 @@ Global g;
 Wall walls[100];
 Wall growing_boxes[10];
 Grid growing_box[15];
-ImageRenderer ren;
+ImageRenderer ren[5];
 MenuBox boxes[MAX_BOXES];
 Player player;
 Image img[4] = {
     "./background.png",
     "./minecraft_image.png",
-	"./winScreen.png",
+    "./winScreen.png",
     "./failscreen.png"
 };
 void init_opengl(void);
@@ -166,15 +166,15 @@ int main()
 {
     init_opengl();
     int done = 0;
-	initIntroLevel();
+    initIntroLevel();
     //main game loop
     while (!done) {
         //look for external events such as keyboard, mouse.
         while (x11.getXPending()) {
-                        XEvent e = x11.getXNextEvent();
-                        x11.check_resize(&e);
-                        check_mouse(&e);
-                        done = check_keys(&e);
+            XEvent e = x11.getXNextEvent();
+            x11.check_resize(&e);
+            check_mouse(&e);
+            done = check_keys(&e);
         }
         physics();
         render();
@@ -264,7 +264,7 @@ int check_keys(XEvent *e)
                 break;
         }
     }
-    
+
     if (e->type == KeyPress ) {
         dasonKeyChecks();
         int key = XLookupKeysym(&e->xkey, 0);
@@ -281,25 +281,25 @@ int check_keys(XEvent *e)
                 g.game_state = 6;
                 init_dasonMazePlayer();
                 break;
-                case XK_v: {
-                    g.vsync ^= 1;
-                    static PFNGLXSWAPINTERVALEXTPROC glXSwapIntervalEXT = NULL;
-                    glXSwapIntervalEXT =
-                        (PFNGLXSWAPINTERVALEXTPROC)glXGetProcAddressARB(
-                            (const GLubyte *)"glXSwapIntervalEXT");
-                    GLXDrawable drawable = glXGetCurrentDrawable();
-                    if (g.vsync) {
-                        glXSwapIntervalEXT(x11.dpy, drawable, 1);
-                    } else {
-                        glXSwapIntervalEXT(x11.dpy, drawable, 0);
-                    }
-                    break;
-                }
+            case XK_v: {
+                           g.vsync ^= 1;
+                           static PFNGLXSWAPINTERVALEXTPROC glXSwapIntervalEXT = NULL;
+                           glXSwapIntervalEXT =
+                               (PFNGLXSWAPINTERVALEXTPROC)glXGetProcAddressARB(
+                                       (const GLubyte *)"glXSwapIntervalEXT");
+                           GLXDrawable drawable = glXGetCurrentDrawable();
+                           if (g.vsync) {
+                               glXSwapIntervalEXT(x11.dpy, drawable, 1);
+                           } else {
+                               glXSwapIntervalEXT(x11.dpy, drawable, 0);
+                           }
+                           break;
+                       }
             case XK_Return:
-                if (g.game_state == 99) {
-                    g.game_state = 2; // return to level select
-                }
-                break;
+                       if (g.game_state == 99) {
+                           g.game_state = 2; // return to level select
+                       }
+                       break;
 
         }
     }
@@ -328,6 +328,7 @@ void init_opengl(void)
     dasonMazeLevelBackground();
     dasonRenderBackground();
 
+    carolineDisplayWinScreen();
 
 }
 
@@ -335,37 +336,43 @@ void init_opengl(void)
 void physics(void)
 {
     processMovement();
-	if (g.game_state == 0) {
-		introPhysics();
+    if (g.game_state == 0) {
+        introPhysics();
         dasonPhysics(4, 0, 0, NULL);
-	}
-	if (g.game_state == 3)
-		carlosPhysics();
+    }
+    if (g.game_state == 3)
+        carlosPhysics();
     if (g.game_state == 6) 
         dasonPhysics(58, 10, 1, growing_box);
     //return 0;
-	if (g.game_state == 7)
-		carolinePhysics();
+    if (g.game_state == 7)
+        carolinePhysics();
 }
 int i = 0;
 void render()
 {   
+
     Rect r;
-	glClear(GL_COLOR_BUFFER_BIT);
-	//
-	r.bot = g.yres - 20;
-	r.left = 10;
-	r.center = 0;
+    glClear(GL_COLOR_BUFFER_BIT);
+    //
+    r.bot = g.yres - 20;
+    r.left = 10;
+    r.center = 0;
     ggprint8b(&r, 16, 0x00ffff00, "vsync: %s", ((g.vsync)?"ON":"OFF"));
-    
+
     if (g.game_state == 0) {
-       introRender(); 
-       dasonRender();
+        introRender(); 
+        dasonRender();
     }
     // DRAW ALL BOXES
-    if ((g.game_state == 1) || (g.game_state == 2)) {
-        //dasonRenderBackground();
-        makeStartScreen();
+    if (g.game_state == 1) {
+        makeStartScreen(0);
+        drawBoxes();
+
+    }
+    if (g.game_state == 2) {
+
+        makeStartScreen(0);
         drawBoxes();
     }
     if (g.game_state == 3) {
@@ -376,18 +383,16 @@ void render()
 
     if (g.game_state == 6) {
 
-        //dasonTimer(490, 790, 180.0);
-        makeStartScreen();
+        makeStartScreen(1);
         dasonMazeRender();
     }
     if(g.game_state == 7) {
         carolineRender();
         //carolineRender();
-        //carolineDisplayWinScreen();
     }
-    if (g.game_state != 2 || g.game_state != 1)  {
-    if (g.game_state > 2 || g.game_state == 0)  {
-        //dasonTimer(490, 790, 180.0);
+    if (g.game_state == 9)
+        makeStartScreen(3);
+    if ((g.game_state > 2 && g.game_state <= 7) || g.game_state == 0)  {
         drawPlayerBox(0);
 #ifdef MAP_HELP
         if ( i % 10  == 0) {
@@ -396,60 +401,47 @@ void render()
         i++;
 #endif
     }
-    // DRAW ALL BOXES
-    if ((g.game_state == 1) || (g.game_state == 2)) {
-        //dasonRenderBackground();
-        makeStartScreen();
-        drawBoxes();
-    }
-    if (g.game_state == 3) {
-        renderCarlosLevel();
-    }
-    if(g.game_state == 7) {
-        carolineRender();
-        //carolineDisplayWinScreen();
-    }
-    if (g.game_state == 4)
-        seanrungame();
     rbarreyroRunGame();
 
-    if (g.credit == 1) {
+    if (g.credit) {
         dasonEndCredit();
         carlosEndCredit();
         carolineEndCredit();
         rjEndCredit();
         seanEndCredit();
     }
-    rbarreyroRunGame();
 
-    if (g.instructions == 1) {
+    if (g.instructions) {
         renderInstructions();
     }
 
-}
     if (g.game_state == 99) {
-        float imageAspect = (float)ren.failScreenImage->width / ren.failScreenImage->height;
-        float screenAspect = (float)g.xres / g.yres;
-        float quadWidth = g.xres;
-        float quadHeight = g.yres;
+        // MADE makeStartScreen MODULAR TO GET RID OF REUSED CODE
+        makeStartScreen(2);
+        /*
+           float imageAspect = (float)ren[2].backgroundImage->width / ren[2].backgroundImage->height;
+           float screenAspect = (float)g.xres / g.yres;
+           float quadWidth = g.xres;
+           float quadHeight = g.yres;
 
-        if (screenAspect > imageAspect) {
-            quadWidth = g.yres * imageAspect;
-        } else {
-            quadHeight = g.xres / imageAspect;
-        }
+           if (screenAspect > imageAspect) {
+           quadWidth = g.yres * imageAspect;
+           } else {
+           quadHeight = g.xres / imageAspect;
+           }
 
-        float xOffset = (g.xres - quadWidth) / 2.0;
-        float yOffset = (g.yres - quadHeight) / 2.0;
+           float xOffset = (g.xres - quadWidth) / 2.0;
+           float yOffset = (g.yres - quadHeight) / 2.0;
 
-        glBindTexture(GL_TEXTURE_2D, ren.failScreenTexture);
-        glColor3f(1.0f, 1.0f, 1.0f);
-        glBegin(GL_QUADS);
-        glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset);
-        glTexCoord2f(0.0, 0.0); glVertex2f(xOffset, yOffset + quadHeight); 
-        glTexCoord2f(1.0, 0.0); glVertex2f(xOffset + quadWidth, yOffset + quadHeight); 
-        glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset);
-        glEnd();
+           glBindTexture(GL_TEXTURE_2D, ren.failScreenTexture);
+           glColor3f(1.0f, 1.0f, 1.0f);
+           glBegin(GL_QUADS);
+           glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset);
+           glTexCoord2f(0.0, 0.0); glVertex2f(xOffset, yOffset + quadHeight); 
+           glTexCoord2f(1.0, 0.0); glVertex2f(xOffset + quadWidth, yOffset + quadHeight); 
+           glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset);
+           glEnd();
+           */
         Rect r;
         r.bot = 50;
         r.left = g.xres / 2 - 100;

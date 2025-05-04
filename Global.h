@@ -101,14 +101,16 @@ class ImageRenderer {
         GLuint backgroundTexture;
         Image *backgroundImage;
         
+        /*
         // Maze level
         GLuint dasonLevelBackgroundTexture;
         Image *dasonLevelBackgroundImage;
+
         Image *failScreenImage;
         GLuint failScreenTexture;
-
+*/
 };
-extern ImageRenderer ren;
+extern ImageRenderer ren[5];
 
 
 class Global {
@@ -143,8 +145,15 @@ class Global {
             xres = 900;
             yres = 500;
 
-            ren.backgroundImage = nullptr;
+            ren[0].backgroundImage = nullptr;
+            ren[1].backgroundImage = nullptr;
+            ren[2].backgroundImage = nullptr;
+            ren[3].backgroundImage = nullptr;
+
+            /*
             ren.dasonLevelBackgroundImage = nullptr;
+            ren.failScreenImage = nullptr;
+            */
 
         }
 } ;

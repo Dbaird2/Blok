@@ -170,11 +170,11 @@ void dasonPlayerDeath(int x_spawn, int y_spawn)
 
 void dasonEndCredit(void)
 {
-    Rect title;
-    title.bot = 50;
-    title.left = 10;
-    title.center = 0;
-    ggprint8b(&title, 16, 0x00ffffff, "Author 3: Dason Baird");
+    Rect dason_credit;
+    dason_credit.bot = 50;
+    dason_credit.left = 10;
+    dason_credit.center = 0;
+    ggprint8b(&dason_credit, 16, 0x00ff0000, "Author 3: Dason Baird");
 }
 
 void quadDraw(int width, int height) 
@@ -484,7 +484,7 @@ void dasonPhysics(int wall_size, int growing_size,
                 collected_coins >= NUM_COINS * 10 ) {
             fill(walls, walls + 100, Wall());
             player.death_count = 0;
-            g.game_state = 2;
+            g.game_state = 9;
         }
         RB_UpdateCoins(dasonCoins);
         isCircleCollidingWithSquare(portals, 4);
@@ -538,34 +538,34 @@ void dasonPhysics(int wall_size, int growing_size,
 /*  */
 void dasonRenderBackground() 
 {
-    ren.backgroundImage = &img[0];
-    glGenTextures(1, &ren.backgroundTexture);
-    int w = ren.backgroundImage->width;
-    int h = ren.backgroundImage->height;
-    glBindTexture(GL_TEXTURE_2D, ren.backgroundTexture);
+    ren[0].backgroundImage = &img[0];
+    glGenTextures(1, &ren[0].backgroundTexture);
+    int w = ren[0].backgroundImage->width;
+    int h = ren[0].backgroundImage->height;
+    glBindTexture(GL_TEXTURE_2D, ren[0].backgroundTexture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
-            GL_RGB, GL_UNSIGNED_BYTE, ren.backgroundImage->data);
+            GL_RGB, GL_UNSIGNED_BYTE, ren[0].backgroundImage->data);
     
-    ren.failScreenImage = &img[3];
-    glGenTextures(1, &ren.failScreenTexture);
-    int w2 = ren.failScreenImage->width;
-    int h2 = ren.failScreenImage->height;
-    glBindTexture(GL_TEXTURE_2D, ren.failScreenTexture);
+    ren[2].backgroundImage = &img[3];
+    glGenTextures(1, &ren[2].backgroundTexture);
+    int w2 = ren[2].backgroundImage->width;
+    int h2 = ren[2].backgroundImage->height;
+    glBindTexture(GL_TEXTURE_2D, ren[2].backgroundTexture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w2, h2, 0,
-                GL_RGB, GL_UNSIGNED_BYTE, ren.failScreenImage->data);
+                GL_RGB, GL_UNSIGNED_BYTE, ren[2].backgroundImage->data);
 
 }
 void dasonMazeLevelBackground() 
 {
-    ren.dasonLevelBackgroundImage = &img[1];
-    glGenTextures(1, &ren.dasonLevelBackgroundTexture);
-    int w = ren.dasonLevelBackgroundImage->width;
-    int h = ren.dasonLevelBackgroundImage->height;
-    glBindTexture(GL_TEXTURE_2D, ren.dasonLevelBackgroundTexture);
+    ren[1].backgroundImage = &img[1];
+    glGenTextures(1, &ren[1].backgroundTexture);
+    int w = ren[1].backgroundImage->width;
+    int h = ren[1].backgroundImage->height;
+    glBindTexture(GL_TEXTURE_2D, ren[1].backgroundTexture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     /*unsigned char *dasonMazeData = 
@@ -574,74 +574,43 @@ void dasonMazeLevelBackground()
      GL_RGB, GL_UNSIGNED_BYTE, dasonMazeData);
      free(dasonMazeData);*/
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
-            GL_RGB, GL_UNSIGNED_BYTE, ren.dasonLevelBackgroundImage->data);
+            GL_RGB, GL_UNSIGNED_BYTE, ren[1].backgroundImage->data);
 }
 /*---------------------------------------------------*/
 
-void makeStartScreen() 
+void makeStartScreen(int image_number) 
 {
     glClear(GL_COLOR_BUFFER_BIT);
     float quadWidth = g.xres;
     float quadHeight = g.yres;
     float screenAspect = static_cast<float>(g.xres) / g.yres;
-    if (g.game_state < 3) {
-        float imageAspect = 
-            static_cast<float>(ren.backgroundImage->width) 
-            / ren.backgroundImage->height;
+    float imageAspect = 
+        static_cast<float>(ren[image_number].backgroundImage->width) 
+        / ren[image_number].backgroundImage->height;
 
-        // Adjust width/height based on aspect ratio
-        if (screenAspect > imageAspect) {
-            quadWidth = g.yres * imageAspect;
-        } else {
-            quadHeight = g.xres / imageAspect;
-        }
-
-        // Center the image in the viewport
-        float xOffset = (g.xres - quadWidth) / 2.0;
-        float yOffset = (g.yres - quadHeight) / 2.0;
-
-        glBindTexture(GL_TEXTURE_2D, ren.backgroundTexture);
-        glColor3f(1.0f, 1.0f, 1.0f);
-        glBegin(GL_QUADS);
-        glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset-30);
-        glTexCoord2f(0.0, 0.0); glVertex2f(xOffset, yOffset + quadHeight+30); 
-        glTexCoord2f(1.0, 0.0); glVertex2f(xOffset + quadWidth, 
-                yOffset + quadHeight+30); 
-        glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset-30);
-
-        glEnd();
-        glPopMatrix();
+    // Adjust width/height based on aspect ratio
+    if (screenAspect > imageAspect) {
+        quadWidth = g.yres * imageAspect;
+    } else {
+        quadHeight = g.xres / imageAspect;
     }
-    if (g.game_state == 6) {
-        float imageAspect = 
-            static_cast<float>(ren.dasonLevelBackgroundImage->width) 
-            / ren.dasonLevelBackgroundImage->height;
 
-        // Adjust width/height based on aspect ratio
-        if (screenAspect > imageAspect) {
-            quadWidth = g.yres * imageAspect;
-        } else {
-            quadHeight = g.xres / imageAspect;
-        }
+    // Center the image in the viewport
+    float xOffset = (g.xres - quadWidth) / 2.0;
+    float yOffset = (g.yres - quadHeight) / 2.0;
 
-        // Center the image in the viewport
-        float xOffset = (g.xres - quadWidth*1.3) / 2.0;
-        float yOffset = (g.yres - quadHeight*1.1) / 2.0;
+    glBindTexture(GL_TEXTURE_2D, ren[image_number].backgroundTexture);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset-30);
+    glTexCoord2f(0.0, 0.0); glVertex2f(xOffset, yOffset + quadHeight+30); 
+    glTexCoord2f(1.0, 0.0); glVertex2f(xOffset + quadWidth, 
+            yOffset + quadHeight+30); 
+    glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset-30);
 
-        glBindTexture(GL_TEXTURE_2D, ren.dasonLevelBackgroundTexture);
-        glColor3f(1.0f, 1.0f, 1.0f);
-        glBegin(GL_QUADS);
-        glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset-30);
-        glTexCoord2f(0.0, 0.0); glVertex2f(xOffset, yOffset + quadHeight+30); 
-        glTexCoord2f(1.0, 0.0); glVertex2f(xOffset + quadWidth, 
-                yOffset + quadHeight+30); 
-        glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset-30);
-
-        glEnd();
-        glPopMatrix();
-    }
+    glEnd();
+    glPopMatrix();
 }
-
 
 
 /*----------------------------------------------------*/
