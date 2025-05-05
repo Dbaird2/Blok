@@ -134,14 +134,13 @@ void getRandomColors(vector<vector<double>>& vec)
     }
 }
 
-void dasonTimerOut(int spawn_y, int spawn_x) 
+void dasonTimerOut(void (*func)()) 
 {
     player.death_count++;
-    player.tempx = spawn_x;
-    player.tempy = spawn_y;
+    func();
 }
 
-void dasonTimer(int spawn_y, int spawn_x, int y, int x, float time_out)
+void dasonTimer(int y, int x, float time_out, void(*func)())
 {
     if (player.dead == 1) {
         t1 = _clock::now();
@@ -156,7 +155,7 @@ void dasonTimer(int spawn_y, int spawn_x, int y, int x, float time_out)
     title.center = 0;
     ggprint8b(&title, 0, 0x00ffd700, "Timer %.1fs", time);
     if (time <= 0) {
-        dasonTimerOut(spawn_y, spawn_x);
+        dasonTimerOut(func);
         t1 = _clock::now();
     }
 }
@@ -273,6 +272,7 @@ void renderDeathCount()
 
 void init_dasonMazePlayer() 
 {
+    coin_score =0;
     dasonCoins.clear();
     t1 = _clock::now();
     getRandomColors(color_vector);
@@ -327,7 +327,7 @@ void dasonMazeRender()
     carolineDrawCircle(portals, 4);
     renderDeathCount(); 
     RB_DrawCoins(dasonCoins);
-    dasonTimer(10, 530, 490, 830, 240.0);
+    dasonTimer(490, 830, 240.0, init_dasonMazePlayer);
 }
 
 void defineBox() 
@@ -485,6 +485,9 @@ void dasonPhysics(int wall_size, int growing_size,
             fill(walls, walls + 100, Wall());
             player.death_count = 0;
             g.game_state = 9;
+            dason_goal = {360, 490, 50, 15, 0, 0};
+            dasonCoins.clear();
+
         }
         RB_UpdateCoins(dasonCoins);
         isCircleCollidingWithSquare(portals, 4);

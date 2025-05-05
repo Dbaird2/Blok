@@ -182,6 +182,7 @@ int main()
         render();
         x11.swapBuffers();
     }
+    cleanupSound(g.alSource, g.alBuffer);
     cleanup_fonts();
     return 0;
 }

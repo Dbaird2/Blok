@@ -58,7 +58,6 @@ void initSound()
 	//FIX THIS CODE BELOW
 	g.alBuffer = alutCreateBufferFromFile("./output.wav");
     if (g.alBuffer == AL_NONE) {
-        cout <<"File does not exist" << endl;
     }
 	//winScreen = alutCreateBufferFromFile("./src/sounds/");
 	//Source refers to the sound.
@@ -100,7 +99,6 @@ void playSound(ALuint alSource)
 #ifdef USE_OPENAL_SOUND
 
 	alSourcePlay(g.alSource);
-    cout << " Sound should be playing " << endl;
 #endif
 }
 #endif //USE_OPENAL_SOUND
@@ -257,7 +255,7 @@ void introRender()
     dasonDrawWalls(intro_grid, INTRO_GRID_SIZE);
     renderDeathCount();
     RB_DrawCoins(intro_coins);
-    dasonTimer(10, 530, 490, 830, 120.0);
+    dasonTimer(490, 830, 120.0, initIntroLevel);
 
     g.animationTime += 0.3f;
     Rect r;

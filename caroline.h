@@ -46,5 +46,6 @@ void initIntroLevel();
 void introRender();
 void introPhysics();
 void playSound(ALuint alSource);
+void cleanupSound(ALuint alSource, ALuint alBuffer);
 
 #endif
