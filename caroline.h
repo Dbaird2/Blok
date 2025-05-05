@@ -45,5 +45,6 @@ void carolineLevel(void);
 void initIntroLevel();
 void introRender();
 void introPhysics();
+void playSound(ALuint alSource);
 
 #endif

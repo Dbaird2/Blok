@@ -1,6 +1,8 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
+#include <AL/alc.h>
+#include <AL/alut.h>
 #include "Image.h"
 #include <GL/glx.h>
 
@@ -126,6 +128,8 @@ class Global {
         float grow_animation;
         float animationTime;
         float bounceHeight;
+        ALuint alBuffer;
+        ALuint alSource;
 
         Global() {
             key_states[256] = {false};

@@ -249,7 +249,7 @@ void rbarreyroRunGame() {
     if (collectedCoins >= NUM_COINS * 10 &&
             RB_CheckEntityCollision(pb, Russ_goal)) {
         //std::cout << "Victory! Score: " << collectedCoins << std::endl;
-        g.game_state = 2;
+        g.game_state = 9;
     }
 }
 

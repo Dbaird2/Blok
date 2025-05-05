@@ -398,7 +398,6 @@ void seanrungame() {
         }
         
          if (SeanCheckCollision(goal)) {
-            cout << "You Win!" << endl;
             g.game_state = 9;
          }
         for (int i = 0; i < MAX_PROJECTILES; ++i) {

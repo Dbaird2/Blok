@@ -164,6 +164,7 @@ class X11_wrapper {
 
 int main()
 {
+    initSound();
     init_opengl();
     int done = 0;
     initIntroLevel();
@@ -390,8 +391,11 @@ void render()
         carolineRender();
         //carolineRender();
     }
-    if (g.game_state == 9)
+    if (g.game_state == 9) {
         makeStartScreen(3);
+        playSound(g.alSource);
+    }
+
     if ((g.game_state > 2 && g.game_state <= 7) || g.game_state == 0)  {
         drawPlayerBox(0);
 #ifdef MAP_HELP

@@ -31,11 +31,11 @@ int caro_y[5] = {10, 10, 10, 490, 60};
 
 //==================================================================
 
-#ifdef USE_OPENAL_SOUND
 #include </usr/include/AL/alut.h>
+#ifdef USE_OPENAL_SOUND
 #endif 
-ALuint alBuffer;
-ALuint alSource;
+//ALuint alBuffer;
+//ALuint alSource;
 #ifdef USE_OPENAL_SOUND
 
 void initSound()
@@ -51,20 +51,24 @@ void initSound()
 	float vec[6] = {0.0f,0.0f,1.0f, 0.0f,1.0f,0.0f};
 	alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f);
 	alListenerfv(AL_ORIENTATION, vec);
-	alListenerf(AL_GAIN, 1.0f);
+    alListenerf(AL_GAIN, 1.0f);
+    //alSource3f(alSource, AL_POSITION, 0.0f, 0.0f, 0.0f);
 	
 	//Buffer holds the sound information.
 	//FIX THIS CODE BELOW
-	alBuffer = alutCreateBufferFromFile("./winningScreenAudio.wav");
+	g.alBuffer = alutCreateBufferFromFile("./output.wav");
+    if (g.alBuffer == AL_NONE) {
+        cout <<"File does not exist" << endl;
+    }
 	//winScreen = alutCreateBufferFromFile("./src/sounds/");
 	//Source refers to the sound.
 	//Generate a source, and store it in a buffer.
-	alGenSources(1, &alSource);
-	alSourcei(alSource, AL_BUFFER, alBuffer);
+	alGenSources(1, &g.alSource);
+	alSourcei(g.alSource, AL_BUFFER, g.alBuffer);
 	//Set volume and pitch to normal, no looping of sound.
-	alSourcef(alSource, AL_GAIN, 1.0f);
-	alSourcef(alSource, AL_PITCH, 1.0f);
-	alSourcei(alSource, AL_LOOPING, AL_FALSE);
+	alSourcef(g.alSource, AL_GAIN, 1.0f);
+	alSourcef(g.alSource, AL_PITCH, 1.0f);
+	alSourcei(g.alSource, AL_LOOPING, AL_FALSE);
 	if (alGetError() != AL_NO_ERROR) {
 		printf("ERROR: setting source\n");
 		return;
@@ -94,7 +98,10 @@ void cleanupSound(ALuint alSource, ALuint alBuffer)
 void playSound(ALuint alSource)
 {
 #ifdef USE_OPENAL_SOUND
-	alSourcePlay(alSource);
+
+    alSourcei(g.alSource, AL_LOOPING, AL_TRUE);
+	//alSourcePlay(g.alSource);
+    cout << " Sound should be playing " << endl;
 #endif
 }
 #endif //USE_OPENAL_SOUND
@@ -149,16 +156,6 @@ bool isCircleCollidingWithSquare(Teleportal portal[], int array_size) {
     }
     return check;
 }
-
-<<<<<<< HEAD
-void carolineDisplayWinScreen() {
-	/*
-	ren.backgroundImage = &img[2];
-	glGenTextures(1, &ren.backgroundTexture);
-	int w = ren.backgroundImage->width;
-	int h = ren.backgroundImage->height;
-	glBindTexture(GL_TEXTURE_2D, ren.backgroundTexture);
-=======
 //===========================================================
 // Code below should display the win screen for when the 
 // the player beats all levels
@@ -170,17 +167,10 @@ void carolineDisplayWinScreen()
 	int w = ren[3].backgroundImage->width;
 	int h = ren[3].backgroundImage->height;
 	glBindTexture(GL_TEXTURE_2D, ren[3].backgroundTexture);
->>>>>>> f23625d (modularized background image makeStartScreen in dbaird)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
 			GL_RGB, GL_UNSIGNED_BYTE, ren[3].backgroundImage->data);
-	//playSound(alSource);
-}
-
-void renderWinBackground() 
-{
-
 }
 
 
