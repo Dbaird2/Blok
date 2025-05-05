@@ -99,8 +99,7 @@ void playSound(ALuint alSource)
 {
 #ifdef USE_OPENAL_SOUND
 
-    alSourcei(g.alSource, AL_LOOPING, AL_TRUE);
-	//alSourcePlay(g.alSource);
+	alSourcePlay(g.alSource);
     cout << " Sound should be playing " << endl;
 #endif
 }

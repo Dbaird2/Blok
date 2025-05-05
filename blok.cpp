@@ -43,6 +43,7 @@ using namespace std;
 #define rnd() (float)rand() / (float)RAND_MAX
 #define MAX_PARTICLES 1000
 #define MAX_BOXES 7
+ int played = 0;
 
 //some structures
 //
@@ -393,7 +394,10 @@ void render()
     }
     if (g.game_state == 9) {
         makeStartScreen(3);
-        playSound(g.alSource);
+        if (played == 0) {
+            playSound(g.alSource);
+            played = 1;
+        }
     }
 
     if ((g.game_state > 2 && g.game_state <= 7) || g.game_state == 0)  {
