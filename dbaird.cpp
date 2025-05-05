@@ -206,12 +206,15 @@ void dasonMenuButtonPress(int x, int y)
                     (x >= (cx - cw)) &&
                     (x <= (cx + cw)) &&
                     (y >= (cy - ch))) {
-                if (j == 1) {
+                if (j == 2) {
                     g.game_state = 2;
                     b = 0;
-                } else {
+                } 
+                if (j == 1)
+                    g.game_state = 10;
+                if (j == 0) 
                     g.credit = !g.credit;
-                }
+                
             }
         }
         /* Difficulty button Collision Detection */
@@ -627,13 +630,17 @@ void drawBoxes()
     if (g.game_state == 1) {
         for (int i = 0; i < g.menu_box_amt[g.game_state-1]; i++) {
             MenuBox *box = &boxes[i];
+            if (i < g.menu_box_amt[g.game_state-1] -1) {
+                box->color[0] = 0.0f;
+                box->color[1] = 0.0f;
+                box->color[2] = 0.0f;
+            } else {
+                box->color[0] = 1.0f;
+            }
 
             Rect rect;
             glPushMatrix();
-            box->color[0] = 1.0f;
-            box->color[1] = 0.0f;
-            box->color[2] = 0.0f;
-            glColor3f(1.0f, 0.0f, 0.0f);
+            glColor3fv(box->color);
             glDisable(GL_BLEND);
             glTranslatef(box->pos[0], box->pos[1], 0.0f);
             quadDraw(box->width, box->height);
@@ -643,15 +650,21 @@ void drawBoxes()
             float bounceOffset = sin(g.animationTime) * g.bounceHeight;
             if (i == 0)
                 box->pos[1] += bounceOffset;
-            if (i == 1) {
+            if (i == 1)
+                box->pos[1] += bounceOffset;
+            if (i == 2) {
                 box->pos[1] += bounceOffset+sin(g.animationTime);
             }
 
             switch (i)
             {
-                case 1:
+                case 2:
                     rect.left = box->pos[0] - 17;
                     ggprint8b(&rect, 0, 0x00ffffff, "Start!");
+                    break;
+                case 1:
+                    rect.left = box->pos[0] - 20;
+                    ggprint8b(&rect, 0, 0x00D30000, "Help");
                     break;
                 case 0:
                     rect.left = box->pos[0] - 20;
