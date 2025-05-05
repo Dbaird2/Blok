@@ -21,13 +21,12 @@ using namespace std;
 //GOALS: Make walls, fix sound in code, and finish win screen 
 
 //====================4.22.25 Making Walls==========================
-#define CAROLINE_GRID_SIZE 5
-
+#define CAROLINE_GRID_SIZE 8
 Grid caroWalls[CAROLINE_GRID_SIZE];
-int caro_height[5] = {10, 490, 490, 10, 10};
-int caro_width[5] = {890, 10, 10, 890, 300};
-int caro_x[5] = {10, 10, 890, 890, 420};
-int caro_y[5] = {10, 10, 10, 490, 60};
+int caro_height[8] = {10, 490, 490, 10, 10, 10, 195, 160};
+int caro_width[8] = {890, 10, 10, 900, 380, 320, 10, 10};
+int caro_x[8] = {10, 10, 890, 890, 390, 440, 760,130};
+int caro_y[8] = {10, 10, 10, 490, 60, 430, 245,270};
 
 //==================================================================
 
@@ -183,11 +182,11 @@ void carolineEndCredit (void)
 
 void carolinePhysics(void) {
 	dasonPhysics(CAROLINE_GRID_SIZE, 0, 0, NULL);
-    isCircleCollidingWithSquare(portal, 2);
+    //isCircleCollidingWithSquare(portal, 2);
 }
 
 void carolineRender(void) {
-	carolineDrawCircle(portal, 2);
+	//carolineDrawCircle(portal, 2);
 	dasonDrawWalls(caroWalls, CAROLINE_GRID_SIZE);
 	
 }
@@ -196,9 +195,10 @@ void carolineLevel(void) {
 	dasonLoadStruct(caroWalls, caro_height, caro_width,
 			caro_x, caro_y, CAROLINE_GRID_SIZE);
 	player.width = 45;
-	player.height = 15;
+	player.height = 10;
 }
 /* START OF ANIMATED INTRO */
+//=====================================================
 #define NUM_COINS 3
 #define INTRO_GRID_SIZE 6
 
