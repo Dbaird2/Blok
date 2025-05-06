@@ -2,7 +2,6 @@
 #define FUNCTIONS_H
 
 #include "Global.h"
-
 struct Grid {
     int state;
     int size;
