@@ -20,15 +20,16 @@ using namespace std;
 
 //GOALS: Make walls, fix sound in code, and finish win screen 
 
-//====================4.22.25 Making Walls==========================
-#define CAROLINE_GRID_SIZE 8
+#define CAROLINE_GRID_SIZE 15
 Grid caroWalls[CAROLINE_GRID_SIZE];
-int caro_height[8] = {10, 490, 490, 10, 10, 10, 195, 160};
-int caro_width[8] = {890, 10, 10, 900, 380, 320, 10, 10};
-int caro_x[8] = {10, 10, 890, 890, 390, 440, 760,130};
-int caro_y[8] = {10, 10, 10, 490, 60, 430, 245,270};
-
-//==================================================================
+int caro_height[15] = {10, 490, 490, 10, 10, 10, 195, 160, 10, 130,
+	100, 10, 10, 70, 10 };
+int caro_width[15] = {890, 10, 10, 900, 380, 320, 10, 10, 250, 10,
+	10, 200,130,10, 70 };
+int caro_x[15] = {10, 10, 890, 890, 390, 440, 760, 130,390, 640, 
+	260, 450, 390, 520, 460};
+int caro_y[15] = {10, 10, 10, 490, 60, 430, 245, 270, 120, 240, 
+	270, 360, 180, 240, 300};
 
 #include </usr/include/AL/alut.h>
 #ifdef USE_OPENAL_SOUND
@@ -194,8 +195,8 @@ void carolineRender(void) {
 void carolineLevel(void) {
 	dasonLoadStruct(caroWalls, caro_height, caro_width,
 			caro_x, caro_y, CAROLINE_GRID_SIZE);
-	player.width = 45;
-	player.height = 10;
+	player.width = 46;
+	player.height = 12;
 }
 /* START OF ANIMATED INTRO */
 //=====================================================
