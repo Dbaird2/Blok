@@ -1,7 +1,8 @@
-//Caroline Contreras
-//Spring 2025
-//3350 Project
-
+/*  Caroline Contreras
+*  Spring 2025
+*  3350 Project
+*  ccontreras2.cpp
+*/
 #include <iostream>
 #include "functions.h"
 #include "fonts.h"
@@ -191,8 +192,16 @@ void carolineRender(void) {
 	dasonDrawWalls(caroWalls, CAROLINE_GRID_SIZE);
 	
 }
-
+float carolineedge = 100.0f;
+Entity carolineenemies[30] = {
+    {300, 200, 20, 20, 30.0, 1},
+    {500, 400, 20, 20, 30.0, -1},
+    {300, 200, 20, 20, 30.0, 1},
+    {500, 400, 20, 20, 30.0, -1}
+};
 void carolineLevel(void) {
+	SeanEnemiesVertical(0, 2, g.yres, carolineedge, carolineenemies);
+	SeanEnemiesHorizontal(2, 4, g.xres, carolineedge, carolineenemies);
 	dasonLoadStruct(caroWalls, caro_height, caro_width,
 			caro_x, caro_y, CAROLINE_GRID_SIZE);
 	player.width = 46;
