@@ -185,6 +185,7 @@ int main()
         physics();
         render();
         x11.swapBuffers();
+    }
 
     cleanupSound(g.alSource, g.alBuffer);
     cleanup_fonts();
