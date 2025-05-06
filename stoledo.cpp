@@ -399,6 +399,9 @@ void seanrungame() {
         
          if (SeanCheckCollision(goal)) {
             g.game_state = 9;
+            if (g.amt_of_stars[2] < 1)
+                g.amt_of_stars[2]++;
+
          }
         for (int i = 0; i < MAX_PROJECTILES; ++i) {
         if (projectiles[i].active && 

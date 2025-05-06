@@ -301,6 +301,9 @@ void rbarreyroRunGame() {
 
     if (collectedCoins >= NUM_COINS * 10 &&
         RB_CheckEntityCollision(pb, Russ_goal)) {
+        if (g.amt_of_stars[1] < 1)
+            g.amt_of_stars[1]++;
+
         g.game_state = 9;
     }
 }

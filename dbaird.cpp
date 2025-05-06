@@ -134,6 +134,38 @@ void getRandomColors(vector<vector<double>>& vec)
     }
 }
 
+void drawStar(float cx, float cy)
+{
+    const int num_points = 5;
+    float angle = M_PI / 2.0f;
+    float outer_radius = 40.0f;
+    float inner_radius = 15.0f;
+
+    int valid_stars = 0;
+    for (int i = 0; i < 5; i++) {
+        if (g.amt_of_stars[i] > 0) {
+            valid_stars++;
+        }
+    }
+
+    for (int j = 0; j < valid_stars; j++) {
+        cx = 100.0f*(float)j+100;
+        glPushMatrix();
+        glBegin(GL_TRIANGLE_FAN);
+        glColor3f(1.0f, 0.75f, 0.0f);
+        glVertex2f(cx, cy); 
+        for (int i = 0; i <= num_points * 2; i++) {
+            float r = (i % 2 == 0) ? outer_radius : inner_radius;
+            float a = angle + i * M_PI / num_points;
+            float x = cx + cos(a) * r;
+            float y = cy + sin(a) * r;
+            glVertex2f(x, y);
+        }
+        glEnd();
+        glPopMatrix();
+    }
+}
+
 void dasonTimerOut(void (*func)()) 
 {
     player.death_count++;
@@ -490,6 +522,8 @@ void dasonPhysics(int wall_size, int growing_size,
             g.game_state = 9;
             dason_goal = {360, 490, 50, 15, 0, 0};
             dasonCoins.clear();
+            if (g.amt_of_stars[0] < 1)
+                g.amt_of_stars[0]++;
 
         }
         RB_UpdateCoins(dasonCoins);
@@ -725,6 +759,7 @@ void drawBoxes()
         }
         g.animationTime += 0.6f;
     } 
+            drawStar(100.0f, 400.0f);
 }
 /*----------------------------------------------------*/
 

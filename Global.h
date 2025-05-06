@@ -130,6 +130,7 @@ class Global {
         float grow_animation;
         float animationTime;
         float bounceHeight;
+        int amt_of_stars[5];
         ALuint alBuffer;
         ALuint alSource;
 
@@ -147,6 +148,9 @@ class Global {
              * Will move to Menu Box */
             menu_box_amt[0] = {3};
             menu_box_amt[1] = {7};
+            for (int i = 0; i < 5; i++) {
+                amt_of_stars[i] = 0;
+            }
             /* WINDOW SIZE */
             xres = 900;
             yres = 500;
