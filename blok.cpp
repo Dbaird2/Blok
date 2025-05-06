@@ -280,6 +280,9 @@ int check_keys(XEvent *e)
             case XK_i:
                 g.instructions = !g.instructions;
                 break;
+            case XK_y:
+                g.game_state = 3;
+                carlosMaze();
             case XK_l:
                 g.game_state = 6;
                 init_dasonMazePlayer();
@@ -332,7 +335,7 @@ void init_opengl(void)
     dasonRenderBackground();
 
     carolineDisplayWinScreen();
-
+    carlosMaze();
 }
 
 
