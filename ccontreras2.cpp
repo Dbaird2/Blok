@@ -238,7 +238,12 @@ void initIntroLevel()
     intro_coins.clear();
     coins_score = 0;
     coins_collected = 0;
-    float cx[3] = {420.0f, 150.0f, 765.0f};
+    float cx[3] = {
+        // OLD VALUES
+        /*420.0f, 150.0f, 765.0f*/
+        (float)(rand() % 800 + 10),
+        (float)(rand() % 800 + 10),
+        (float)(rand() % 800 + 10)};
     float cy[3] = {35.0f, 250.0f,350.0f};
     for (int i = 0; i < NUM_COINS; i++) {
         float theta= (2.0f * M_PI / 8) * i;

@@ -177,11 +177,15 @@ int main()
             x11.check_resize(&e);
             check_mouse(&e);
             done = check_keys(&e);
+            /* Bug found
+             * caused jittery movement
+              processMovement();
+              */
         }
         physics();
         render();
         x11.swapBuffers();
-    }
+
     cleanupSound(g.alSource, g.alBuffer);
     cleanup_fonts();
     return 0;

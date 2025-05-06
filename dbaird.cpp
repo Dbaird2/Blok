@@ -307,7 +307,9 @@ void renderDeathCount()
 
 void init_dasonMazePlayer() 
 {
-    coin_score =0;
+    /* coin_score = 0 fixes goal not being automatically ready */
+    coin_score = 0;
+
     dasonCoins.clear();
     t1 = _clock::now();
     getRandomColors(color_vector);
@@ -475,13 +477,27 @@ void growingBoxPhysics(int size, Grid grid[])
         int box_bot = box_y - box_h;
         int box_left = box_x - box_w;
         int box_right = box_x + box_w;
-
+        /*
+         * Bug found w/ bad fix
+         * If box is inverted check for different values
+         * Did not need this if statement
+        if (bounceOffset < 0) {
+        */
         if ((p->pos[1] >= box_top - y_offset)
                 && (p->pos[1] <= box_bot + y_offset)
                 && (p->pos[0] <= box_left + x_offset) 
                 && (p->pos[0] >= box_right - x_offset)) {
             dasonPlayerDeath(530, 10);
             init_dasonMazePlayer();
+            /* OLD CODE OPTIMIZED */
+            /*
+             p->tempx = 530;
+             p->tempy = 10;
+             */
+            /* bug found
+             * caused incorrect spawn placements when bottom collision happens
+             p->tempy = 510;
+             */
         }
         if ((p->pos[1] <= box_top + y_offset)
                 && (p->pos[1] >= box_bot - y_offset)
