@@ -23,6 +23,7 @@ using namespace std;
 #include <random>
 #include <unistd.h>
 #include <cstdlib>
+#include <chrono>
 #include <ctime>
 #include <cstring>
 #include <cmath>
@@ -52,6 +53,16 @@ Wall walls[100];
 Wall growing_boxes[10];
 Grid growing_box[15];
 ImageRenderer ren[5];
+
+static bool initL10 = false;
+static double getTime() {
+    using namespace std::chrono;
+    static auto t0 = high_resolution_clock::now();
+    auto t1 = high_resolution_clock::now();
+    return duration<double>(t1 - t0).count();
+}
+
+
 MenuBox boxes[MAX_BOXES];
 Player player;
 Image img[4] = {
@@ -408,6 +419,18 @@ void render()
             played = 1;
         }
     }
+    static double lastTime = getTime();
+    double now = getTime();
+    double dt  = now - lastTime;
+    lastTime   = now;
+    if (g.game_state == 10) {
+    if (!initL10) {
+        InitLevel10();
+        initL10 = true;
+    }
+    UpdateLevel10(dt);
+    DrawLevel10();
+}
 
     if ((g.game_state > 2 && g.game_state <= 7) || g.game_state == 0)  {
         drawPlayerBox(0);
