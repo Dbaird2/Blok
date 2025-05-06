@@ -300,18 +300,18 @@ void rbarreyroRunGame() {
     }
 
     if (collectedCoins >= NUM_COINS * 10 &&
-<<<<<<< HEAD
-        RB_CheckEntityCollision(pb, Russ_goal)) {
-        if (g.amt_of_stars[1] < 1)
-            g.amt_of_stars[1]++;
-
-=======
             RB_CheckEntityCollision(pb, Russ_goal)) {
->>>>>>> f3fc839 (game state 10)
-        g.game_state = 9;
+        if (g.amt_of_stars[1] < 1) {
+            g.amt_of_stars[1]++;
+        }
+        {
+            RB_CheckEntityCollision(pb, Russ_goal); 
+            {
+                g.game_state = 9;
+            }
+        }
     }
 }
-
 // -----------------------------------------------------------
 // Quit Handling
 // -----------------------------------------------------------
