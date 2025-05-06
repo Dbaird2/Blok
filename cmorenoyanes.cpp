@@ -115,7 +115,8 @@ void drawCircles() {
         glVertex2f(carlosCircles[i].x, carlosCircles[i].y);
         for (int j = 0; j <= 360; j += 10) {
             float angle = j * 3.14159f / 180.0f;
-            glVertex2f(carlosCircles[i].x + cos(angle)*10, carlosCircles[i].y + sin(angle)*10);
+            glVertex2f(carlosCircles[i].x + cos(angle)*10,
+                    carlosCircles[i].y + sin(angle)*10);
         }
         glEnd();
     }
@@ -137,10 +138,14 @@ void fireCarlosProjectile(float x, float y) {
 void updateCarlosProjectiles() {
     for (int i = 0; i < MAX_CARLOS_PROJECTILES; i++) {
         if (carlosProjectiles[i].active) {
-            carlosProjectiles[i].x += carlosProjectiles[i].dx * carlosProjectiles[i].speed;
-            carlosProjectiles[i].y += carlosProjectiles[i].dy * carlosProjectiles[i].speed;
-            if (carlosProjectiles[i].x < 0 || carlosProjectiles[i].x > g.xres ||
-                carlosProjectiles[i].y < 0 || carlosProjectiles[i].y > g.yres)
+            carlosProjectiles[i].x += carlosProjectiles[i].dx 
+                * carlosProjectiles[i].speed;
+            carlosProjectiles[i].y += carlosProjectiles[i].dy 
+                * carlosProjectiles[i].speed;
+            if (carlosProjectiles[i].x < 0 || 
+                    carlosProjectiles[i].x > g.xres ||
+                    carlosProjectiles[i].y < 0 || 
+                    carlosProjectiles[i].y > g.yres)
                 carlosProjectiles[i].active = false;
 
             float px = player.pos[0] - player.width / 2;
@@ -160,7 +165,8 @@ void drawCarlosProjectiles() {
     for (int i = 0; i < MAX_CARLOS_PROJECTILES; i++) {
         if (carlosProjectiles[i].active) {
             SeanDrawRect(carlosProjectiles[i].x, carlosProjectiles[i].y,
-                         carlosProjectiles[i].width, carlosProjectiles[i].height,
+                         carlosProjectiles[i].width, 
+                         carlosProjectiles[i].height,
                          1.0f, 1.0f, 0.0f);
         }
     }
@@ -173,7 +179,8 @@ void renderCarlosLevel() {
     drawPlayerBox(0);
     RB_DrawCoins(carlosCoins);
     drawCarlosProjectiles();
-    SeanDrawRect(carlosGoal.x, carlosGoal.y, carlosGoal.width, carlosGoal.height, 0.0, 1.0, 0.0);
+    SeanDrawRect(carlosGoal.x, carlosGoal.y, carlosGoal.width,
+                         carlosGoal.height, 0.0, 1.0, 0.0);
 }
 
 void carlosPhysics() {
@@ -225,147 +232,3 @@ void renderInstructions() {
     ggprint8b(&title, 16, 0x00000000, "C - Credits");
     ggprint8b(&title, 16, 0x00000000, "Q - Quit Level");
 }
-
-/*#include "fonts.h"
-#include "cmorenoyanesheader.h"
-#include <math.h>
-#include "dbairdheader.h"
-using namespace std;
-
-==============================================================
-#define CARLOS_GRID_SIZE 4
-
-Grid carlos_walls[CARLOS_GRID_SIZE];
-int wall_height[4] = {500, 10, 500, 10};
-int wall_width[4] = {10, 890, 10, 700};
-int wall_coordinate_x[4] = {10, 10, 890, 100};
-int wall_coordinate_y[4] = {10, 490, 10, 10};
-
-==============================================================
-
-float circleOffset = 0.0f;
-bool direction = true;
-
-void carlosEndCredit (void)
-{
-    Rect credit;
-    credit.bot = 66;
-    credit.left = 10;
-    credit.center = 0;
-    ggprint8b(&credit, 16, 0x00ff0000, "Author 2: Carlos Moreno");
-}
-
-void renderInstructions()
-{
-    Rect title;
-    title.bot = 450;
-    title.left = 800;
-    title.center = 0;
-    ggprint8b(&title, 16, 0x00000000, "A - Move Left");
-    ggprint8b(&title, 16, 0x00000000, "W - Move Up");
-    ggprint8b(&title, 16, 0x00000000, "S - Move Down");
-    ggprint8b(&title, 16, 0x00000000, "D - Move Right");
-    ggprint8b(&title, 16, 0x00000000, "C - Credits");
-    ggprint8b(&title, 16, 0x00000000, "Q - Quit Level");
-}
-
-void drawTriangles ()
-{
-    // Draw the triangles
-    glPushMatrix();
-    glColor3f(1.0, 0, 0);
-    glDisable(GL_DEPTH_TEST);
-
-    float triangleSize = 13.0f;
-    float margin = 40.0f;
-
-    float positions[4][2] = {
-        // Bottom-left
-        {margin, margin},
-        // Bottom-right
-        {static_cast<float>(g.xres) - margin, margin},
-        // Top-left
-        {margin, static_cast<float>(g.yres) - margin},     
-        // Top-right
-        {static_cast<float>(g.xres) - margin, 
-            static_cast<float>(g.yres) - margin} 
-    };
-
-    for (int i = 0; i < 4; i++) {
-        glPushMatrix();
-        glTranslatef(positions[i][0], positions[i][1], 0.0f);
-        
-        glBegin(GL_TRIANGLES);
-        glVertex2f(-triangleSize, -triangleSize);
-        glVertex2f(triangleSize, -triangleSize);
-        glVertex2f(0.0, triangleSize);
-        glEnd();
-
-        glPopMatrix();
-    }
-
-    glPopMatrix();
-}
-
-void drawCircles ()
-{
-    // Move the circles back and forth
-    if (direction)
-        circleOffset += 5.0f;
-    else
-        circleOffset -= 5.0f;
-
-    if (circleOffset > 50.0f || circleOffset < -50.0f)
-        direction = !direction;
-
-    glPushMatrix();
-    glColor3f(1.0, 0, 0);
-
-    float radius = 13.0f;
-    float circleMargin = 80.0f;
-    float positions[4][2] = {
-        {static_cast<float>(g.xres / 2 - circleMargin),
-            static_cast<float>(g.yres / 2)},
-        {static_cast<float>(g.xres / 2 + circleMargin),
-            static_cast<float>(g.yres / 2)},
-        {static_cast<float>(g.xres / 2),
-            static_cast<float>(g.yres / 2 - circleMargin)},
-        {static_cast<float>(g.xres / 2),
-            static_cast<float>(g.yres / 2 + circleMargin)}
-    };
-
-    for (int i = 0; i < 4; i++) {
-        glPushMatrix();
-        glTranslatef(positions[i][0] + circleOffset, positions[i][1], 0.0f);
-
-        glBegin(GL_TRIANGLE_FAN);
-        glVertex2f(0, 0);
-        for (int j = 0; j <= 360; j += 10) {
-            float angle = j * M_PI / 180.0f;
-            glVertex2f(cos(angle) * radius, sin(angle) * radius);
-        }
-        glEnd();
-
-        glPopMatrix();
-    }
-
-    glPopMatrix();
-}
-
-void renderCarlosLevel()
-{
-    drawCircles();
-    drawTriangles();
-    dasonDrawWalls(carlos_walls, CARLOS_GRID_SIZE);
-}
-
-void carlosPhysics()
-{
-    dasonPhysics(1, 0, 0, NULL);
-}
-
-void carlosMaze()
-{
-    dasonLoadStruct(carlos_walls, wall_height, wall_width, wall_coordinate_x,
-                        wall_coordinate_y, CARLOS_GRID_SIZE);
-}*/

@@ -431,7 +431,8 @@ void render()
         // MADE makeStartScreen MODULAR TO GET RID OF REUSED CODE
         makeStartScreen(2);
         /*
-           float imageAspect = (float)ren[2].backgroundImage->width / ren[2].backgroundImage->height;
+           float imageAspect = (float)ren[2].backgroundImage->width 
+                                    / ren[2].backgroundImage->height;
            float screenAspect = (float)g.xres / g.yres;
            float quadWidth = g.xres;
            float quadHeight = g.yres;
@@ -450,7 +451,8 @@ void render()
            glBegin(GL_QUADS);
            glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset);
            glTexCoord2f(0.0, 0.0); glVertex2f(xOffset, yOffset + quadHeight); 
-           glTexCoord2f(1.0, 0.0); glVertex2f(xOffset + quadWidth, yOffset + quadHeight); 
+           glTexCoord2f(1.0, 0.0); 
+           glVertex2f(xOffset + quadWidth, yOffset + quadHeight);
            glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset);
            glEnd();
            */
