@@ -402,7 +402,10 @@ void render()
     }
     if (g.game_state == 4)
         seanrungame();
-
+    if (g.game_state == 12)
+    {
+        seanrungame2();
+    }
     if (g.game_state == 6) {
 
         makeStartScreen(1);
