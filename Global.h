@@ -132,10 +132,14 @@ class Global {
         float bounceHeight;
         int amt_of_stars[5];
         int hard_mode;
+        float fps;
+        int show_fps;
         ALuint alBuffer;
         ALuint alSource;
 
         Global() {
+            show_fps = 1;
+            fps = 45.0f;
             hard_mode = 0;
             key_states[256] = {false};
             //gravity = -0.5f;

@@ -223,12 +223,15 @@ void carlosPhysics() {
 void renderInstructions() {
     Rect title;
     title.bot = 450;
-    title.left = 800;
+    title.left = 15;
     title.center = 0;
     ggprint8b(&title, 16, 0x00000000, "A - Move Left");
     ggprint8b(&title, 16, 0x00000000, "W - Move Up");
     ggprint8b(&title, 16, 0x00000000, "S - Move Down");
     ggprint8b(&title, 16, 0x00000000, "D - Move Right");
     ggprint8b(&title, 16, 0x00000000, "C - Credits");
+    ggprint8b(&title, 16, 0x00000000, "Z - Toggle FPS");
+    ggprint8b(&title, 16, 0x00000000, "Up Arrow Key - Increase FPS");
+    ggprint8b(&title, 16, 0x00000000, "Down Arrow Key - Decrease FPS");
     ggprint8b(&title, 16, 0x00000000, "Q - Quit Level");
 }

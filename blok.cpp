@@ -199,6 +199,7 @@ int main()
 #pragma omp master
             {
                 while (x11.getXPending()) {
+
                     XEvent e = x11.getXNextEvent();
                     x11.check_resize(&e);
                     check_mouse(&e);
@@ -211,18 +212,19 @@ int main()
             }
             if (ID == 1) {
 #pragma omp single nowait
-            {
-                while (!done) {
-                _elapsed diff2 = _clock::now() - t2;
-                if (diff2.count() > (1.0f/15.0f)) {
-                    t2 = _clock::now();
-                    physics();
+                {
+                    while (!done) {
+                        _elapsed diff2 = _clock::now() - t2;
+                        if (diff2.count() > (1.0f/g.fps)) {
+                            t2 = _clock::now();
+                            physics();
+                        }
+                    }
                 }
-                }
-            }
             }
 #pragma omp master
             {
+
                 render();
                 x11.swapBuffers();
             }
@@ -487,6 +489,8 @@ void render()
     if (g.instructions) {
         renderInstructions();
     }
+    if (g.show_fps) 
+        renderFps();
 
     if (g.game_state == 99) {
         // MADE makeStartScreen MODULAR TO GET RID OF REUSED CODE

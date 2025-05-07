@@ -37,5 +37,6 @@ void dasonPlayerDeath(int x_spawn, int y_spawn);
 void dasonKeyChecks();
 void renderDeathCount();
 void dasonRender();
+void renderFps();
 
 #endif

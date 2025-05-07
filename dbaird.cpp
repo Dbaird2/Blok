@@ -307,6 +307,15 @@ void renderDeathCount()
 
 }
 
+void renderFps() 
+{
+    Rect fps;
+    fps.bot = 490;
+    fps.left = 150;
+    fps.center = 0;
+    ggprint8b(&fps, 0, 0x0044ff00, "FPS: %.0f", g.fps);
+}
+
 void init_dasonMazePlayer() 
 {
     /* coin_score = 0 fixes goal not being automatically ready */
@@ -825,6 +834,7 @@ void handleKeyRelease(XKeyEvent *event)
         g.key_states[keysym] = false;
 }
 
+bool value;
 void dasonKeyChecks () 
 {
     // HANDLES Q PRESS IN GAME LEVEL
@@ -839,6 +849,14 @@ void dasonKeyChecks ()
     }
     if (g.key_states[XK_f] && g.game_state == 0)
         g.game_state = 1;
+    value = (g.fps > 0.0f) ? true : false;
+    if (g.key_states[XK_minus] && value) 
+        g.fps -= 5.0f;
+    if (g.key_states[XK_equal]) 
+        g.fps += 5.0f;
+    if (g.key_states[XK_z])
+        g.show_fps = !g.show_fps;
+
 
 }
 
