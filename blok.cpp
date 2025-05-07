@@ -44,7 +44,7 @@ using namespace std;
 #define rnd() (float)rand() / (float)RAND_MAX
 #define MAX_PARTICLES 1000
 #define MAX_BOXES 7
- int played = 0;
+int played = 0;
 
 //some structures
 //
@@ -59,7 +59,7 @@ using _time         = std::chrono::time_point<_clock, _elapsed>;
 
 inline time_t current_time_t()
 {
-     return chrono::system_clock::to_time_t(chrono::system_clock::now());
+    return chrono::system_clock::to_time_t(chrono::system_clock::now());
 }
 
 static bool initL10 = false;
@@ -193,9 +193,10 @@ int main()
     omp_set_num_threads(2);
 #pragma omp parallel
     {
+        int ID = omp_get_thread_num();
         while (!done) {
             //look for external events such as keyboard, mouse.
-#pragma omp master 
+#pragma omp master
             {
                 while (x11.getXPending()) {
                     XEvent e = x11.getXNextEvent();
@@ -208,13 +209,17 @@ int main()
                      */
                 }
             }
+            if (ID == 1) {
 #pragma omp single nowait
             {
+                while (!done) {
                 _elapsed diff2 = _clock::now() - t2;
                 if (diff2.count() > (1.0f/15.0f)) {
                     t2 = _clock::now();
                     physics();
                 }
+                }
+            }
             }
 #pragma omp master
             {
@@ -453,13 +458,13 @@ void render()
     double dt  = now - lastTime;
     lastTime   = now;
     if (g.game_state == 10) {
-    if (!initL10) {
-        InitLevel10();
-        initL10 = true;
+        if (!initL10) {
+            InitLevel10();
+            initL10 = true;
+        }
+        UpdateLevel10(dt);
+        DrawLevel10();
     }
-    UpdateLevel10(dt);
-    DrawLevel10();
-}
     if ((g.game_state > 2 && g.game_state <= 7) || g.game_state == 0)  {
         drawPlayerBox(g.hard_mode);
 #ifdef MAP_HELP
@@ -488,7 +493,7 @@ void render()
         makeStartScreen(2);
         /*
            float imageAspect = (float)ren[2].backgroundImage->width 
-                                    / ren[2].backgroundImage->height;
+           / ren[2].backgroundImage->height;
            float screenAspect = (float)g.xres / g.yres;
            float quadWidth = g.xres;
            float quadHeight = g.yres;
