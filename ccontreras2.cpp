@@ -183,11 +183,6 @@ void carolinePhysics(void) {
     //isCircleCollidingWithSquare(portal, 2);
 }
 
-void carolineRender(void) {
-	//carolineDrawCircle(portal, 2);
-	dasonDrawWalls(caroWalls, CAROLINE_GRID_SIZE);
-	
-}
 float carolineedge = 100.0f;
 Entity carolineenemies[30] = {
     {300, 200, 20, 20, 30.0, 1},
@@ -195,13 +190,21 @@ Entity carolineenemies[30] = {
     {300, 200, 20, 20, 30.0, 1},
     {500, 400, 20, 20, 30.0, -1}
 };
-void carolineLevel(void) {
+void carolineRender(void) {
+	//carolineDrawCircle(portal, 2);
+	dasonDrawWalls(caroWalls, CAROLINE_GRID_SIZE);
 	SeanEnemiesVertical(0, 2, g.yres, carolineedge, carolineenemies);
 	SeanEnemiesHorizontal(2, 4, g.xres, carolineedge, carolineenemies);
+	
+}
+void carolineLevel(void) {
 	dasonLoadStruct(caroWalls, caro_height, caro_width,
 			caro_x, caro_y, CAROLINE_GRID_SIZE);
 	player.width = 46;
 	player.height = 12;
+    player.tempx = 40;
+    player.tempy = 20;
+
 }
 /* START OF ANIMATED INTRO */
 //=====================================================
