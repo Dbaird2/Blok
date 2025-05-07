@@ -27,15 +27,18 @@ using namespace std;
 #include "rbarreyroheader.h"
 #include <chrono>
 //Wall
-#define SEAN2_GRID_SIZE 3
+#define SEAN2_GRID_SIZE 1
 #define SEAN_GRID_SIZE 4
-#define SEAN_NUM_COINS 3
-#define SNAKE_LENGTH 10
+#define SEAN_NUM_COINS 10
+#define SNAKE_LENGTH 20
+float edge = 100.0f;
 struct SnakeSegment {
     float x, y;
 };
 SnakeSegment snake[SNAKE_LENGTH];
 float snakeSpeed = 2.0f;
+float snakeBaseSpeed = 2.0f; 
+int snakeSpeedTimer = 0;     
 Grid sean_grid[SEAN_GRID_SIZE];
 Grid sean2_grid[SEAN2_GRID_SIZE];
 int wallX = g.xres / 2 - 50;  
@@ -48,26 +51,35 @@ bool showPowerUpMessage = false;
 bool powerUpActive = false;
 int seanCollectedCoins = 0;
 vector<Coin> seanCoins;
-
-int sean2_height[SEAN2_GRID_SIZE] = {
-    topBarHeight,      
-    verticalHeight,    
-    verticalHeight    
+//SlowMo
+Entity slowmoPowerUp = {g.xres / 2.0f - 10, g.yres / 2.0f - 10, 20, 20, 0, 0};
+bool powerUpCollected = false;
+int powerUpTimer = 0;
+const int POWERUP_DURATION = 300; // ~5 seconds
+//Goal
+Entity goal = {800, 250, 25, 25, 0, 0};
+Entity goal2 = {800, 250, 25, 25, 0, 0};
+//Enemies
+Entity enemies[30] = {
+    {300, 200, 20, 20, 30.0, 1},
+    {500, 400, 20, 20, 30.0, -1},
+    {300, 200, 20, 20, 30.0, 1},
+    {500, 400, 20, 20, 30.0, -1}
 };
 int sean2_width[SEAN2_GRID_SIZE] = {
-    topBarWidth,
-    verticalWidth,
-    verticalWidth
+    5
 };
+
+int sean2_height[SEAN2_GRID_SIZE] = {
+    40
+};
+
 int sean2xpos[SEAN2_GRID_SIZE] = {
-    wallX,                                       
-    wallX,                                       
-    wallX + topBarWidth - verticalWidth          
+    static_cast<int>(slowmoPowerUp.x + 50) 
 };
+
 int sean2ypos[SEAN2_GRID_SIZE] = {
-    wallY + verticalHeight,  
-    wallY,                  
-    wallY
+    static_cast<int>(slowmoPowerUp.y) 
 };
 int sean_width[SEAN_GRID_SIZE] = {
     g.xres / 2,
@@ -99,8 +111,7 @@ void seanLevel()
     dasonLoadStruct(sean_grid, sean_height, sean_width, seanxpos, seanypos, SEAN_GRID_SIZE);
     dasonLoadStruct(sean2_grid, sean2_height, sean2_width, sean2xpos, sean2ypos, SEAN2_GRID_SIZE);
 }
-//Margin
-float edge = 100.0f;
+
 struct Projectile {
     float x, y;
     float dx, dy;
@@ -111,14 +122,13 @@ struct Projectile {
 using _clock        = std::chrono::steady_clock;
 using _elapsed      = std::chrono::duration<double>;
 using _time         = std::chrono::time_point<_clock, _elapsed>;
-
 inline time_t current_time_t()
 {
     return chrono::system_clock::to_time_t(chrono::system_clock::now());
 }
 const int MAX_PROJECTILES = 100;
 Projectile projectiles[MAX_PROJECTILES];
-Entity triangleEnemies[2] = {
+Entity triangleEnemies[4] = {
     {
         static_cast<float>(g.xres) - edge - 20.0f,
         static_cast<float>(g.yres) - edge,
@@ -130,7 +140,19 @@ Entity triangleEnemies[2] = {
         edge,
         20.0f, 20.0f,
         0.0f, 0.0f
-    }
+    },
+     {
+        static_cast<float>(g.xres) / 2 ,
+        static_cast<float>(g.yres) - edge,
+        20.0f, 20.0f,
+        0.0f, 0.0f
+    },
+    {
+        static_cast<float>(g.xres) / 2,
+        edge, 
+        20.0f, 20.0f,
+        0.0f, 0.0f
+    },
 };
 void SeanUpdateProjectiles() {
     for (int i = 0; i < MAX_PROJECTILES; ++i) {
@@ -191,7 +213,6 @@ void SeanDrawProjectiles() {
     }
 }
 void SeanFireProjectileAtPlayer(Entity &enemy) {
-       
     for (int i = 0; i < MAX_PROJECTILES; ++i) {
         if (!projectiles[i].active) {
             float dx = player.pos[0] - enemy.x;
@@ -233,28 +254,6 @@ void seanEndCredit(void) {
     title.center = 0;
     ggprint8b(&title, 16, 0x00ff0000, "Author 5: Sean Toledo");
 }
-//Entity
-/*struct Entity {
-    float x, y;
-    float width, height;  
-    float speed;
-};*/
-//SlowMo
-Entity slowmoPowerUp = {g.xres / 2.0f - 10, g.yres / 2.0f - 10, 20, 20, 0, 0};
-bool powerUpCollected = false;
-int powerUpTimer = 0;
-const int POWERUP_DURATION = 300; // ~5 seconds
-
-//Goal
-Entity goal = {800, 250, 25, 25, 0, 0};
-Entity goal2 = {800, 250, 25, 25, 0, 0};
-//Enemies
-Entity enemies[30] = {
-    {300, 200, 20, 20, 30.0, 1},
-    {500, 400, 20, 20, 30.0, -1},
-    {300, 200, 20, 20, 30.0, 1},
-    {500, 400, 20, 20, 30.0, -1}
-};
 //Enemy Direction
 //Draw Enemy Rectangle
 void SeanDrawRect(float x, float y, float width, float height,
@@ -270,11 +269,10 @@ void SeanDrawRect(float x, float y, float width, float height,
     glVertex2f(x, y + height);
     glEnd();
 }
-
 //Enemy Movement
 void SeanEnemiesVertical(int start, int end, 
         int yBoundary, int margin, Entity enemies[]) {
-    for (int i = start; i < end; i++) {
+    for (int i = start; i < end; ++i) {
         float actualSpeed = enemies[i].speed * (powerUpActive ? 0.5f :1.0f);
         enemies[i].y += enemies[i].dir * actualSpeed;
 
@@ -282,10 +280,9 @@ void SeanEnemiesVertical(int start, int end,
             enemies[i].dir *= -1;
     }
 }
-
 void SeanEnemiesHorizontal(int start, int end, 
         int xBoundary, int margin, Entity enemies[]) {
-    for (int i = start; i < end; i++) {
+    for (int i = start; i < end; ++i) {
         float actualSpeed = enemies[i].speed * (powerUpActive ? 0.5f : 1.0f);
         enemies[i].x += enemies[i].dir * actualSpeed;
         if (enemies[i].x <= margin || enemies[i].x >= xBoundary - margin)
@@ -340,10 +337,10 @@ void seanrungame() {
         SeanEnemiesVertical(0, 2, g.yres, edge, enemies);
         SeanEnemiesHorizontal(2, 4, g.xres, edge, enemies);
         SeanDrawProjectiles();
-        for (int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 4; ++i) {
         SeanDrawTriangleEnemy(triangleEnemies[i]);
         SeanDrawRect(goal.x, goal.y, goal.width, goal.height, 0, 1, 0);
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 4; ++i)
         SeanDrawRect(enemies[i].x, enemies[i].y, enemies[i].width, 
                 enemies[i].height,1, 0, 0);
         }
@@ -381,19 +378,19 @@ void seanrungame() {
         if (triangleShootingCooldownFrames <= 0 &&
             !(player.pos[0] == 50 && player.pos[1] == 250)) {
             if (++fireCooldown > 15) {
-                for (int i = 0; i < 2; ++i) {
+                for (int i = 0; i < 4; ++i) {
                     SeanFireProjectileAtPlayer(triangleEnemies[i]);
                 }
                 fireCooldown = 0;
             }
         }
-
             for (int i = 0; i < 4; i++) {
             if (SeanCheckCollision(enemies[i])) {
             player.tempx = 50;
             player.tempy = 250; 
             deathcounter++;
             powerUpActive = false;
+            clearAllProjectiles();
             triangleShootingCooldownFrames = 180; // RESET COOLDOWN
             }
             }
@@ -410,13 +407,13 @@ void seanrungame() {
             player.tempy = 250;
             deathcounter++;
             powerUpActive = false;
+            clearAllProjectiles();
             triangleShootingCooldownFrames = 180; // RESET COOLDOWN
             }
             if (triangleShootingCooldownFrames > 0) {
             triangleShootingCooldownFrames--;
             }
             }
-        
 }
 }
 void seanrungame2()
@@ -436,20 +433,27 @@ void seanrungame2()
             seanCoins.push_back({150, 250, false, 250, 20.0f, 2.0f, 0.0f, 10});
             seanCoins.push_back({300, 350, false, 350, 20.0f, 2.5f, 0.0f, 10});
             seanCoins.push_back({600, 100, false, 100, 20.0f, 2.8f, 0.0f, 10});
+            seanCoins.push_back({750, 250, false, 550, 20.0f, 2.0f, 0.0f, 10});
+            seanCoins.push_back({900, 350, false, 150, 20.0f, 2.5f, 0.0f, 10});
+            seanCoins.push_back({100, 100, false, 200, 20.0f, 2.8f, 0.0f, 10});
+            seanCoins.push_back({300, 350, false, 350, 20.0f, 2.5f, 0.0f, 10});
+            seanCoins.push_back({600, 100, false, 100, 20.0f, 2.8f, 0.0f, 10});
+            seanCoins.push_back({750, 250, false, 550, 20.0f, 2.0f, 0.0f, 10});
+            seanCoins.push_back({900, 350, false, 150, 20.0f, 2.5f, 0.0f, 10});
+            seanCoins.push_back({100, 100, false, 200, 20.0f, 2.8f, 0.0f, 10});
         }
         drawPlayerBox(0);
             for (int i = 0; i < SNAKE_LENGTH; ++i) {
         SeanDrawRect(snake[i].x, snake[i].y, 10, 10, 0.0f, 0.0f, 0.0f); 
         }
-
         Rect r;
         r.bot = 80;          // vertical position (adjust as needed)
         r.left = 100;        // horizontal position
         r.center = 0;
         ggprint8b(&r, 16, 0x000000, "Coins: %d", seanCollectedCoins);
         SeanDrawRect(goal2.x, goal2.y, goal2.width, goal2.height, 0, 1, 0);
-        if (SeanCheckCollision(goal2)&& seanCollectedCoins >= 30) {
-                    g.game_state = 13;
+        if (SeanCheckCollision(goal2)&& seanCollectedCoins >= 50) {
+                    g.game_state = 9;
                     if (g.amt_of_stars[2] < 1)
                         g.amt_of_stars[2]++;
                 }
@@ -469,7 +473,12 @@ void seanrungame2()
         snakeSegment.y = snake[i].y;
         snakeSegment.width = 10;
         snakeSegment.height = 10;
-
+        // Increase speed every second (~60 frames)
+        snakeSpeedTimer++;
+        if (snakeSpeedTimer >= 240) {
+            snakeSpeed += 0.2f;
+            snakeSpeedTimer = 0;
+        }
         if (SeanCheckCollision(snakeSegment)) {
             player.tempx = 50;
             player.tempy = 250;
@@ -478,10 +487,10 @@ void seanrungame2()
             clearAllProjectiles();
             initialized2 = false;
             powerUpActive = false;
+            snakeSpeed = snakeBaseSpeed;
+            snakeSpeedTimer = 0;
         }
 }
-
-
         float dx = player.pos[0] - snake[0].x;
         float dy = player.pos[1] - snake[0].y;
         float dist = sqrt(dx*dx + dy*dy);
@@ -495,7 +504,6 @@ void seanrungame2()
             snake[i].x = snake[i - 1].x;
             snake[i].y = snake[i - 1].y;
         }
-
         dasonDrawWalls(sean_grid, SEAN_GRID_SIZE);
         dasonPhysics(SEAN_GRID_SIZE, 0, 0, NULL);
     }
