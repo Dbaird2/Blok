@@ -178,23 +178,35 @@ void carolineEndCredit (void)
 	ggprint8b(&title, 16, 0x00ff0000, "Author 4: Caroline Contreras");
 }
 
-void carolinePhysics(void) {
-	dasonPhysics(CAROLINE_GRID_SIZE, 0, 0, NULL);
-    //isCircleCollidingWithSquare(portal, 2);
-}
-
 float carolineedge = 100.0f;
-Entity carolineenemies[30] = {
+Entity carolineenemies[4] = {
     {300, 200, 20, 20, 30.0, 1},
     {500, 400, 20, 20, 30.0, -1},
     {300, 200, 20, 20, 30.0, 1},
     {500, 400, 20, 20, 30.0, -1}
 };
+void carolinePhysics(void) {
+	dasonPhysics(CAROLINE_GRID_SIZE, 0, 0, NULL);
+    //isCircleCollidingWithSquare(portal, 2);
+	SeanEnemiesVertical(0, 2, g.yres, carolineedge, carolineenemies);
+	SeanEnemiesHorizontal(2, 4, g.xres, carolineedge, carolineenemies);
+    for (int i = 0; i < 4; i++)
+        if (SeanCheckCollision(carolineenemies[i])) {
+            carolineLevel();
+            player.death++;
+        }
+        
+}
+
+
+
 void carolineRender(void) {
 	//carolineDrawCircle(portal, 2);
 	dasonDrawWalls(caroWalls, CAROLINE_GRID_SIZE);
-	SeanEnemiesVertical(0, 2, g.yres, carolineedge, carolineenemies);
-	SeanEnemiesHorizontal(2, 4, g.xres, carolineedge, carolineenemies);
+    for (int i = 0; i < 4; i++) 
+    SeanDrawRect(carolineenemies[i].x,carolineenemies[i].y,
+            carolineenemies[i].width,carolineenemies[i].height,
+            1.0f,0.0f,0.0f);
 	
 }
 void carolineLevel(void) {

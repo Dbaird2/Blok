@@ -53,6 +53,14 @@ Wall walls[100];
 Wall growing_boxes[10];
 Grid growing_box[15];
 ImageRenderer ren[5];
+using _clock        = std::chrono::steady_clock;
+using _elapsed      = std::chrono::duration<double>;
+using _time         = std::chrono::time_point<_clock, _elapsed>;
+
+inline time_t current_time_t()
+{
+     return chrono::system_clock::to_time_t(chrono::system_clock::now());
+}
 
 static bool initL10 = false;
 static double getTime() {
@@ -176,26 +184,44 @@ class X11_wrapper {
 
 int main()
 {
+    auto t2 = _clock::now();
     initSound();
     init_opengl();
     int done = 0;
     initIntroLevel();
     //main game loop
-    while (!done) {
-        //look for external events such as keyboard, mouse.
-        while (x11.getXPending()) {
-            XEvent e = x11.getXNextEvent();
-            x11.check_resize(&e);
-            check_mouse(&e);
-            done = check_keys(&e);
-            /* Bug found
-             * caused jittery movement
-              processMovement();
-              */
+    omp_set_num_threads(2);
+#pragma omp parallel
+    {
+        while (!done) {
+            //look for external events such as keyboard, mouse.
+#pragma omp master 
+            {
+                while (x11.getXPending()) {
+                    XEvent e = x11.getXNextEvent();
+                    x11.check_resize(&e);
+                    check_mouse(&e);
+                    done = check_keys(&e);
+                    /* Bug found
+                     * caused jittery movement
+                     processMovement();
+                     */
+                }
+            }
+#pragma omp single nowait
+            {
+                _elapsed diff2 = _clock::now() - t2;
+                if (diff2.count() > (1.0f/15.0f)) {
+                    t2 = _clock::now();
+                    physics();
+                }
+            }
+#pragma omp master
+            {
+                render();
+                x11.swapBuffers();
+            }
         }
-        physics();
-        render();
-        x11.swapBuffers();
     }
 
     cleanupSound(g.alSource, g.alBuffer);
@@ -434,9 +460,8 @@ void render()
     UpdateLevel10(dt);
     DrawLevel10();
 }
-
     if ((g.game_state > 2 && g.game_state <= 7) || g.game_state == 0)  {
-        drawPlayerBox(0);
+        drawPlayerBox(g.hard_mode);
 #ifdef MAP_HELP
         if ( i % 10  == 0) {
             cout << "x " << player.pos[0] << " y " << player.pos[1] << endl;

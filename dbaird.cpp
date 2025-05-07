@@ -134,12 +134,14 @@ void getRandomColors(vector<vector<double>>& vec)
     }
 }
 
-void drawStar(float cx, float cy)
+void drawStar()
 {
     const int num_points = 5;
     float angle = M_PI / 2.0f;
     float outer_radius = 40.0f;
     float inner_radius = 15.0f;
+    float cy = 400.0f;
+    float cx = 220.0f;
 
     int valid_stars = 0;
     for (int i = 0; i < 5; i++) {
@@ -149,7 +151,7 @@ void drawStar(float cx, float cy)
     }
 
     for (int j = 0; j < valid_stars; j++) {
-        cx = 100.0f*(float)j+100;
+        cx = 100.0f*(float)j+220;
         glPushMatrix();
         glBegin(GL_TRIANGLE_FAN);
         glColor3f(1.0f, 0.75f, 0.0f);
@@ -309,6 +311,7 @@ void init_dasonMazePlayer()
 {
     /* coin_score = 0 fixes goal not being automatically ready */
     coin_score = 0;
+    g.hard_mode = rand() % 2;
 
     dasonCoins.clear();
     t1 = _clock::now();
@@ -776,7 +779,7 @@ void drawBoxes()
         }
         g.animationTime += 0.6f;
     } 
-            drawStar(100.0f, 400.0f);
+            drawStar();
 }
 /*----------------------------------------------------*/
 
@@ -824,17 +827,18 @@ void handleKeyRelease(XKeyEvent *event)
 
 void dasonKeyChecks () 
 {
+    // HANDLES Q PRESS IN GAME LEVEL
     if (g.key_states[XK_q] && g.game_state >= 3 && g.game_state <= 7) {
         // Part of Algorithm library
         // It will reset all of walls back to Constructor values
         g.game_state = 99;
+        g.hard_mode = 0;
         fill(walls, walls + 100, Wall());
         player.death_count = 0;
         //g.game_state = 2;
     }
-    if (g.key_states[XK_f]) {
+    if (g.key_states[XK_f] && g.game_state == 0)
         g.game_state = 1;
-    }
 
 }
 

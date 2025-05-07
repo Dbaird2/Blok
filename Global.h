@@ -131,10 +131,12 @@ class Global {
         float animationTime;
         float bounceHeight;
         int amt_of_stars[5];
+        int hard_mode;
         ALuint alBuffer;
         ALuint alSource;
 
         Global() {
+            hard_mode = 0;
             key_states[256] = {false};
             //gravity = -0.5f;
             credit = 0;
