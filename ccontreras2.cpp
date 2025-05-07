@@ -193,7 +193,7 @@ void carolinePhysics(void) {
     for (int i = 0; i < 4; i++)
         if (SeanCheckCollision(carolineenemies[i])) {
             carolineLevel();
-            player.death++;
+            player.death_count++;
         }
         
 }
