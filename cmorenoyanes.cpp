@@ -55,7 +55,7 @@ void carlosEndCredit() {
     r.bot = 100;
     r.left = 10;
     r.center = 0;
-    ggprint8b(&r, 16, 0x00ff0000, "Congratulations! You beat Carlos' Level.");
+    ggprint8b(&r, 16, 0x00ff0000, "Author 2: Carlos Moreno.");
 }
 
 void carlosMaze() {

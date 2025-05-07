@@ -3,6 +3,7 @@
 
 #include "Global.h"
 
+void carlosEndCredit();
 void renderCarlosLevel();
 void renderInstructions();
 void carlosPhysics();
