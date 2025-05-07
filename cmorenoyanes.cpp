@@ -52,10 +52,10 @@ int carlosCollectedCoins = 0;
 
 void carlosEndCredit() {
     Rect r;
-    r.bot = 100;
+    r.bot = 66;
     r.left = 10;
     r.center = 0;
-    ggprint8b(&r, 16, 0x00ff0000, "Author 2: Carlos Moreno.");
+    ggprint8b(&r, 16, 0x00ff0000, "Author 2: Carlos Moreno");
 }
 
 void carlosMaze() {
