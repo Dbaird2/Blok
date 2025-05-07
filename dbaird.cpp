@@ -697,14 +697,15 @@ void drawBoxes()
 
             rect.bot = box->pos[1]-7;
             rect.center = 0;
+
+            /* Bouncing effect for start menu */
             float bounceOffset = sin(g.animationTime) * g.bounceHeight;
             if (i == 0)
                 box->pos[1] += bounceOffset;
             if (i == 1)
                 box->pos[1] += bounceOffset;
-            if (i == 2) {
+            if (i == 2) 
                 box->pos[1] += bounceOffset+sin(g.animationTime);
-            }
 
             switch (i)
             {
