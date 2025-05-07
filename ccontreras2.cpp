@@ -54,13 +54,9 @@ void initSound()
 	alListenerfv(AL_ORIENTATION, vec);
     alListenerf(AL_GAIN, 1.0f);
     //alSource3f(alSource, AL_POSITION, 0.0f, 0.0f, 0.0f);
-	
-	//Buffer holds the sound information.
-	//FIX THIS CODE BELOW
 	g.alBuffer = alutCreateBufferFromFile("./output.wav");
     if (g.alBuffer == AL_NONE) {
     }
-	//winScreen = alutCreateBufferFromFile("./src/sounds/");
 	//Source refers to the sound.
 	//Generate a source, and store it in a buffer.
 	alGenSources(1, &g.alSource);
