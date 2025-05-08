@@ -4,6 +4,7 @@
  * Assignment: blok               *
  **********************************/
 #include "fonts.h"
+#include "caroline.h"
 #include "cmorenoyanesheader.h"
 #include "dbairdheader.h"
 #include "rbarreyroheader.h"
@@ -25,30 +26,31 @@ struct Projectile {
     bool active;
 };
 
-Grid carlos_walls[CARLOS_GRID_SIZE];
-int wall_height[CARLOS_GRID_SIZE] = {
-    5, 500, 5, 500, 5, 50, 5, 25, 5, 25
-};
-int wall_width[CARLOS_GRID_SIZE] = {
-    900, 5, 900, 5, 450, 5, 100, 5, 40, 5
-};
-int wall_coordinate_x[CARLOS_GRID_SIZE] = {
-    0, 895, 0, 5, 0, 445, 350, 255, 290, 325
-};
-int wall_coordinate_y[CARLOS_GRID_SIZE] = {
-    5, 0, 495, 0, 200, 250, 300, 275, 250, 275
-};
-
 float circleOffset = 0.0f;
 bool direction = true;
-
-Entity carlosTriangles[2];
+Teleportal carlosPortals[4];
+Entity carlosTriangles[3];
 float triangleCooldown[2] = {0.0f, 0.0f};
 Entity carlosCircles[4];
 Projectile carlosProjectiles[MAX_CARLOS_PROJECTILES];
 vector<Coin> carlosCoins;
-Entity carlosGoal = {850, 450, 20, 20, 0, 0};
+Entity carlosGoal = {265, 270, 20, 20, 0, 0};
 int carlosCollectedCoins = 0;
+
+Grid carlos_walls[CARLOS_GRID_SIZE];
+int wall_height[CARLOS_GRID_SIZE] = {
+    5, 500, 5, 500, 5, 50, 5, 25, 5, 25, 50, 5, 25, 5, 5, 50, 55, 5, 30
+};
+int wall_width[CARLOS_GRID_SIZE] = {
+    900, 5, 900, 5, 450, 5, 100, 5, 40, 5, 5, 50, 5, 30, 40, 5, 5, 40, 5
+};
+int wall_coordinate_x[CARLOS_GRID_SIZE] = {
+    0, 895, 0, 5, 0, 445, 350, 255, 290, 325, 700, 745, 795, 770, 45, 80, 750, 790, 830
+};
+int wall_coordinate_y[CARLOS_GRID_SIZE] = {
+    5, 0, 495, 0, 200, 250, 300, 275, 250, 275, 450, 400, 420, 445, 400, 450, 55, 105, 80
+};
+
 
 void carlosEndCredit() {
     Rect r;
@@ -64,28 +66,45 @@ void carlosMaze() {
 
     carlosCoins.clear();
 
-    carlosTriangles[0] = {100.0f, 400.0f, 20.0f, 20.0f, 0.0f, 0.0f};
+    carlosTriangles[0] = {180.0f, 400.0f, 20.0f, 20.0f, 0.0f, 0.0f};
     carlosTriangles[1] = {200.0f, 100.0f, 20.0f, 20.0f, 0.0f, 0.0f};
+    carlosTriangles[2] = {800.0f, 360.0f, 20.0f, 20.0f, 0.0f, 0.0f};
     triangleCooldown[0] = triangleCooldown[1] = 0.0f;
 
-    carlosCircles[0] = {400, 250, 20, 20, 2.0f, 1};
-    carlosCircles[1] = {500, 250, 20, 20, 2.0f, -1};
-    carlosCircles[2] = {600, 250, 20, 20, 2.0f, 1};
+    carlosCircles[0] = {400, 380, 20, 20, 2.0f, 1};
+    carlosCircles[1] = {500, 20, 20, 20, 2.0f, -1};
+    carlosCircles[2] = {600, 140, 20, 20, 2.0f, 1};
     carlosCircles[3] = {700, 250, 20, 20, 2.0f, -1};
 
-    carlosCoins.push_back({150, 250, false, 250, 20.0f, 2.0f, 0.0f, 10});
-    carlosCoins.push_back({300, 350, false, 350, 20.0f, 2.5f, 0.0f, 10});
+    carlosCoins.push_back({400, 230, false, 250, 20.0f, 2.0f, 0.0f, 10});
+    carlosCoins.push_back({350, 400, false, 350, 20.0f, 2.5f, 0.0f, 10});
     carlosCoins.push_back({600, 100, false, 100, 20.0f, 2.8f, 0.0f, 10});
+    carlosCoins.push_back({30, 470, false, 470, 20.0f, 2.8f, 0.0f, 10});
 
     player.tempx = 20;
     player.tempy = 20;
     player.width = 10;
     player.height = 10;
     carlosCollectedCoins = 0;
+
+    // portal id, PI, cX, cY, r, segments;
+    for (int i = 0; i < 4; i++) {
+        carlosPortals[i].r = 5.0f;
+    }
+    carlosPortals[0].cX = 310;
+    carlosPortals[0].cY = 265;
+    carlosPortals[1].cX = 775;
+    carlosPortals[1].cY = 425;
+    carlosPortals[2].cX = 60;
+    carlosPortals[2].cY = 430;
+    carlosPortals[3].portal_id = 2;
+    carlosPortals[3].cX = 780;
+    carlosPortals[3].cY = 80;
+    carlosPortals[2].portal_id = 2;
 }
 
 void drawTriangles() {
-    for (int i = 0; i < 2; ++i) {
+    for (int i = 0; i < 3; ++i) {
         Entity &e = carlosTriangles[i];
         glColor3f(1.0, 0, 0);
         glBegin(GL_TRIANGLES);
@@ -167,7 +186,7 @@ void drawCarlosProjectiles() {
             SeanDrawRect(carlosProjectiles[i].x, carlosProjectiles[i].y,
                          carlosProjectiles[i].width, 
                          carlosProjectiles[i].height,
-                         1.0f, 1.0f, 0.0f);
+                         1.0f, 0.0f, 0.0f);
         }
     }
 }
@@ -181,6 +200,7 @@ void renderCarlosLevel() {
     drawCarlosProjectiles();
     SeanDrawRect(carlosGoal.x, carlosGoal.y, carlosGoal.width,
                          carlosGoal.height, 0.0, 1.0, 0.0);
+    carolineDrawCircle(carlosPortals, 4);
 }
 
 void carlosPhysics() {
@@ -218,6 +238,7 @@ void carlosPhysics() {
         carlosEndCredit();
         g.game_state = 9;
     }
+    isCircleCollidingWithSquare(carlosPortals, 4);
 }
 
 void renderInstructions() {

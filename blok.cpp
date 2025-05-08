@@ -384,7 +384,6 @@ void init_opengl(void)
     dasonRenderBackground();
 
     carolineDisplayWinScreen();
-    carlosMaze();
 }
 
 
