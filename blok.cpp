@@ -60,6 +60,10 @@ using _time         = std::chrono::time_point<_clock, _elapsed>;
 inline time_t current_time_t()
 {
     return chrono::system_clock::to_time_t(chrono::system_clock::now());
+}
+
+static bool initL10 = false;
+static double getTime() {
     using namespace std::chrono;
     static auto t0 = high_resolution_clock::now();
     auto t1 = high_resolution_clock::now();
@@ -69,12 +73,11 @@ inline time_t current_time_t()
 
 MenuBox boxes[MAX_BOXES];
 Player player;
-Image img[5] = {
+Image img[4] = {
     "./background.png",
     "./minecraft_image.png",
     "./winScreen.png",
-    "./failscreen.png",
-    "./lvl10.png"
+    "./failscreen.png"
 };
 void init_opengl(void);
 void physics(void);
@@ -377,17 +380,6 @@ void init_opengl(void)
     glEnable(GL_TEXTURE_2D);
     initialize_fonts();
 
-    // Load lvl10.png as menu/level select background
-    ren[4].backgroundImage = &img[4];
-    glGenTextures(1, &ren[4].backgroundTexture);
-    int w = ren[4].backgroundImage->width;
-    int h = ren[4].backgroundImage->height;
-    glBindTexture(GL_TEXTURE_2D, ren[4].backgroundTexture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
-            GL_RGB, GL_UNSIGNED_BYTE, ren[4].backgroundImage->data);
-
     dasonMazeLevelBackground();
     dasonRenderBackground();
 
@@ -429,11 +421,13 @@ void render()
     }
     // DRAW ALL BOXES
     if (g.game_state == 1) {
-        makeStartScreen(4);
+        makeStartScreen(0);
         drawBoxes();
+
     }
     if (g.game_state == 2) {
-        makeStartScreen(4);
+
+        makeStartScreen(0);
         drawBoxes();
     }
     if (g.game_state == 3) {
@@ -446,6 +440,7 @@ void render()
         seanrungame2();
     }
     if (g.game_state == 6) {
+
         makeStartScreen(1);
         dasonMazeRender();
     }
@@ -460,10 +455,18 @@ void render()
             played = 1;
         }
     }
-   if (g.game_state == 10) {
-       makeStartScreen(4); // Use lvl10.png as background
-        rbarreyroRunGame10();
+    static double lastTime = getTime();
+    double now = getTime();
+    double dt  = now - lastTime;
+    lastTime   = now;
+    if (g.game_state == 10) {
+        if (!initL10) {
+            InitLevel10();
+            initL10 = true;
         }
+        UpdateLevel10(dt);
+        DrawLevel10();
+    }
     if ((g.game_state > 2 && g.game_state <= 7) || g.game_state == 0)  {
         drawPlayerBox(g.hard_mode);
 #ifdef MAP_HELP

@@ -30,7 +30,6 @@
  
  // Core game loop
  void rbarreyroRunGame();
- void rbarreyroRunGame10();
  void rjEndCredit();
  void russLevel();
  // Level setup & draw utilities
@@ -74,5 +73,44 @@
      float detectionRadius;
  };
 
+//-----------------------------------------------------------------------
+//lvl 10 types
+struct L10_Projectile {
+    float x,y,w,h, dx,dy, speed;
+    bool  active;
+};
 
+struct L10_PowerUp {
+    float x,y;
+    int   type;
+    bool  active, collected;
+};
+
+struct L10_Laser {
+    float x,y,length,angle;
+    float toggleRate, phase;
+    bool  on;
+};
+
+//lvl 10 globals 
+extern std::vector<L10_Projectile> projectiles10;
+extern std::vector<RB_Entity>      triangleEnemies10;
+extern std::vector<L10_PowerUp>    powerUps10;
+extern std::vector<Coin>           coins10;
+extern RB_Entity                   portalA10, portalB10;
+extern std::vector<L10_Laser>      lasers10;
+extern RB_Entity                   growingBox10;
+extern float                       growFactor10;
+extern bool                        growing10;
+extern RB_Entity                   goal10;
+
+// The wall for Level 10 
+extern Grid        level10Grid[];
+extern const int   LEVEL10_GRID_SIZE;
+
+// LEVEL 10 API
+void InitLevel10();
+void UpdateLevel10(double dt);
+void DrawLevel10();
+ 
  #endif // RBARREYRO_HEADER_H
