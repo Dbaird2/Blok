@@ -13,7 +13,7 @@
 #include <ctime>
 using namespace std;
 
-#define CARLOS_GRID_SIZE 6
+#define CARLOS_GRID_SIZE 100
 #define MAX_CARLOS_PROJECTILES 20
 #define CARLOS_NUM_COINS 3
 
@@ -27,16 +27,16 @@ struct Projectile {
 
 Grid carlos_walls[CARLOS_GRID_SIZE];
 int wall_height[CARLOS_GRID_SIZE] = {
-    5, 500, 5, 500, 5, 50
+    5, 500, 5, 500, 5, 50, 5, 25, 5, 25
 };
 int wall_width[CARLOS_GRID_SIZE] = {
-    900, 5, 900, 5, 450, 5
+    900, 5, 900, 5, 450, 5, 100, 5, 40, 5
 };
 int wall_coordinate_x[CARLOS_GRID_SIZE] = {
-    0, 895, 0, 5, 0, 445
+    0, 895, 0, 5, 0, 445, 350, 255, 290, 325
 };
 int wall_coordinate_y[CARLOS_GRID_SIZE] = {
-    5, 0, 495, 0, 200, 200
+    5, 0, 495, 0, 200, 250, 300, 275, 250, 275
 };
 
 float circleOffset = 0.0f;
