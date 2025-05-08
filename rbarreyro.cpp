@@ -90,9 +90,9 @@ void RB_InitializeLevel() {
         {{200, 500, 20, 20, 2.5f, true}, CHASER, 0, 0, 0, 180.0f}
     };
 
-    powerUps.push_back(PowerUp(220, 280, SPEED, false));
-    powerUps.push_back(PowerUp(120, 180, SPEED, false));
-    powerUps.push_back(PowerUp(320, 400, SPEED, false));
+    powerUps.push_back(PowerUp(220, 280, SPEED, true));
+    powerUps.push_back(PowerUp(120, 180, SPEED, true));
+    powerUps.push_back(PowerUp(320, 400, SPEED, true));
 
     float mazeCoins[NUM_COINS][2] = {
         {100, 100}, {180, 220}, {260, 340}, {340, 220},
@@ -255,6 +255,17 @@ void DrawPowerUps() {
     }
 }
 
+void DrawBorder(float x, float y, float w, float h, float thickness) {
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glLineWidth(thickness);
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(x, y);
+    glVertex2f(x + w, y);
+    glVertex2f(x + w, y + h);
+    glVertex2f(x, y + h);
+    glEnd();
+}
+
 // -----------------------------------------------------------
 // Main Level Logic Entry Point
 // -----------------------------------------------------------
@@ -311,7 +322,39 @@ void rbarreyroRunGame() {
             }
         }
     }
+
+    DrawBorder(0, 0, g.xres, g.yres, 4.0f);
 }
+
+// Renders lvl10.png as the background for game state 10
+void RB_DrawLevel10Background() {
+    // Use ren[4] for lvl10.png (already loaded in blok.cpp)
+    float quadWidth = g.xres;
+    float quadHeight = g.yres;
+    float screenAspect = static_cast<float>(g.xres) / g.yres;
+    float imageAspect = static_cast<float>(ren[4].backgroundImage->width) / ren[4].backgroundImage->height;
+
+    // Adjust width/height based on aspect ratio
+    if (screenAspect > imageAspect) {
+        quadWidth = g.yres * imageAspect;
+    } else {
+        quadHeight = g.xres / imageAspect;
+    }
+
+    // Center the image in the viewport
+    float xOffset = (g.xres - quadWidth) / 2.0f;
+    float yOffset = (g.yres - quadHeight) / 2.0f;
+
+    glBindTexture(GL_TEXTURE_2D, ren[4].backgroundTexture);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset);
+    glTexCoord2f(0.0, 0.0); glVertex2f(xOffset, yOffset + quadHeight);
+    glTexCoord2f(1.0, 0.0); glVertex2f(xOffset + quadWidth, yOffset + quadHeight);
+    glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset);
+    glEnd();
+}
+
 // -----------------------------------------------------------
 // Quit Handling
 // -----------------------------------------------------------
@@ -324,179 +367,22 @@ void check_quit(XEvent *e) {
     }
 }
 
-// -----------------------------------------------------------
-// EVEL 10 GLOBAL DEFINITIONS 
-// -----------------------------------------------------------
-std::vector<L10_Projectile> projectiles10;
-std::vector<RB_Entity>      triangleEnemies10;
-std::vector<L10_PowerUp>    powerUps10;
-std::vector<Coin>           coins10;
-RB_Entity                   portalA10, portalB10;
-std::vector<L10_Laser>      lasers10;
-RB_Entity                   growingBox10;
-float                       growFactor10;
-bool                        growing10;
-RB_Entity                   goal10;
-
-// -----------------------------------------------------------
-// LEVEL 10 IMPLEMENTATION 
-// -----------------------------------------------------------
-void InitLevel10() 
-{
-    projectiles10.clear();
-    triangleEnemies10.clear();
-    powerUps10.clear();
-    coins10.clear();
-    lasers10.clear();
-    growFactor10 = 1.0f;
-    growing10   = true;
-
-    // Player spawn
-    player.tempx = 60; player.tempy = 60;
-
-    // Portals
-    portalA10 = {100,100,20,20,0.0f,true};
-    portalB10 = {700,400,20,20,0.0f,true};
-
-    // Goal
-    goal10 = {820,250,25,25,0.0f,true};
-
-    // Coins (reuse your Coin struct)
-    float pts[10][2] = {
-        {120,120},{240,200},{360,280},{480,360},{600,440},
-        {720,360},{840,280},{360,120},{600,120},{120,360}
-    };
-    for (int i = 0; i < 10; ++i) {
-        coins10.push_back({
-                pts[i][0], pts[i][1],
-                false,        // collected
-                pts[i][1],    // baseY
-                15.0f,        // amplitude
-                3.0f + i*0.2f,// frequency
-                0.0f,         // angle
-                10            // value
-                });
+void rbarreyroRunGame10() {
+    if (g.game_state != 10) return;
+    static bool init = false;
+    if (!init) {
+    
+        player.tempx = 50;
+        player.tempy = 250;
+        // RB_InitializeLevel(); // or your own init function
+        init = true;
     }
 
-    // Shooters
-    triangleEnemies10.push_back({
-            float(g.xres - 40),
-            float(g.yres - 40),
-            20.0f, 20.0f, 0.0f, true
-            });
-    triangleEnemies10.push_back({
-            float(g.xres - 40),
-            40.0f,
-            20.0f, 20.0f, 0.0f, true
-            });
-    // Lasers
-    lasers10.push_back({200,150,300,0.0f, 1.0f, 0.0f, true});
-    lasers10.push_back({500,350,250,3.14159f/2,0.75f,0.5f, true});
-    lasers10.push_back({700,200,200,0.0f, 1.25f,1.0f, true});
+    // Draw the background
+    RB_DrawLevel10Background();
 
-    // Growing box
-    growingBox10 = {600,150,30,30, 0.0f, true};
+    
 }
 
-void UpdateLevel10(double dt) {
-    // 1) Toggle lasers
-    for (auto &L : lasers10) {
-        L.phase += dt;
-        if (L.phase > L.toggleRate) {
-            L.phase -= L.toggleRate;
-            L.on = !L.on;
-        }
-    }
-    // 2) Growing box
-    growFactor10 += (growing10 ? 1 : -1) * dt * 0.5f;
-    if (growFactor10 > 2.0f || growFactor10 < 1.0f)
-        growing10 = !growing10;
 
-    // 3) Shooters fire every second
-    static double fireTimer = 0.0;
-    fireTimer += dt;
-    if (fireTimer >= 1.0) {
-        for (auto &e : triangleEnemies10) {
-            float dx = player.pos[0] - e.x;
-            float dy = player.pos[1] - e.y;
-            float d  = sqrtf(dx*dx + dy*dy);
-            projectiles10.push_back({
-                    e.x, e.y, 5,5,
-                    dx/d, dy/d,
-                    200.0f, true
-                    });
-        }
-        fireTimer = 0.0;
-    }
 
-    // 4) Move projectiles
-    for (auto &p : projectiles10) {
-        if (!p.active) continue;
-        p.x += p.dx * p.speed * dt;
-        p.y += p.dy * p.speed * dt;
-        if (p.x < 0 || p.x > g.xres ||
-                p.y < 0 || p.y > g.yres)
-            p.active = false;
-    }
-
-}
-
-void DrawLevel10() {
-    dasonDrawWalls(level10Grid, LEVEL10_GRID_SIZE);
-
-    // Portals
-    RB_DrawColoredRect(portalA10.x, portalA10.y,
-            portalA10.width, portalA10.height,
-            0.5f, 0.0f, 1.0f);
-    RB_DrawColoredRect(portalB10.x, portalB10.y,
-            portalB10.width, portalB10.height,
-            0.5f, 0.0f, 1.0f);
-
-    // Coins
-    for (auto &c : coins10)
-        if (!c.collected)
-            RB_DrawColoredRect(c.x, c.y, 20, 20,
-                    1.0f, 0.85f, 0.0f);
-
-    // Power-ups
-    for (auto &p : powerUps10)
-        if (p.active && !p.collected)
-            RB_DrawColoredRect(p.x, p.y, 15, 15,
-                    0.0f, 1.0f, 0.0f);
-
-    // Shooters
-    for (auto &e : triangleEnemies10)
-        RB_DrawColoredRect(e.x, e.y, e.width, e.height,
-                0.0f, 0.0f, 1.0f);
-
-    // Lasers
-    glLineWidth(4.0f);
-    for (auto &L : lasers10) if (L.on) {
-        glColor3f(0.0f, 1.0f, 1.0f);
-        float dx = cosf(L.angle)*L.length/2;
-        float dy = sinf(L.angle)*L.length/2;
-        glBegin(GL_LINES);
-        glVertex2f(L.x-dx, L.y-dy);
-        glVertex2f(L.x+dx, L.y+dy);
-        glEnd();
-    }
-
-    // Growing box
-    float s = growingBox10.width * growFactor10;
-    RB_DrawColoredRect(growingBox10.x, growingBox10.y, s, s,
-            0.4f, 0.9f, 0.2f);
-
-    // Projectiles
-    for (auto &p : projectiles10)
-        if (p.active)
-            RB_DrawColoredRect(p.x, p.y, p.w, p.h,
-                    1.0f, 1.0f, 0.0f);
-
-    // Goal
-    RB_DrawColoredRect(goal10.x, goal10.y,
-            goal10.width, goal10.height,
-            0.0f, 1.0f, 0.0f);
-}
-
-Grid      level10Grid[1];           
-const int LEVEL10_GRID_SIZE = 0;
