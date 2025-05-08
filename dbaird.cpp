@@ -846,7 +846,7 @@ void dasonKeyChecks ()
         fill(walls, walls + 100, Wall());
         player.death_count = 0;
         //g.game_state = 2;
-    } else if (g.key_states[XK_q] && g.game_state == 8) {
+    } else if (g.key_states[XK_q] && g.game_state == 9) {
         g.game_state = 1;
         fill(walls, walls + 100, Wall());
         player.death_count = 0;
