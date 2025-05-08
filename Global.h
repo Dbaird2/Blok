@@ -139,7 +139,7 @@ class Global {
 
         Global() {
             show_fps = 1;
-            fps = 45.0f;
+            fps = 30.0f;
             hard_mode = 0;
             key_states[256] = {false};
             //gravity = -0.5f;
