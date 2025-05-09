@@ -2,6 +2,7 @@
 *  Spring 2025
 *  3350 Project
 *  ccontreras2.cpp
+* this is to test
 */
 #include <iostream>
 #include "functions.h"
@@ -18,8 +19,6 @@
 #include "stoledoheader.h"
 #include "cmorenoyanesheader.h"
 using namespace std;
-
-//GOALS: Make walls, fix sound in code, and finish win screen 
 
 #define CAROLINE_GRID_SIZE 15
 Grid caroWalls[CAROLINE_GRID_SIZE];
