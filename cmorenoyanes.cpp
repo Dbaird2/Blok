@@ -31,7 +31,7 @@ bool direction = true;
 Teleportal carlosPortals[4];
 Entity carlosTriangles[3];
 float triangleCooldown[2] = {0.0f, 0.0f};
-Entity carlosCircles[4];
+Entity carlosCircles[6];
 Projectile carlosProjectiles[MAX_CARLOS_PROJECTILES];
 vector<Coin> carlosCoins;
 Entity carlosGoal = {265, 270, 20, 20, 0, 0};
@@ -52,7 +52,8 @@ int wall_coordinate_y[CARLOS_GRID_SIZE] = {
 };
 
 
-void carlosEndCredit() {
+void carlosEndCredit() 
+{
     Rect r;
     r.bot = 66;
     r.left = 10;
@@ -60,7 +61,8 @@ void carlosEndCredit() {
     ggprint8b(&r, 16, 0x00ff0000, "Author 2: Carlos Moreno");
 }
 
-void carlosMaze() {
+void carlosMaze() 
+{
     dasonLoadStruct(carlos_walls, wall_height, wall_width,
         wall_coordinate_x, wall_coordinate_y, CARLOS_GRID_SIZE);
 
@@ -71,15 +73,18 @@ void carlosMaze() {
     carlosTriangles[2] = {800.0f, 360.0f, 20.0f, 20.0f, 0.0f, 0.0f};
     triangleCooldown[0] = triangleCooldown[1] = 0.0f;
 
-    carlosCircles[0] = {400, 380, 20, 20, 2.0f, 1};
-    carlosCircles[1] = {500, 20, 20, 20, 2.0f, -1};
-    carlosCircles[2] = {600, 140, 20, 20, 2.0f, 1};
-    carlosCircles[3] = {700, 250, 20, 20, 2.0f, -1};
+    carlosCircles[0] = {200, 380, 20, 20, 2.0f, 1};
+    carlosCircles[1] = {500, 40, 20, 20, 2.0f, -1};
+    carlosCircles[2] = {700, 140, 20, 20, 2.0f, 1};
+    carlosCircles[3] = {200, 250, 20, 20, 2.0f, -1};
+    carlosCircles[4] = {500, 250, 20, 20, 2.0f, -1};
+    carlosCircles[5] = {700, 250, 20, 20, 2.0f, -1};
 
     carlosCoins.push_back({400, 230, false, 250, 20.0f, 2.0f, 0.0f, 10});
     carlosCoins.push_back({350, 400, false, 350, 20.0f, 2.5f, 0.0f, 10});
     carlosCoins.push_back({600, 100, false, 100, 20.0f, 2.8f, 0.0f, 10});
     carlosCoins.push_back({30, 470, false, 470, 20.0f, 2.8f, 0.0f, 10});
+    carlosCoins.push_back({650, 470, false, 440, 20.0f, 2.8f, 0.0f, 10});
 
     player.tempx = 20;
     player.tempy = 20;
@@ -99,11 +104,12 @@ void carlosMaze() {
     carlosPortals[2].cY = 430;
     carlosPortals[3].portal_id = 2;
     carlosPortals[3].cX = 780;
-    carlosPortals[3].cY = 80;
+    carlosPortals[3].cY = 40;
     carlosPortals[2].portal_id = 2;
 }
 
-void drawTriangles() {
+void drawTriangles() 
+{
     for (int i = 0; i < 3; ++i) {
         Entity &e = carlosTriangles[i];
         glColor3f(1.0, 0, 0);
@@ -115,33 +121,42 @@ void drawTriangles() {
     }
 }
 
-void drawCircles() {
-    for (int i = 0; i < 4; i++) {
+void drawCircles() 
+{
+    for (int i = 0; i < 6; i++) {
         for (int j = 0; j < i; j++) {
             float dx = carlosCircles[i].x - carlosCircles[j].x;
-            if (fabs(dx) < 20.0f) {
+            float dy = carlosCircles[i].y - carlosCircles[j].y;
+            if (fabs(dx) < 20.0f && fabs(dy) < 20.0f) {
                 carlosCircles[i].dir *= -1;
                 break;
             }
         }
 
-        carlosCircles[i].x += carlosCircles[i].speed * carlosCircles[i].dir;
-        if (carlosCircles[i].x < 100 || carlosCircles[i].x > 800)
-            carlosCircles[i].dir *= -1;
+        if (i < 3) {
+            carlosCircles[i].x += carlosCircles[i].speed * carlosCircles[i].dir;
+            if (carlosCircles[i].x < 100 || carlosCircles[i].x > 800)
+                carlosCircles[i].dir *= -1;
+        } else {
+            carlosCircles[i].y += carlosCircles[i].speed * carlosCircles[i].dir;
+            if (carlosCircles[i].y < 50 || carlosCircles[i].y > 450)
+                carlosCircles[i].dir *= -1;
+        }
 
         glColor3f(0.5, 0.5, 1.0);
         glBegin(GL_TRIANGLE_FAN);
         glVertex2f(carlosCircles[i].x, carlosCircles[i].y);
         for (int j = 0; j <= 360; j += 10) {
             float angle = j * 3.14159f / 180.0f;
-            glVertex2f(carlosCircles[i].x + cos(angle)*10,
-                    carlosCircles[i].y + sin(angle)*10);
+            glVertex2f(carlosCircles[i].x + cos(angle) * 10,
+                        carlosCircles[i].y + sin(angle) * 10);
         }
         glEnd();
     }
 }
 
-void fireCarlosProjectile(float x, float y) {
+void fireCarlosProjectile(float x, float y) 
+{
     for (int i = 0; i < MAX_CARLOS_PROJECTILES; i++) {
         if (!carlosProjectiles[i].active) {
             float dx = player.pos[0] - x;
@@ -154,7 +169,8 @@ void fireCarlosProjectile(float x, float y) {
     }
 }
 
-void updateCarlosProjectiles() {
+void updateCarlosProjectiles() 
+{
     for (int i = 0; i < MAX_CARLOS_PROJECTILES; i++) {
         if (carlosProjectiles[i].active) {
             carlosProjectiles[i].x += carlosProjectiles[i].dx 
@@ -180,7 +196,8 @@ void updateCarlosProjectiles() {
     }
 }
 
-void drawCarlosProjectiles() {
+void drawCarlosProjectiles() 
+{
     for (int i = 0; i < MAX_CARLOS_PROJECTILES; i++) {
         if (carlosProjectiles[i].active) {
             SeanDrawRect(carlosProjectiles[i].x, carlosProjectiles[i].y,
@@ -221,7 +238,7 @@ void carlosPhysics() {
             carlosMaze();
         }
     }
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 3; i++) {
         float dx = player.pos[0] - carlosTriangles[i].x;
         float dy = player.pos[1] - carlosTriangles[i].y;
         float dist = sqrt(dx*dx + dy*dy);
@@ -241,7 +258,8 @@ void carlosPhysics() {
     isCircleCollidingWithSquare(carlosPortals, 4);
 }
 
-void renderInstructions() {
+void renderInstructions() 
+{
     Rect title;
     title.bot = 450;
     title.left = 15;
