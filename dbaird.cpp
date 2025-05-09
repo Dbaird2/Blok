@@ -839,6 +839,15 @@ void dasonKeyChecks ()
 {
     // HANDLES Q PRESS IN GAME LEVEL
     if (g.key_states[XK_q] && g.game_state >= 3 && g.game_state <=13) {
+        if (g.game_state == 10) 
+            g.game_state = 1;
+        if (g.game_state == 9){
+            g.game_state = 2;
+            fill(walls, walls + 100, Wall());
+            player.death_count = 0;
+            g.hard_mode = 0;
+            return;
+        }
         // Part of Algorithm library
         // It will reset all of walls back to Constructor values
         g.game_state = 99;

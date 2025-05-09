@@ -440,6 +440,8 @@ void render()
     }
     if (g.game_state == 4)
         seanrungame();
+    if (g.game_state == 5)
+        rbarreyroRunGame();
     if (g.game_state == 12)
     {
         seanrungame2();
