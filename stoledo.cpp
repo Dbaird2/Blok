@@ -200,7 +200,6 @@ void SeanUpdateProjectiles() {
                 break; // No need to check other walls
             }
         }
-
         // Kill projectile if off-screen
         if (px < 0 || px > g.xres || py < 0 || py > g.yres) {
             projectiles[i].active = false;
@@ -226,7 +225,7 @@ void SeanDrawProjectiles() {
         if (projectiles[i].active) {
             SeanDrawRect(projectiles[i].x, projectiles[i].y,
                          projectiles[i].width, projectiles[i].height,
-                         0.0f, .0f, 1.0f); // Yellow projectile
+                         0.0f, .0f, 1.0f); 
         }
     }
 }
@@ -272,7 +271,7 @@ void seanEndCredit(void) {
     title.center = 0;
     ggprint8b(&title, 16, 0x00ff0000, "Author 5: Sean Toledo");
 }
-//Draw Enemy Rectangle
+//Draw Rectangle 
 void SeanDrawRect(float x, float y, float width, float height,
                   float r, float g, float b) {
     glColor3f(r, g, b);
@@ -289,7 +288,6 @@ void SeanEnemiesVertical(int start, int end,
     for (int i = start; i < end; ++i) {
         float actualSpeed = enemies[i].speed * (powerUpActive ? 0.5f :1.0f);
         enemies[i].y += enemies[i].dir * actualSpeed;
-
         if (enemies[i].y <= margin || enemies[i].y >= yBoundary)
             enemies[i].dir *= -1;
     }
@@ -339,6 +337,8 @@ void seanrungame() {
             player.tempx = 50;
             player.tempy = 250;
             initialized = true;
+            player.width = 15;
+            player.height = 15;
         }
         if (!powerUpCollected) {
         SeanDrawRect(slowmoPowerUp.x, slowmoPowerUp.y,
@@ -451,6 +451,8 @@ void seanrungame2()
                 initialized2 = true;
                 seanCoins.clear();
                 seanCollectedCoins = 0;
+                player.width = 15;
+                player.height = 15;
                 for (int i = 0; i < SNAKE_LENGTH; ++i) {
             snake[i].x = 700 - i * 20;
             snake[i].y = 100;
@@ -508,26 +510,29 @@ void seanrungame2()
         snakeSegment.height = 10;
         // Increase speed every second 
         snakeSpeedTimer++;
-        if (snakeSpeedTimer >= 120) {
+        if (snakeSpeedTimer >= 355) {
             snakeSpeed += 0.2f;
             snakeSpeedTimer = 0;
         }
         snake2SpeedTimer++;
-        if (snake2SpeedTimer >= 120) {
+        if (snake2SpeedTimer >= 355) {
             snake2Speed += 0.2f;
             snake2SpeedTimer = 0;
         }
         if (SeanCheckCollision(snakeSegment)) {
-            player.tempx = 50;
-            player.tempy = 250;
-            deathcounter++;
-            g.game_state = 4;
-            clearAllProjectiles();
-            initialized2 = false;
-            powerUpActive = false;
-            snakeSpeed = snakeBaseSpeed;
-            snakeSpeedTimer = 0;
+        player.tempx = 50;
+        player.tempy = 250;
+        deathcounter++;
+        g.game_state = 4;
+        clearAllProjectiles();
+        initialized2 = false;
+        powerUpActive = false;
+        snake2Speed = snake2BaseSpeed;
+        snake2SpeedTimer = 0;
+        snakeSpeed = snakeBaseSpeed;
+        snakeSpeedTimer = 0;
         }
+
         }
         for (int i = 0; i < SNAKE2_LENGTH; ++i) {
             Entity snakeSegment;
@@ -536,7 +541,7 @@ void seanrungame2()
             snakeSegment.width = 10;
             snakeSegment.height = 10;
         
-            if (SeanCheckCollision(snakeSegment)) {
+        if (SeanCheckCollision(snakeSegment)) {
                 player.tempx = 50;
                 player.tempy = 250;
                 deathcounter++;
@@ -546,6 +551,8 @@ void seanrungame2()
                 powerUpActive = false;
                 snake2Speed = snake2BaseSpeed;
                 snake2SpeedTimer = 0;
+                snakeSpeed = snakeBaseSpeed;
+                snakeSpeedTimer = 0;
             }
         }
         float dx = player.pos[0] - snake[0].x;

@@ -369,7 +369,7 @@ void RB_Physics(int wall_size, int growing_size, int growing_enemy_check, Grid g
 // Main Level Logic Entry Point
 // -----------------------------------------------------------
 void rbarreyroRunGame() {
-    if (g.game_state != 10) return;
+    //if (g.game_state != 5) return;
     static bool init = false;
     if (!init) {
         player.tempx = 50;
