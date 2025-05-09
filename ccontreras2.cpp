@@ -2,7 +2,6 @@
 *  Spring 2025
 *  3350 Project
 *  ccontreras2.cpp
-* this is to test
 */
 #include <iostream>
 #include "functions.h"
