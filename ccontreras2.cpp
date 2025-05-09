@@ -20,6 +20,9 @@
 #include "cmorenoyanesheader.h"
 using namespace std;
 
+
+Entity carolineGoal = {450, 250, 20, 20, 0 , 0};
+
 #define CAROLINE_GRID_SIZE 15
 Grid caroWalls[CAROLINE_GRID_SIZE];
 int caro_height[15] = {10, 490, 490, 10, 10, 10, 195, 160, 10, 130,
@@ -186,15 +189,17 @@ Entity carolineenemies[4] = {
 };
 void carolinePhysics(void) {
 	dasonPhysics(CAROLINE_GRID_SIZE, 0, 0, NULL);
-    //isCircleCollidingWithSquare(portal, 2);
+	//isCircleCollidingWithSquare(portal, 2);
 	SeanEnemiesVertical(0, 2, g.yres, carolineedge, carolineenemies);
 	SeanEnemiesHorizontal(2, 4, g.xres, carolineedge, carolineenemies);
-    for (int i = 0; i < 4; i++)
-        if (SeanCheckCollision(carolineenemies[i])) {
-            carolineLevel();
-            player.death_count++;
-        }
-        
+	for (int i = 0; i < 4; i++)
+		if (SeanCheckCollision(carolineenemies[i])) {
+			carolineLevel();
+			player.death_count++;
+		}
+	if (SeanCheckCollision(carolineGoal)) {
+		g.game_state = 9;
+	} 
 }
 
 
@@ -206,6 +211,8 @@ void carolineRender(void) {
     SeanDrawRect(carolineenemies[i].x,carolineenemies[i].y,
             carolineenemies[i].width,carolineenemies[i].height,
             1.0f,0.0f,0.0f);
+	SeanDrawRect(carolineGoal.x, carolineGoal.y, carolineGoal.width,
+			carolineGoal.height, 0.0, 1.0, 0.0);
 	
 }
 void carolineLevel(void) {
