@@ -255,10 +255,52 @@ void carlosPhysics() {
         carlosEndCredit();
         g.game_state = 9;
     }
+    if (g.amt_of_stars[3] < 1)
+        g.amt_of_stars[3]++;
     isCircleCollidingWithSquare(carlosPortals, 4);
 }
 
 void renderInstructions() 
+{
+    // only draw when “I” is toggled
+    if (!g.instructions) 
+        return;
+
+    // 1) draw a semi-transparent black panel behind the text
+    // approximate width/height from your longest text + number of lines
+    const float panelW = 200.0f;
+    const float panelH = 200.0f;
+    const float panelX = 10.0f;
+    const float panelY = g.yres - 10.0f;
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
+    glBegin(GL_QUADS);
+      glVertex2f(panelX,               panelY);
+      glVertex2f(panelX + panelW,      panelY);
+      glVertex2f(panelX + panelW,      panelY - panelH);
+      glVertex2f(panelX,               panelY - panelH);
+    glEnd();
+    glDisable(GL_BLEND);
+
+    // 2) now draw your original text exactly as before:
+    Rect title;
+    title.bot    = g.yres - 30;  // adjust if needed to sit inside the panel
+    title.left   = 15;
+    title.center = 0;
+    ggprint8b(&title, 16, 0x00000000, "A - Move Left");
+    ggprint8b(&title, 16, 0x00000000, "W - Move Up");
+    ggprint8b(&title, 16, 0x00000000, "S - Move Down");
+    ggprint8b(&title, 16, 0x00000000, "D - Move Right");
+    ggprint8b(&title, 16, 0x00000000, "C - Credits");
+    ggprint8b(&title, 16, 0x00000000, "Z - Toggle FPS");
+    ggprint8b(&title, 16, 0x00000000, "Up Arrow Key - Increase FPS");
+    ggprint8b(&title, 16, 0x00000000, "Down Arrow Key - Decrease FPS");
+    ggprint8b(&title, 16, 0x00000000, "Q - Quit Level");
+}
+
+/*void renderInstructions() 
 {
     Rect title;
     title.bot = 450;
@@ -273,4 +315,4 @@ void renderInstructions()
     ggprint8b(&title, 16, 0x00000000, "Up Arrow Key - Increase FPS");
     ggprint8b(&title, 16, 0x00000000, "Down Arrow Key - Decrease FPS");
     ggprint8b(&title, 16, 0x00000000, "Q - Quit Level");
-}
+}*/
