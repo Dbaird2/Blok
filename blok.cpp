@@ -60,10 +60,6 @@ using _time         = std::chrono::time_point<_clock, _elapsed>;
 inline time_t current_time_t()
 {
     return chrono::system_clock::to_time_t(chrono::system_clock::now());
-}
-
-static bool initL10 = false;
-static double getTime() {
     using namespace std::chrono;
     static auto t0 = high_resolution_clock::now();
     auto t1 = high_resolution_clock::now();
@@ -73,11 +69,12 @@ static double getTime() {
 
 MenuBox boxes[MAX_BOXES];
 Player player;
-Image img[4] = {
+Image img[5] = {
     "./background.png",
     "./minecraft_image.png",
     "./winScreen.png",
-    "./failscreen.png"
+    "./failscreen.png",
+    "./lvl10.png"
 };
 void init_opengl(void);
 void physics(void);
@@ -380,10 +377,22 @@ void init_opengl(void)
     glEnable(GL_TEXTURE_2D);
     initialize_fonts();
 
+    // Load lvl10.png as menu/level select background
+    ren[4].backgroundImage = &img[0];
+    glGenTextures(1, &ren[5].backgroundTexture);
+    int w = ren[4].backgroundImage->width;
+    int h = ren[4].backgroundImage->height;
+    glBindTexture(GL_TEXTURE_2D, ren[4].backgroundTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0,
+            GL_RGB, GL_UNSIGNED_BYTE, ren[4].backgroundImage->data);
+
     dasonMazeLevelBackground();
     dasonRenderBackground();
 
     carolineDisplayWinScreen();
+    carlosMaze();
 }
 
 
@@ -405,7 +414,6 @@ void physics(void)
 int i = 0;
 void render()
 {   
-
     Rect r;
     glClear(GL_COLOR_BUFFER_BIT);
     //
@@ -420,13 +428,11 @@ void render()
     }
     // DRAW ALL BOXES
     if (g.game_state == 1) {
-        makeStartScreen(0);
+        makeStartScreen(4);
         drawBoxes();
-
     }
     if (g.game_state == 2) {
-
-        makeStartScreen(0);
+        makeStartScreen(4);
         drawBoxes();
     }
     if (g.game_state == 3) {
@@ -439,13 +445,11 @@ void render()
         seanrungame2();
     }
     if (g.game_state == 6) {
-
         makeStartScreen(1);
         dasonMazeRender();
     }
     if(g.game_state == 7) {
         carolineRender();
-        //carolineRender();
     }
     if (g.game_state == 9) {
         makeStartScreen(3);
@@ -454,18 +458,10 @@ void render()
             played = 1;
         }
     }
-    static double lastTime = getTime();
-    double now = getTime();
-    double dt  = now - lastTime;
-    lastTime   = now;
     if (g.game_state == 10) {
-        if (!initL10) {
-            InitLevel10();
-            initL10 = true;
-        }
-        UpdateLevel10(dt);
-        DrawLevel10();
+        makeStartScreen(4);  // Just display the background image
     }
+
     if ((g.game_state > 2 && g.game_state <= 7) || g.game_state == 0)  {
         drawPlayerBox(g.hard_mode);
 #ifdef MAP_HELP
@@ -475,7 +471,6 @@ void render()
         i++;
 #endif
     }
-    rbarreyroRunGame();
 
     if (g.credit) {
         dasonEndCredit();
@@ -492,40 +487,12 @@ void render()
         renderFps();
 
     if (g.game_state == 99) {
-        // MADE makeStartScreen MODULAR TO GET RID OF REUSED CODE
         makeStartScreen(2);
-        /*
-           float imageAspect = (float)ren[2].backgroundImage->width 
-           / ren[2].backgroundImage->height;
-           float screenAspect = (float)g.xres / g.yres;
-           float quadWidth = g.xres;
-           float quadHeight = g.yres;
-
-           if (screenAspect > imageAspect) {
-           quadWidth = g.yres * imageAspect;
-           } else {
-           quadHeight = g.xres / imageAspect;
-           }
-
-           float xOffset = (g.xres - quadWidth) / 2.0;
-           float yOffset = (g.yres - quadHeight) / 2.0;
-
-           glBindTexture(GL_TEXTURE_2D, ren.failScreenTexture);
-           glColor3f(1.0f, 1.0f, 1.0f);
-           glBegin(GL_QUADS);
-           glTexCoord2f(0.0, 1.0); glVertex2f(xOffset, yOffset);
-           glTexCoord2f(0.0, 0.0); glVertex2f(xOffset, yOffset + quadHeight); 
-           glTexCoord2f(1.0, 0.0); 
-           glVertex2f(xOffset + quadWidth, yOffset + quadHeight);
-           glTexCoord2f(1.0, 1.0); glVertex2f(xOffset + quadWidth, yOffset);
-           glEnd();
-           */
         Rect r;
         r.bot = 50;
         r.left = g.xres / 2 - 100;
         r.center = 0;
         ggprint8b(&r, 16, 0x00ff00ff, "Press ENTER to return to menu");
     }
-
 }
 

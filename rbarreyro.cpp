@@ -18,38 +18,14 @@
 #include <AL/alc.h>
 #include <AL/alut.h>
 
-#define RUSS_GRID_SIZE 20
-const int POWERUP_SIZE = 10;
-const int NUM_ENEMIES = 4;
-const int NUM_COINS   = 10;
-const float GOAL_X    = 800.0f;
-const float GOAL_Y    = 250.0f;
-
-// -----------------------------------------------------------
 // Global Game State
-// -----------------------------------------------------------
 std::vector<PowerUp> powerUps;
-static float gAnimTime = 0.0f;
-static RB_Entity Russ_goal = {GOAL_X, GOAL_Y, 25, 25, 0.0f, true};
-static std::vector<Enemy> enemies;
-static std::vector<Coin> coins;
-static int collectedCoins = 0;
+float gAnimTime = 0.0f;
+RB_Entity Russ_goal = {GOAL_X, GOAL_Y, 25, 25, 0.0f, true};
+std::vector<Enemy> rb_enemies;
+std::vector<Coin> coins;
+int collectedCoins = 0;
 int Deathcounter = 0;
-
-// -----------------------------------------------------------
-// Enum and Structs for PowerUps
-// -----------------------------------------------------------
-enum PowerUpType { SPEED };
-
-struct PowerUp {
-    float x, y;
-    PowerUpType type;
-    bool active;
-    bool collected;
-
-    PowerUp(float x_, float y_, PowerUpType t, bool a)
-        : x(x_), y(y_), type(t), active(a), collected(false) {}
-};
 
 // -----------------------------------------------------------
 // Initialization and End Credit
@@ -76,24 +52,50 @@ void DrawDeathCounter(int DeathCount) {
 // -----------------------------------------------------------
 void RB_InitializeLevel() {
     collectedCoins = 0;
-    enemies.clear();
+    rb_enemies.clear();
     coins.clear();
     powerUps.clear();
     DrawDeathCounter(Deathcounter);
 
-    enemies = {
+    // Initialize walls using the Wall class from Global.h
+    // Outer border
+    walls[0] = Wall(); walls[0].width = g.xres; walls[0].height = 20; walls[0].pos[0] = 0; walls[0].pos[1] = 0;                    // Top
+    walls[1] = Wall(); walls[1].width = g.xres; walls[1].height = 20; walls[1].pos[0] = 0; walls[1].pos[1] = g.yres - 20;         // Bottom
+    walls[2] = Wall(); walls[2].width = 20; walls[2].height = g.yres; walls[2].pos[0] = 0; walls[2].pos[1] = 0;                   // Left
+    walls[3] = Wall(); walls[3].width = 20; walls[3].height = g.yres; walls[3].pos[0] = g.xres - 20; walls[3].pos[1] = 0;         // Right
+
+    // Maze walls
+    walls[4] = Wall(); walls[4].width = 200; walls[4].height = 20; walls[4].pos[0] = 100; walls[4].pos[1] = 100;                  // Horizontal wall 1
+    walls[5] = Wall(); walls[5].width = 200; walls[5].height = 20; walls[5].pos[0] = 400; walls[5].pos[1] = 200;                  // Horizontal wall 2
+    walls[6] = Wall(); walls[6].width = 200; walls[6].height = 20; walls[6].pos[0] = 200; walls[6].pos[1] = 300;                  // Horizontal wall 3
+    walls[7] = Wall(); walls[7].width = 200; walls[7].height = 20; walls[7].pos[0] = 500; walls[7].pos[1] = 400;                  // Horizontal wall 4
+    walls[8] = Wall(); walls[8].width = 200; walls[8].height = 20; walls[8].pos[0] = 100; walls[8].pos[1] = 500;                  // Horizontal wall 5
+
+    walls[9] = Wall(); walls[9].width = 20; walls[9].height = 200; walls[9].pos[0] = 100; walls[9].pos[1] = 100;                  // Vertical wall 1
+    walls[10] = Wall(); walls[10].width = 20; walls[10].height = 200; walls[10].pos[0] = 300; walls[10].pos[1] = 200;             // Vertical wall 2
+    walls[11] = Wall(); walls[11].width = 20; walls[11].height = 200; walls[11].pos[0] = 500; walls[11].pos[1] = 300;             // Vertical wall 3
+    walls[12] = Wall(); walls[12].width = 20; walls[12].height = 200; walls[12].pos[0] = 200; walls[12].pos[1] = 400;             // Vertical wall 4
+    walls[13] = Wall(); walls[13].width = 20; walls[13].height = 200; walls[13].pos[0] = 400; walls[13].pos[1] = 500;             // Vertical wall 5
+
+    // Initialize more enemies
+    rb_enemies = {
         {{150, 150, 20, 20, 2.0f, true}, CHASER, 0, 0, 0, 160.0f},
         {{650, 120, 20, 20, 2.5f, true}, CHASER, 0, 0, 0, 190.0f},
         {{400, 250, 15, 15, 0.0f, true}, ORBITER, 400.0f, 250.0f, 0.0f, 0.0f},
         {{700, 400, 15, 15, 0.0f, true}, ORBITER, 700.0f, 400.0f, 3.14f, 0.0f},
         {{600, 550, 25, 25, 2.0f, true}, CHASER, 0, 0, 0, 150.0f},
-        {{200, 500, 20, 20, 2.5f, true}, CHASER, 0, 0, 0, 180.0f}
+        {{200, 500, 20, 20, 2.5f, true}, CHASER, 0, 0, 0, 180.0f},
+        {{450, 350, 20, 20, 2.0f, true}, CHASER, 0, 0, 0, 170.0f},
+        {{300, 200, 15, 15, 0.0f, true}, ORBITER, 300.0f, 200.0f, 1.57f, 0.0f},
+        {{550, 300, 20, 20, 2.5f, true}, CHASER, 0, 0, 0, 190.0f}
     };
 
-    powerUps.push_back(PowerUp(220, 280, SPEED, false));
-    powerUps.push_back(PowerUp(120, 180, SPEED, false));
-    powerUps.push_back(PowerUp(320, 400, SPEED, false));
+    // Initialize power-ups
+    powerUps.push_back(PowerUp(220, 280, SPEED, true));
+    powerUps.push_back(PowerUp(120, 180, SPEED, true));
+    powerUps.push_back(PowerUp(320, 400, SPEED, true));
 
+    // Initialize coins
     float mazeCoins[NUM_COINS][2] = {
         {100, 100}, {180, 220}, {260, 340}, {340, 220},
         {420, 100}, {500, 220}, {580, 340}, {660, 220},
@@ -149,7 +151,7 @@ bool RB_CheckEntityCollision(const RB_Entity& a, const RB_Entity& b) {
 // Enemy Behavior and Rendering
 // -----------------------------------------------------------
 void RB_UpdateEnemies() {
-    for (auto& e : enemies) {
+    for (auto& e : rb_enemies) {
         if (!e.base.isActive) continue;
         if (e.type == CHASER) {
             float dx = player.pos[0] - e.base.x;
@@ -168,7 +170,7 @@ void RB_UpdateEnemies() {
 }
 
 void RB_DrawEnemies() {
-    for (auto& e : enemies) {
+    for (auto& e : rb_enemies) {
         if (!e.base.isActive) continue;
         float r = (e.type == CHASER) ? 1.0f : 0.5f;
         float g = 0.0f;
@@ -236,10 +238,11 @@ void UpdatePowerUps() {
         0.0f, true
     };
     for (auto &p : powerUps) {
-        if (p.collected) continue;
+        if (!p.active || p.collected) continue;
         RB_Entity pu = { p.x-10, p.y-10, 20.0f, 20.0f, 0.0f, true };
         if (RB_CheckEntityCollision(pb, pu)) {
             p.collected = true;
+            p.active = false;  // Deactivate the power-up
             if (p.type == SPEED) {
                 player.speed *= 1.5f;
             }
@@ -255,11 +258,118 @@ void DrawPowerUps() {
     }
 }
 
+void DrawBorder(float x, float y, float w, float h, float thickness) {
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glLineWidth(thickness);
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(x, y);
+    glVertex2f(x + w, y);
+    glVertex2f(x + w, y + h);
+    glVertex2f(x, y + h);
+    glEnd();
+}
+
+void RB_CheckBorderCollision() {
+    // Check left and right borders
+    if (player.pos[0] - player.width/2.0f < 0.0f) {
+        player.pos[0] = player.width/2.0f;
+    }
+    if (player.pos[0] + player.width/2.0f > g.xres) {
+        player.pos[0] = g.xres - player.width/2.0f;
+    }
+    
+    // Check top and bottom borders
+    if (player.pos[1] - player.height/2.0f < 0.0f) {
+        player.pos[1] = player.height/2.0f;
+    }
+    if (player.pos[1] + player.height/2.0f > g.yres) {
+        player.pos[1] = g.yres - player.height/2.0f;
+    }
+}
+
+void RB_CheckWallCollision() {
+    RB_Entity pb = {
+        player.pos[0] - player.width/2.0f,
+        player.pos[1] - player.height/2.0f,
+        (float)player.width,
+        (float)player.height,
+        0.0f, true
+    };
+
+    for (int i = 0; i < 14; i++) {  // We have 14 walls
+        Wall& wall = walls[i];
+        RB_Entity wb = {wall.pos[0], wall.pos[1], (float)wall.width, (float)wall.height, 0.0f, true};
+        if (RB_CheckEntityCollision(pb, wb)) {
+            // Calculate overlap and adjust position
+            float overlapX = std::min(pb.x + pb.width - wb.x, wb.x + wb.width - pb.x);
+            float overlapY = std::min(pb.y + pb.height - wb.y, wb.y + wb.height - pb.y);
+            
+            if (overlapX < overlapY) {
+                if (pb.x < wb.x) {
+                    player.pos[0] = wb.x - player.width/2.0f;
+                } else {
+                    player.pos[0] = wb.x + wb.width + player.width/2.0f;
+                }
+            } else {
+                if (pb.y < wb.y) {
+                    player.pos[1] = wb.y - player.height/2.0f;
+                } else {
+                    player.pos[1] = wb.y + wb.height + player.height/2.0f;
+                }
+            }
+        }
+    }
+}
+
+// -----------------------------------------------------------
+// Physics and Collision
+// -----------------------------------------------------------
+void RB_Physics(int wall_size, int growing_size, int growing_enemy_check, Grid grid[]) {
+    for (int i = 0; i < wall_size; i++) {
+        Wall *w = &walls[i];
+        Player *p = &player;
+
+        int x_offset = p->width;
+        int y_offset = p->height;
+        int box_top = w->pos[1] + w->height;
+        int box_bot = w->pos[1] - w->height;
+        int box_left = w->pos[0] - w->width;
+        int box_right = w->pos[0] + w->width;
+
+        if ((p->pos[1] <= box_top + y_offset)
+                && (p->pos[1] >= box_bot - y_offset)
+                && (p->pos[0] >= box_left - x_offset) 
+                && (p->pos[0] <= box_right + x_offset)) {
+            if (p->pos[1] >= box_top - y_offset/4) {
+                p->tempy += 2;  
+                player.stop_w = 1;
+            }
+            else if (p->pos[1] <= box_bot+y_offset/10) {
+                p->tempy -= 2;  
+                player.stop_s = 1;
+            }
+            else if (p->pos[0] >= box_right) {
+                p->tempx += 2;  
+                player.stop_a = 1;
+            }
+            else if (p->pos[0] <= box_left) {
+                p->tempx -= 2;  
+                player.stop_d = 1;
+            }
+        } else {
+            player.stop_w = 0;
+            player.stop_d = 0;
+            player.stop_s = 0;
+            player.stop_a = 0;
+        }
+    }
+}
+
 // -----------------------------------------------------------
 // Main Level Logic Entry Point
 // -----------------------------------------------------------
 void rbarreyroRunGame() {
-    if (g.game_state != 5) return;
+    if (g.game_state != 10) return;
     static bool init = false;
     if (!init) {
         player.tempx = 50;
@@ -275,7 +385,16 @@ void rbarreyroRunGame() {
     UpdatePowerUps();
     DrawPowerUps();
     collectedCoins = RB_CheckCoinCollection(coins, collectedCoins);
-    russLevel();
+    
+    // Draw walls and check collisions
+    RB_DrawWalls();
+    
+    // Handle wall collisions and portals using modified physics
+    RB_Physics(14, 0, 0, NULL);  // Using our modified physics function
+
+    // Draw portals
+    carolineDrawCircle(portals, NUM_PORTALS);
+    isCircleCollidingWithSquare(portals, NUM_PORTALS);
 
     RB_DrawColoredRect(Russ_goal.x, Russ_goal.y, Russ_goal.width, Russ_goal.height, 0.0f, 1.0f, 0.0f);
     RB_DrawEnemies();
@@ -292,7 +411,7 @@ void rbarreyroRunGame() {
         0.0f, true
     };
 
-    for (auto& e : enemies) {
+    for (auto& e : rb_enemies) {
         if (e.base.isActive && RB_CheckEntityCollision(pb, e.base)) {
             player.tempx = 50;
             player.tempy = 250;
@@ -311,192 +430,26 @@ void rbarreyroRunGame() {
             }
         }
     }
+
+    DrawBorder(0, 0, g.xres, g.yres, 4.0f);
 }
+
 // -----------------------------------------------------------
 // Quit Handling
 // -----------------------------------------------------------
 void check_quit(XEvent *e) {
     if (e->type == KeyPress) {
         KeySym key = XLookupKeysym(&e->xkey, 0);
-        if (key == XK_q && g.game_state == 5) {
+        if (key == XK_q && g.game_state == 10) {
             g.game_state = 2;
         }
     }
 }
 
-// -----------------------------------------------------------
-// EVEL 10 GLOBAL DEFINITIONS 
-// -----------------------------------------------------------
-std::vector<L10_Projectile> projectiles10;
-std::vector<RB_Entity>      triangleEnemies10;
-std::vector<L10_PowerUp>    powerUps10;
-std::vector<Coin>           coins10;
-RB_Entity                   portalA10, portalB10;
-std::vector<L10_Laser>      lasers10;
-RB_Entity                   growingBox10;
-float                       growFactor10;
-bool                        growing10;
-RB_Entity                   goal10;
-
-// -----------------------------------------------------------
-// LEVEL 10 IMPLEMENTATION 
-// -----------------------------------------------------------
-void InitLevel10() 
-{
-    projectiles10.clear();
-    triangleEnemies10.clear();
-    powerUps10.clear();
-    coins10.clear();
-    lasers10.clear();
-    growFactor10 = 1.0f;
-    growing10   = true;
-
-    // Player spawn
-    player.tempx = 60; player.tempy = 60;
-
-    // Portals
-    portalA10 = {100,100,20,20,0.0f,true};
-    portalB10 = {700,400,20,20,0.0f,true};
-
-    // Goal
-    goal10 = {820,250,25,25,0.0f,true};
-
-    // Coins (reuse your Coin struct)
-    float pts[10][2] = {
-        {120,120},{240,200},{360,280},{480,360},{600,440},
-        {720,360},{840,280},{360,120},{600,120},{120,360}
-    };
-    for (int i = 0; i < 10; ++i) {
-        coins10.push_back({
-                pts[i][0], pts[i][1],
-                false,        // collected
-                pts[i][1],    // baseY
-                15.0f,        // amplitude
-                3.0f + i*0.2f,// frequency
-                0.0f,         // angle
-                10            // value
-                });
+void RB_DrawWalls() {
+    for (int i = 0; i < 14; i++) {  // We have 14 walls
+        Wall& wall = walls[i];
+        RB_DrawColoredRect(wall.pos[0], wall.pos[1], wall.width, wall.height, 0.5f, 0.5f, 0.5f);
     }
-
-    // Shooters
-    triangleEnemies10.push_back({
-            float(g.xres - 40),
-            float(g.yres - 40),
-            20.0f, 20.0f, 0.0f, true
-            });
-    triangleEnemies10.push_back({
-            float(g.xres - 40),
-            40.0f,
-            20.0f, 20.0f, 0.0f, true
-            });
-    // Lasers
-    lasers10.push_back({200,150,300,0.0f, 1.0f, 0.0f, true});
-    lasers10.push_back({500,350,250,3.14159f/2,0.75f,0.5f, true});
-    lasers10.push_back({700,200,200,0.0f, 1.25f,1.0f, true});
-
-    // Growing box
-    growingBox10 = {600,150,30,30, 0.0f, true};
 }
 
-void UpdateLevel10(double dt) {
-    // 1) Toggle lasers
-    for (auto &L : lasers10) {
-        L.phase += dt;
-        if (L.phase > L.toggleRate) {
-            L.phase -= L.toggleRate;
-            L.on = !L.on;
-        }
-    }
-    // 2) Growing box
-    growFactor10 += (growing10 ? 1 : -1) * dt * 0.5f;
-    if (growFactor10 > 2.0f || growFactor10 < 1.0f)
-        growing10 = !growing10;
-
-    // 3) Shooters fire every second
-    static double fireTimer = 0.0;
-    fireTimer += dt;
-    if (fireTimer >= 1.0) {
-        for (auto &e : triangleEnemies10) {
-            float dx = player.pos[0] - e.x;
-            float dy = player.pos[1] - e.y;
-            float d  = sqrtf(dx*dx + dy*dy);
-            projectiles10.push_back({
-                    e.x, e.y, 5,5,
-                    dx/d, dy/d,
-                    200.0f, true
-                    });
-        }
-        fireTimer = 0.0;
-    }
-
-    // 4) Move projectiles
-    for (auto &p : projectiles10) {
-        if (!p.active) continue;
-        p.x += p.dx * p.speed * dt;
-        p.y += p.dy * p.speed * dt;
-        if (p.x < 0 || p.x > g.xres ||
-                p.y < 0 || p.y > g.yres)
-            p.active = false;
-    }
-
-}
-
-void DrawLevel10() {
-    dasonDrawWalls(level10Grid, LEVEL10_GRID_SIZE);
-
-    // Portals
-    RB_DrawColoredRect(portalA10.x, portalA10.y,
-            portalA10.width, portalA10.height,
-            0.5f, 0.0f, 1.0f);
-    RB_DrawColoredRect(portalB10.x, portalB10.y,
-            portalB10.width, portalB10.height,
-            0.5f, 0.0f, 1.0f);
-
-    // Coins
-    for (auto &c : coins10)
-        if (!c.collected)
-            RB_DrawColoredRect(c.x, c.y, 20, 20,
-                    1.0f, 0.85f, 0.0f);
-
-    // Power-ups
-    for (auto &p : powerUps10)
-        if (p.active && !p.collected)
-            RB_DrawColoredRect(p.x, p.y, 15, 15,
-                    0.0f, 1.0f, 0.0f);
-
-    // Shooters
-    for (auto &e : triangleEnemies10)
-        RB_DrawColoredRect(e.x, e.y, e.width, e.height,
-                0.0f, 0.0f, 1.0f);
-
-    // Lasers
-    glLineWidth(4.0f);
-    for (auto &L : lasers10) if (L.on) {
-        glColor3f(0.0f, 1.0f, 1.0f);
-        float dx = cosf(L.angle)*L.length/2;
-        float dy = sinf(L.angle)*L.length/2;
-        glBegin(GL_LINES);
-        glVertex2f(L.x-dx, L.y-dy);
-        glVertex2f(L.x+dx, L.y+dy);
-        glEnd();
-    }
-
-    // Growing box
-    float s = growingBox10.width * growFactor10;
-    RB_DrawColoredRect(growingBox10.x, growingBox10.y, s, s,
-            0.4f, 0.9f, 0.2f);
-
-    // Projectiles
-    for (auto &p : projectiles10)
-        if (p.active)
-            RB_DrawColoredRect(p.x, p.y, p.w, p.h,
-                    1.0f, 1.0f, 0.0f);
-
-    // Goal
-    RB_DrawColoredRect(goal10.x, goal10.y,
-            goal10.width, goal10.height,
-            0.0f, 1.0f, 0.0f);
-}
-
-Grid      level10Grid[1];           
-const int LEVEL10_GRID_SIZE = 0;
