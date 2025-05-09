@@ -378,8 +378,8 @@ void init_opengl(void)
     initialize_fonts();
 
     // Load lvl10.png as menu/level select background
-    ren[4].backgroundImage = &img[0];
-    glGenTextures(1, &ren[5].backgroundTexture);
+    ren[4].backgroundImage = &img[4];
+    glGenTextures(1, &ren[4].backgroundTexture);
     int w = ren[4].backgroundImage->width;
     int h = ren[4].backgroundImage->height;
     glBindTexture(GL_TEXTURE_2D, ren[4].backgroundTexture);
@@ -428,11 +428,11 @@ void render()
     }
     // DRAW ALL BOXES
     if (g.game_state == 1) {
-        makeStartScreen(4);
+        makeStartScreen(0);
         drawBoxes();
     }
     if (g.game_state == 2) {
-        makeStartScreen(4);
+        makeStartScreen(0);
         drawBoxes();
     }
     if (g.game_state == 3) {
