@@ -838,7 +838,7 @@ bool value;
 void dasonKeyChecks () 
 {
     // HANDLES Q PRESS IN GAME LEVEL
-    if (g.key_states[XK_q] && g.game_state >= 3 && g.game_state <=7) {
+    if (g.key_states[XK_q] && g.game_state >= 3 && g.game_state <=13) {
         // Part of Algorithm library
         // It will reset all of walls back to Constructor values
         g.game_state = 99;
